@@ -7,7 +7,7 @@ import {
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
-import type { Body_login_login_access_token as AccessToken } from "@/client"
+import type { UserLoginModel as AccessToken } from "@/client"
 import { AuthLayout } from "@/components/Common/AuthLayout"
 import {
   Form,
@@ -23,7 +23,7 @@ import { PasswordInput } from "@/components/ui/password-input"
 import useAuth, { isLoggedIn } from "@/hooks/useAuth"
 
 const formSchema = z.object({
-  username: z.email(),
+  email: z.email(),
   password: z
     .string()
     .min(1, { message: "Password is required" })
@@ -57,7 +57,7 @@ function Login() {
     mode: "onBlur",
     criteriaMode: "all",
     defaultValues: {
-      username: "",
+      email: "",
       password: "",
     },
   })
@@ -81,7 +81,7 @@ function Login() {
           <div className="grid gap-4">
             <FormField
               control={form.control}
-              name="username"
+              name="email"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Email</FormLabel>

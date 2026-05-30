@@ -5,7 +5,7 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
-import { type UserPublic, UsersService } from "@/client"
+import { type User as UserPublic, UsersService } from "@/client"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
@@ -34,7 +34,9 @@ import { handleError } from "@/utils"
 const formSchema = z
   .object({
     email: z.email({ message: "Invalid email address" }),
-    full_name: z.string().optional(),
+    first_name: z.string().min(1, "First name is required"),
+    last_name: z.string().optional(),
+    username: z.string().optional(),
     password: z
       .string()
       .min(8, { message: "Password must be at least 8 characters" })
@@ -67,7 +69,9 @@ const EditUser = ({ user, onSuccess }: EditUserProps) => {
     criteriaMode: "all",
     defaultValues: {
       email: user.email,
-      full_name: user.full_name ?? undefined,
+      first_name: user.first_name,
+      last_name: user.last_name,
+      username: user.username,
       is_superuser: user.is_superuser,
       is_active: user.is_active,
     },
@@ -75,7 +79,7 @@ const EditUser = ({ user, onSuccess }: EditUserProps) => {
 
   const mutation = useMutation({
     mutationFn: (data: FormData) =>
-      UsersService.updateUser({ userId: user.id, requestBody: data }),
+      UsersService.updateUser({ userUid: user.uid, requestBody: data }),
     onSuccess: () => {
       showSuccessToast("User updated successfully")
       setIsOpen(false)
@@ -136,14 +140,44 @@ const EditUser = ({ user, onSuccess }: EditUserProps) => {
                 )}
               />
 
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="first_name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>First Name <span className="text-destructive">*</span></FormLabel>
+                      <FormControl>
+                        <Input placeholder="First name" type="text" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="last_name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Last Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Last name" type="text" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
               <FormField
                 control={form.control}
-                name="full_name"
+                name="username"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Full Name</FormLabel>
+                    <FormLabel>Username</FormLabel>
                     <FormControl>
-                      <Input placeholder="Full name" type="text" {...field} />
+                      <Input placeholder="Username" type="text" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

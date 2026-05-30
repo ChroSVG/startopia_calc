@@ -22,7 +22,9 @@ import { cn } from "@/lib/utils"
 import { handleError } from "@/utils"
 
 const formSchema = z.object({
-  full_name: z.string().max(30).optional(),
+  first_name: z.string().min(1, "First name is required").max(30),
+  last_name: z.string().max(30).optional(),
+  username: z.string().max(30).optional(),
   email: z.email({ message: "Invalid email address" }),
 })
 
@@ -39,7 +41,9 @@ const UserInformation = () => {
     mode: "onBlur",
     criteriaMode: "all",
     defaultValues: {
-      full_name: currentUser?.full_name ?? undefined,
+      first_name: currentUser?.first_name ?? "",
+      last_name: currentUser?.last_name ?? "",
+      username: currentUser?.username ?? "",
       email: currentUser?.email,
     },
   })
@@ -65,8 +69,14 @@ const UserInformation = () => {
     const updateData: UserUpdateMe = {}
 
     // only include fields that have changed
-    if (data.full_name !== currentUser?.full_name) {
-      updateData.full_name = data.full_name
+    if (data.first_name !== currentUser?.first_name) {
+      updateData.first_name = data.first_name
+    }
+    if (data.last_name !== currentUser?.last_name) {
+      updateData.last_name = data.last_name
+    }
+    if (data.username !== currentUser?.username) {
+      updateData.username = data.username
     }
     if (data.email !== currentUser?.email) {
       updateData.email = data.email
@@ -88,13 +98,71 @@ const UserInformation = () => {
           onSubmit={form.handleSubmit(onSubmit)}
           className="flex flex-col gap-4"
         >
+          <div className="grid grid-cols-2 gap-4">
+            <FormField
+              control={form.control}
+              name="first_name"
+              render={({ field }) =>
+                editMode ? (
+                  <FormItem>
+                    <FormLabel>First name</FormLabel>
+                    <FormControl>
+                      <Input type="text" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                ) : (
+                  <FormItem>
+                    <FormLabel>First name</FormLabel>
+                    <p
+                      className={cn(
+                        "py-2 truncate max-w-sm",
+                        !field.value && "text-muted-foreground",
+                      )}
+                    >
+                      {field.value || "N/A"}
+                    </p>
+                  </FormItem>
+                )
+              }
+            />
+
+            <FormField
+              control={form.control}
+              name="last_name"
+              render={({ field }) =>
+                editMode ? (
+                  <FormItem>
+                    <FormLabel>Last name</FormLabel>
+                    <FormControl>
+                      <Input type="text" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                ) : (
+                  <FormItem>
+                    <FormLabel>Last name</FormLabel>
+                    <p
+                      className={cn(
+                        "py-2 truncate max-w-sm",
+                        !field.value && "text-muted-foreground",
+                      )}
+                    >
+                      {field.value || "N/A"}
+                    </p>
+                  </FormItem>
+                )
+              }
+            />
+          </div>
+
           <FormField
             control={form.control}
-            name="full_name"
+            name="username"
             render={({ field }) =>
               editMode ? (
                 <FormItem>
-                  <FormLabel>Full name</FormLabel>
+                  <FormLabel>Username</FormLabel>
                   <FormControl>
                     <Input type="text" {...field} />
                   </FormControl>
@@ -102,7 +170,7 @@ const UserInformation = () => {
                 </FormItem>
               ) : (
                 <FormItem>
-                  <FormLabel>Full name</FormLabel>
+                  <FormLabel>Username</FormLabel>
                   <p
                     className={cn(
                       "py-2 truncate max-w-sm",

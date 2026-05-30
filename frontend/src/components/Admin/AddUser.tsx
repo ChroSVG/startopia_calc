@@ -34,7 +34,9 @@ import { handleError } from "@/utils"
 const formSchema = z
   .object({
     email: z.email({ message: "Invalid email address" }),
-    full_name: z.string().optional(),
+    first_name: z.string().min(1, "First name is required"),
+    last_name: z.string().optional(),
+    username: z.string().optional(),
     password: z
       .string()
       .min(1, { message: "Password is required" })
@@ -63,11 +65,13 @@ const AddUser = () => {
     criteriaMode: "all",
     defaultValues: {
       email: "",
-      full_name: "",
+      first_name: "",
+      last_name: "",
+      username: "",
       password: "",
       confirm_password: "",
       is_superuser: false,
-      is_active: false,
+      is_active: true,
     },
   })
 
@@ -128,14 +132,44 @@ const AddUser = () => {
                 )}
               />
 
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="first_name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>First Name <span className="text-destructive">*</span></FormLabel>
+                      <FormControl>
+                        <Input placeholder="First name" type="text" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="last_name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Last Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Last name" type="text" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
               <FormField
                 control={form.control}
-                name="full_name"
+                name="username"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Full Name</FormLabel>
+                    <FormLabel>Username</FormLabel>
                     <FormControl>
-                      <Input placeholder="Full name" type="text" {...field} />
+                      <Input placeholder="Username" type="text" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

@@ -2,10 +2,11 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useNavigate } from "@tanstack/react-router"
 
 import {
-  type Body_login_login_access_token as AccessToken,
+  type UserLoginModel as AccessToken,
   LoginService,
-  type UserPublic,
-  type UserRegister,
+  AuthService,
+  type User as UserPublic,
+  type UserCreate as UserRegister,
   UsersService,
 } from "@/client"
 import { handleError } from "@/utils"
@@ -28,7 +29,7 @@ const useAuth = () => {
 
   const signUpMutation = useMutation({
     mutationFn: (data: UserRegister) =>
-      UsersService.registerUser({ requestBody: data }),
+      AuthService.registerUser({ requestBody: data }),
     onSuccess: () => {
       navigate({ to: "/login" })
     },
@@ -39,10 +40,12 @@ const useAuth = () => {
   })
 
   const login = async (data: AccessToken) => {
-    const response = await LoginService.loginAccessToken({
-      formData: data,
+    const response = await LoginService.accessToken({
+      requestBody: data,
     })
-    localStorage.setItem("access_token", response.access_token)
+    const res = response as Record<string, unknown>
+    localStorage.setItem("access_token", res.access_token as string)
+    localStorage.setItem("refresh_token", res.refresh_token as string)
   }
 
   const loginMutation = useMutation({
@@ -53,8 +56,14 @@ const useAuth = () => {
     onError: handleError.bind(showErrorToast),
   })
 
-  const logout = () => {
+  const logout = async () => {
+    try {
+      await AuthService.logout()
+    } catch (e) {
+      console.error("Logout error", e)
+    }
     localStorage.removeItem("access_token")
+    localStorage.removeItem("refresh_token")
     navigate({ to: "/login" })
   }
 

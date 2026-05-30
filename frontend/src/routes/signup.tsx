@@ -23,7 +23,9 @@ import useAuth, { isLoggedIn } from "@/hooks/useAuth"
 const formSchema = z
   .object({
     email: z.email(),
-    full_name: z.string().min(1, { message: "Full Name is required" }),
+    first_name: z.string().min(1, { message: "First Name is required" }),
+    last_name: z.string().optional(),
+    username: z.string().optional(),
     password: z
       .string()
       .min(1, { message: "Password is required" })
@@ -65,7 +67,9 @@ function SignUp() {
     criteriaMode: "all",
     defaultValues: {
       email: "",
-      full_name: "",
+      first_name: "",
+      last_name: "",
+      username: "",
       password: "",
       confirm_password: "",
     },
@@ -91,25 +95,45 @@ function SignUp() {
           </div>
 
           <div className="grid gap-4">
-            <FormField
-              control={form.control}
-              name="full_name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Full Name</FormLabel>
-                  <FormControl>
-                    <Input
-                      data-testid="full-name-input"
-                      placeholder="User"
-                      type="text"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="first_name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>First Name</FormLabel>
+                    <FormControl>
+                      <Input
+                        data-testid="first-name-input"
+                        placeholder="John"
+                        type="text"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
+              <FormField
+                control={form.control}
+                name="last_name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Last Name</FormLabel>
+                    <FormControl>
+                      <Input
+                        data-testid="last-name-input"
+                        placeholder="Doe"
+                        type="text"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             <FormField
               control={form.control}
               name="email"
@@ -121,6 +145,25 @@ function SignUp() {
                       data-testid="email-input"
                       placeholder="user@example.com"
                       type="email"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="username"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Username</FormLabel>
+                  <FormControl>
+                    <Input
+                      data-testid="username-input"
+                      placeholder="johndoe"
+                      type="text"
                       {...field}
                     />
                   </FormControl>

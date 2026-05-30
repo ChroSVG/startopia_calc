@@ -1,0 +1,18 @@
+import uuid
+from datetime import datetime
+
+from sqlmodel import Field, Relationship, SQLModel
+
+
+class InventoryItem(SQLModel, table=True):
+    __tablename__ = "inventory_items"
+    uid: uuid.UUID = Field(default=uuid.uuid4, primary_key=True)
+    user_uid: uuid.UUID = Field(foreign_key="users.uid")
+    item_uid: uuid.UUID = Field(foreign_key="items.uid")
+    quantity: int = 1
+    created_at: datetime = Field(default=datetime.now)
+    user: "User" = Relationship(back_populates="inventory")
+    item: "Item" = Relationship()
+
+    def __repr__(self):
+        return f"<InventoryItem user={self.user_uid} item={self.item_uid}>"
