@@ -1,29 +1,27 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router"
-import { Search, X } from "lucide-react"
-import { Suspense, useMemo } from "react"
+import { Columns3, Search, X } from "lucide-react"
+import { Suspense, memo, useCallback, useMemo, useState } from "react"
+import { useDebouncedCallback } from "use-debounce"
 import { z } from "zod"
 
-import type { ItemModel as Item } from "@/client"
+import type { ColumnDef } from "@tanstack/react-table"
 import { ItemsService, UsersService } from "@/client"
 import AddItem from "@/components/Admin/Items/AddItem"
 import { columns } from "@/components/Admin/Items/columns"
 import { DataTable } from "@/components/Common/DataTable"
 import PendingItems from "@/components/Pending/PendingItems"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Input } from "@/components/ui/input"
 
 const searchSchema = z.object({
   search: z.string().catch(""),
-  type: z.string().catch("all"),
-  chi: z.string().catch("all"),
   page: z.coerce.number().int().min(0).catch(0),
   pageSize: z.coerce.number().int().min(1).catch(50),
 })
@@ -55,33 +53,50 @@ export const Route = createFileRoute("/_layout/admin-items")({
   }),
 })
 
-function FilterBar({
+const columnLabel = (col: ColumnDef<any>): string => {
+  if (typeof col.header === "string") return col.header
+  if (col.id) return col.id.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase())
+  return ""
+}
+
+const FilterBar = memo(function FilterBar({
   search,
-  type,
-  chi,
-  items,
-}: SearchParams & { items: Item[] }) {
-  const navigate = useNavigate({ from: Route.fullPath })
+  onSearchChange,
+  columnVisibility,
+  setColumnVisibility,
+}: {
+  search: string
+  onSearchChange: (value: string) => void
+  columnVisibility: Record<string, boolean>
+  setColumnVisibility: React.Dispatch<React.SetStateAction<Record<string, boolean>>>
+}) {
+  const [inputValue, setInputValue] = useState(search)
 
-  const typeOptions = useMemo(() => {
-    const types = new Set<string>()
-    for (const item of items) {
-      if (item.type) types.add(item.type)
+  const debouncedSearch = useDebouncedCallback(
+    (value: string) => onSearchChange(value),
+    300,
+  )
+
+  const handleChange = (v: string) => {
+    setInputValue(v)
+    if (!v) {
+      debouncedSearch.cancel()
+      onSearchChange("")
+    } else {
+      debouncedSearch(v)
     }
-    return [...types].sort()
-  }, [items])
-
-  const chiOptions = useMemo(() => {
-    const chis = new Set<string>()
-    for (const item of items) {
-      if (item.chi) chis.add(item.chi)
-    }
-    return [...chis].sort()
-  }, [items])
-
-  const updateParams = (patch: Partial<SearchParams>) => {
-    navigate({ search: (prev: SearchParams) => ({ ...prev, ...patch, page: 0 }) })
   }
+
+  const handleClear = () => {
+    setInputValue("")
+    debouncedSearch.cancel()
+    onSearchChange("")
+  }
+
+  const toggleableColumns = columns.filter(
+    (c): c is typeof c & { id: string } =>
+      !!c.id && !!(c.meta as Record<string, unknown> | undefined)?.toggleable,
+  )
 
   return (
     <div className="flex flex-wrap items-center gap-3">
@@ -90,65 +105,75 @@ function FilterBar({
         <Input
           placeholder="Search by name..."
           className="pl-8"
-          value={search}
-          onChange={(e) => updateParams({ search: e.target.value })}
+          value={inputValue}
+          onChange={(e) => handleChange(e.target.value)}
         />
-        {search && (
+        {inputValue && (
           <Button
             variant="ghost"
             size="icon"
             className="absolute right-1 top-1 size-6"
-            onClick={() => updateParams({ search: "" })}
+            onClick={handleClear}
           >
             <X className="size-3" />
           </Button>
         )}
       </div>
-      <Select value={type} onValueChange={(v) => updateParams({ type: v })}>
-        <SelectTrigger className="h-9 w-[180px]">
-          <SelectValue placeholder="All Types" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">All Types</SelectItem>
-          {typeOptions.map((t) => (
-            <SelectItem key={t} value={t}>{t}</SelectItem>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline" size="sm" className="h-9 gap-1.5">
+            <Columns3 className="size-4" />
+            Columns
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          {toggleableColumns.map((col) => (
+            <DropdownMenuCheckboxItem
+              key={col.id}
+              checked={columnVisibility[col.id] !== false}
+              onCheckedChange={(checked) =>
+                setColumnVisibility((prev) => ({ ...prev, [col.id]: checked }))
+              }
+            >
+              {columnLabel(col)}
+            </DropdownMenuCheckboxItem>
           ))}
-        </SelectContent>
-      </Select>
-      <Select value={chi} onValueChange={(v) => updateParams({ chi: v })}>
-        <SelectTrigger className="h-9 w-[140px]">
-          <SelectValue placeholder="All Chi" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">All Chi</SelectItem>
-          {chiOptions.map((c) => (
-            <SelectItem key={c} value={c}>{c}</SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   )
-}
+})
 
 function AdminItemsContent() {
   const navigate = useNavigate({ from: Route.fullPath })
-  const { search, type, chi, page, pageSize } = Route.useSearch()
+  const { search: searchParam, page, pageSize } = Route.useSearch()
   const { data: items } = useSuspenseQuery(getItemsQueryOptions())
 
+  const [columnVisibility, setColumnVisibility] = useState<Record<string, boolean>>(() => {
+    const initial: Record<string, boolean> = {}
+    for (const col of columns) {
+      const meta = col.meta as Record<string, unknown> | undefined
+      if (col.id && meta?.toggleable) {
+        initial[col.id] = meta.defaultHidden !== true
+      }
+    }
+    return initial
+  })
+
   const filtered = useMemo(() => {
-    let result = items.data
-    if (search) {
-      const q = search.toLowerCase()
-      result = result.filter((item) => item.name.toLowerCase().includes(q))
-    }
-    if (type !== "all") {
-      result = result.filter((item) => item.type === type)
-    }
-    if (chi !== "all") {
-      result = result.filter((item) => item.chi === chi)
-    }
-    return result
-  }, [items.data, search, type, chi])
+    if (!searchParam) return items.data
+    const q = searchParam.toLowerCase()
+    return items.data.filter((item) => item.name.toLowerCase().includes(q))
+  }, [items.data, searchParam])
+
+  const handleSearchChange = useCallback(
+    (v: string) =>
+      navigate({
+        search: (prev: SearchParams) => ({ ...prev, search: v, page: 0 }),
+        replace: true,
+      }),
+    [navigate],
+  )
 
   if (items.data.length === 0) {
     return (
@@ -158,21 +183,48 @@ function AdminItemsContent() {
         </div>
         <h3 className="text-lg font-semibold">No items in the database</h3>
         <p className="text-muted-foreground">Add a new growtopia item to get started</p>
-      </div>
-    )
-  }
+    </div>
+  )
+}
 
   return (
     <>
-      <FilterBar search={search} type={type} chi={chi} items={items.data} />
-      <DataTable
-        columns={columns}
-        data={filtered}
-        pagination={{ pageIndex: page, pageSize }}
-        onPaginationChange={(p) =>
-          navigate({ search: (prev: SearchParams) => ({ ...prev, page: p.pageIndex, pageSize: p.pageSize }) })
-        }
+      <FilterBar
+        search={searchParam}
+        onSearchChange={handleSearchChange}
+        columnVisibility={columnVisibility}
+        setColumnVisibility={setColumnVisibility}
       />
+      {filtered.length === 0 ? (
+        <div className="flex flex-col items-center justify-center text-center py-12">
+          <h3 className="text-lg font-semibold">No results for "{searchParam}"</h3>
+          <p className="text-muted-foreground mb-4">Try adjusting your search terms</p>
+          <Button
+            variant="outline"
+            onClick={() =>
+              navigate({
+                search: (prev: SearchParams) => ({ ...prev, search: "", page: 0 }),
+                replace: true,
+              })
+            }
+          >
+            Clear search
+          </Button>
+        </div>
+      ) : (
+        <DataTable
+          columns={columns}
+          data={filtered}
+          pagination={{ pageIndex: page, pageSize }}
+          onPaginationChange={(p) =>
+            navigate({
+              search: (prev: SearchParams) => ({ ...prev, page: p.pageIndex, pageSize: p.pageSize }),
+            })
+          }
+          columnVisibility={columnVisibility}
+          onColumnVisibilityChange={setColumnVisibility}
+        />
+      )}
     </>
   )
 }

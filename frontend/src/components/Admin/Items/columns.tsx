@@ -74,6 +74,7 @@ export const columns: ColumnDef<AdminItemTableData>[] = [
       const r = row.original.rarity
       return r ? <Badge variant="outline" className="text-[11px]">{r}</Badge> : <span className="text-muted-foreground text-xs">—</span>
     },
+    meta: { filterable: true },
   },
   {
     accessorKey: "type",
@@ -86,6 +87,7 @@ export const columns: ColumnDef<AdminItemTableData>[] = [
         <span className="text-muted-foreground text-xs">—</span>
       )
     },
+    meta: { filterable: true },
   },
   {
     accessorKey: "chi",
@@ -94,6 +96,7 @@ export const columns: ColumnDef<AdminItemTableData>[] = [
       const v = row.original.chi
       return v ? <span className="text-[11px]">{v}</span> : <span className="text-muted-foreground text-xs">—</span>
     },
+    meta: { filterable: true },
   },
   {
     accessorKey: "grow_time",
@@ -103,6 +106,7 @@ export const columns: ColumnDef<AdminItemTableData>[] = [
   {
     id: "mechanics",
     header: "Mechanics",
+    meta: { toggleable: true, defaultHidden: true },
     cell: ({ row }) => {
       const hand = row.original.hits_with_hand
       const pick = row.original.hits_with_pickaxe
@@ -154,6 +158,7 @@ export const columns: ColumnDef<AdminItemTableData>[] = [
     accessorKey: "seed_color",
     header: "Seed Color",
     cell: ({ row }) => <SeedColor color={row.original.seed_color} />,
+    meta: { toggleable: true },
   },
   {
     accessorKey: "texture_type",
@@ -162,11 +167,13 @@ export const columns: ColumnDef<AdminItemTableData>[] = [
       const v = row.original.texture_type
       return v ? <span className="text-[11px]">{v}</span> : <span className="text-muted-foreground text-xs">—</span>
     },
+    meta: { toggleable: true },
   },
   {
     accessorKey: "collision_type",
     header: "Collision",
     cell: ({ row }) => <CollisionBadge value={row.original.collision_type} />,
+    meta: { toggleable: true, defaultHidden: true, filterable: true },
   },
   {
     accessorKey: "scraped",
@@ -177,6 +184,7 @@ export const columns: ColumnDef<AdminItemTableData>[] = [
       ) : (
         <span className="text-muted-foreground text-xs">—</span>
       ),
+    meta: { toggleable: true, filterable: true },
   },
   {
     id: "actions",

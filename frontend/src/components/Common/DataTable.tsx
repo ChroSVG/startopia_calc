@@ -1,3 +1,5 @@
+import { useMemo, useState } from "react"
+
 import {
   type ColumnDef,
   type PaginationState,
@@ -11,10 +13,17 @@ import {
   ChevronRight,
   ChevronsLeft,
   ChevronsRight,
+  Filter,
 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import {
   Select,
   SelectContent,
@@ -36,6 +45,8 @@ interface DataTableProps<TData, TValue> {
   data: TData[]
   pagination?: PaginationState
   onPaginationChange?: (pagination: PaginationState) => void
+  columnVisibility?: Record<string, boolean>
+  onColumnVisibilityChange?: (visibility: Record<string, boolean>) => void
 }
 
 export function DataTable<TData, TValue>({
@@ -43,12 +54,93 @@ export function DataTable<TData, TValue>({
   data,
   pagination: controlledPagination,
   onPaginationChange,
+  columnVisibility: controlledColumnVisibility,
+  onColumnVisibilityChange,
 }: DataTableProps<TData, TValue>) {
   const isControlled = controlledPagination != null
 
+  const getDefaultVisibility = () => {
+    const initial: Record<string, boolean> = {}
+    for (const col of columns) {
+      const meta = col.meta as Record<string, unknown> | undefined
+      if (meta?.toggleable) {
+        initial[col.id!] = meta?.defaultHidden !== true
+      }
+    }
+    return initial
+  }
+
+  const [internalVisibility, setInternalVisibility] = useState<Record<string, boolean>>(getDefaultVisibility)
+
+  const columnVisibility = controlledColumnVisibility ?? internalVisibility
+  const setColumnVisibility: React.Dispatch<React.SetStateAction<Record<string, boolean>>> =
+    controlledColumnVisibility != null
+      ? (updater) => {
+          const next =
+            typeof updater === "function"
+              ? updater(controlledColumnVisibility)
+              : updater
+          onColumnVisibilityChange?.(next)
+        }
+      : setInternalVisibility
+
+  const visibleColumns = useMemo(
+    () =>
+      columns.filter((col) => {
+        const meta = col.meta as Record<string, unknown> | undefined
+        if (meta?.toggleable) return columnVisibility[col.id!] !== false
+        return true
+      }),
+    [columns, columnVisibility],
+  )
+
+  const [columnFilters, setColumnFilters] = useState<Record<string, string[]>>({})
+
+  const toggleFilter = (colId: string, value: string) => {
+    setColumnFilters((prev) => {
+      const current = prev[colId] ?? []
+      const next = current.includes(value)
+        ? current.filter((v) => v !== value)
+        : [...current, value]
+      return { ...prev, [colId]: next.length ? next : [] }
+    })
+  }
+
+  const clearFilters = (colId: string) => {
+    setColumnFilters((prev) => {
+      const { [colId]: _, ...rest } = prev
+      return rest
+    })
+  }
+
+  const filteredData = useMemo(() => {
+    const active = Object.entries(columnFilters).filter(([, v]) => v.length > 0)
+    if (!active.length) return data
+    return data.filter((row) =>
+      active.every(([colId, selected]) => {
+        const col = columns.find((c) => c.id === colId || c.accessorKey === colId)
+        if (!col) return true
+        const accessorKey = (col as Record<string, unknown>).accessorKey as string | undefined
+        const val = accessorKey ? (row as Record<string, unknown>)[accessorKey] : undefined
+        return selected.includes(String(val ?? ""))
+      }),
+    )
+  }, [data, columnFilters, columns])
+
+  const getUniqueValues = (colDef: ColumnDef<unknown>) => {
+    const accessorKey = (colDef as Record<string, unknown>).accessorKey as string | undefined
+    if (!accessorKey) return []
+    const vals = new Set<string>()
+    for (const row of data) {
+      const v = (row as Record<string, unknown>)[accessorKey]
+      if (v != null && v !== "") vals.add(String(v))
+    }
+    return [...vals].sort()
+  }
+
   const table = useReactTable({
-    data,
-    columns,
+    data: filteredData,
+    columns: visibleColumns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     ...(isControlled
@@ -69,7 +161,7 @@ export function DataTable<TData, TValue>({
 
   const pageIndex = table.getState().pagination.pageIndex
   const pageSize = table.getState().pagination.pageSize
-  const total = data.length
+  const total = filteredData.length
   const from = total === 0 ? 0 : pageIndex * pageSize + 1
   const to = Math.min((pageIndex + 1) * pageSize, total)
 
@@ -86,12 +178,61 @@ export function DataTable<TData, TValue>({
                     key={header.id}
                     className={cn(sticky && "sticky left-0 z-20 bg-background border-r")}
                   >
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
+                    <div className="inline-flex items-center gap-1">
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
+                      {(header.column.columnDef.meta as Record<string, unknown> | undefined)?.filterable && (
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className={cn(
+                                "size-5 -mr-1",
+                                columnFilters[header.column.id]?.length
+                                  ? "text-primary"
+                                  : "text-muted-foreground",
+                              )}
+                            >
+                              <Filter className="size-3" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="start" className="max-h-64 overflow-y-auto">
+                            {getUniqueValues(header.column.columnDef).map((val) => {
+                              const checked = columnFilters[header.column.id]?.includes(val) ?? false
+                              return (
+                                <label
+                                  key={val}
+                                  className="flex items-center gap-2 px-2 py-1.5 text-xs cursor-pointer hover:bg-muted rounded-sm"
+                                >
+                                  <Checkbox
+                                    checked={checked}
+                                    onCheckedChange={() => toggleFilter(header.column.id, val)}
+                                  />
+                                  {val}
+                                </label>
+                              )
+                            })}
+                            {columnFilters[header.column.id]?.length > 0 && (
+                              <div className="border-t px-2 py-1 mt-1">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="h-auto text-xs px-0 font-normal"
+                                  onClick={() => clearFilters(header.column.id)}
+                                >
+                                  Clear filter
+                                </Button>
+                              </div>
+                            )}
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      )}
+                    </div>
                   </TableHead>
                 )
               })}
@@ -118,7 +259,7 @@ export function DataTable<TData, TValue>({
           ) : (
             <TableRow className="hover:bg-transparent">
               <TableCell
-                colSpan={columns.length}
+                colSpan={visibleColumns.length}
                 className="h-32 text-center text-muted-foreground"
               >
                 No results found.
@@ -149,9 +290,9 @@ export function DataTable<TData, TValue>({
                   <SelectValue placeholder={pageSize} />
                 </SelectTrigger>
                 <SelectContent side="top">
-                  {[5, 10, 25, 50, 100, data.length].map((ps) => (
+                  {[5, 10, 25, 50, 100, filteredData.length].map((ps) => (
                     <SelectItem key={ps} value={`${ps}`}>
-                      {ps === data.length ? "All" : ps}
+                      {ps === filteredData.length ? "All" : ps}
                     </SelectItem>
                   ))}
                 </SelectContent>
