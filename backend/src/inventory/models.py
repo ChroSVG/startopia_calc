@@ -6,11 +6,11 @@ from sqlmodel import Field, Relationship, SQLModel
 
 class InventoryItem(SQLModel, table=True):
     __tablename__ = "inventory_items"
-    uid: uuid.UUID = Field(default=uuid.uuid4, primary_key=True)
+    uid: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     user_uid: uuid.UUID = Field(foreign_key="users.uid")
     item_uid: uuid.UUID = Field(foreign_key="items.uid")
     quantity: int = 1
-    created_at: datetime = Field(default=datetime.now)
+    created_at: datetime = Field(default_factory=datetime.now)
     user: "User" = Relationship(back_populates="inventory")
     item: "Item" = Relationship()
 

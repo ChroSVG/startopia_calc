@@ -5,7 +5,10 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
-import { type CategoryModel as CategoryPublic, CategoriesService } from "@/client"
+import {
+  CategoriesService,
+  type CategoryModel as CategoryPublic,
+} from "@/client"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -106,7 +109,11 @@ const EditCategory = ({ category, onSuccess }: EditCategoryProps) => {
                       Name <span className="text-destructive">*</span>
                     </FormLabel>
                     <FormControl>
-                      <Input placeholder="Category name" type="text" {...field} />
+                      <Input
+                        placeholder="Category name"
+                        type="text"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

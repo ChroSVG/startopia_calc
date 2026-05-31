@@ -3,8 +3,8 @@ import { useNavigate } from "@tanstack/react-router"
 
 import {
   type UserLoginModel as AccessToken,
-  LoginService,
   AuthService,
+  LoginService,
   type User as UserPublic,
   type UserCreate as UserRegister,
   UsersService,

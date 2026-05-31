@@ -75,7 +75,7 @@ const AddItem = () => {
 
   const onSubmit = (data: FormData) => {
     const cleaned = Object.fromEntries(
-      Object.entries(data).filter(([_, v]) => v !== "" && v !== undefined)
+      Object.entries(data).filter(([_, v]) => v !== "" && v !== undefined),
     )
     mutation.mutate(cleaned as ItemCreate)
   }
@@ -101,7 +101,9 @@ const AddItem = () => {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Name <span className="text-destructive">*</span></FormLabel>
+                    <FormLabel>
+                      Name <span className="text-destructive">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input placeholder="Item name" {...field} required />
                     </FormControl>
@@ -116,7 +118,9 @@ const AddItem = () => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Rarity</FormLabel>
-                      <FormControl><Input placeholder="e.g. 1" {...field} /></FormControl>
+                      <FormControl>
+                        <Input placeholder="e.g. 1" {...field} />
+                      </FormControl>
                     </FormItem>
                   )}
                 />
@@ -127,8 +131,18 @@ const AddItem = () => {
                     <FormItem>
                       <FormLabel>Max Drop</FormLabel>
                       <FormControl>
-                        <Input type="number" placeholder="e.g. 5" {...field}
-                          onChange={e => field.onChange(e.target.value ? Number(e.target.value) : undefined)} />
+                        <Input
+                          type="number"
+                          placeholder="e.g. 5"
+                          {...field}
+                          onChange={(e) =>
+                            field.onChange(
+                              e.target.value
+                                ? Number(e.target.value)
+                                : undefined,
+                            )
+                          }
+                        />
                       </FormControl>
                     </FormItem>
                   )}
@@ -141,7 +155,9 @@ const AddItem = () => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Type</FormLabel>
-                      <FormControl><Input placeholder="e.g. Block" {...field} /></FormControl>
+                      <FormControl>
+                        <Input placeholder="e.g. Block" {...field} />
+                      </FormControl>
                     </FormItem>
                   )}
                 />
@@ -151,7 +167,9 @@ const AddItem = () => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Chi</FormLabel>
-                      <FormControl><Input placeholder="e.g. Earth" {...field} /></FormControl>
+                      <FormControl>
+                        <Input placeholder="e.g. Earth" {...field} />
+                      </FormControl>
                     </FormItem>
                   )}
                 />
@@ -162,16 +180,22 @@ const AddItem = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Description</FormLabel>
-                    <FormControl><Input placeholder="Item description" {...field} /></FormControl>
+                    <FormControl>
+                      <Input placeholder="Item description" {...field} />
+                    </FormControl>
                   </FormItem>
                 )}
               />
             </div>
             <DialogFooter>
               <DialogClose asChild>
-                <Button variant="outline" disabled={mutation.isPending}>Cancel</Button>
+                <Button variant="outline" disabled={mutation.isPending}>
+                  Cancel
+                </Button>
               </DialogClose>
-              <LoadingButton type="submit" loading={mutation.isPending}>Save</LoadingButton>
+              <LoadingButton type="submit" loading={mutation.isPending}>
+                Save
+              </LoadingButton>
             </DialogFooter>
           </form>
         </Form>

@@ -10,7 +10,8 @@ import PendingItems from "@/components/Pending/PendingItems"
 
 function getLogsQueryOptions() {
   return {
-    queryFn: () => ActivityLogsService.readActivityLogs({ skip: 0, limit: 100 }),
+    queryFn: () =>
+      ActivityLogsService.readActivityLogs({ skip: 0, limit: 100 }),
     queryKey: ["admin-logs"],
   }
 }

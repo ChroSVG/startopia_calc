@@ -1,12 +1,13 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Plus } from "lucide-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
 import type { InventoryCreateModel } from "@/client"
 import { InventoryService } from "@/client"
+import ItemSelector from "@/components/Inventory/ItemSelector"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -33,7 +34,7 @@ import { handleError } from "@/utils"
 
 const formSchema = z.object({
   item_uid: z.string().min(1, { message: "Item ID is required" }),
-  quantity: z.coerce.number().int().min(1, { message: "Quantity must be at least 1" }),
+  quantity: z.number().int().min(1, { message: "Quantity must be at least 1" }),
 })
 
 type FormData = z.infer<typeof formSchema>
@@ -52,6 +53,16 @@ const AddToInventory = () => {
       quantity: 1,
     },
   })
+
+  // Reset form when dialog opens to ensure stability and freshness on every open
+  useEffect(() => {
+    if (isOpen) {
+      form.reset({
+        item_uid: "",
+        quantity: 1,
+      })
+    }
+  }, [isOpen, form])
 
   const mutation = useMutation({
     mutationFn: (data: InventoryCreateModel) =>
@@ -83,7 +94,7 @@ const AddToInventory = () => {
         <DialogHeader>
           <DialogTitle>Add to Inventory</DialogTitle>
           <DialogDescription>
-            Enter the item ID and quantity.
+            Search and select an item to add to your inventory.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -95,14 +106,12 @@ const AddToInventory = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      Item ID <span className="text-destructive">*</span>
+                      Item <span className="text-destructive">*</span>
                     </FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder="Item UUID"
-                        type="text"
-                        {...field}
-                        required
+                      <ItemSelector
+                        value={field.value}
+                        onChange={field.onChange}
                       />
                     </FormControl>
                     <FormMessage />
@@ -123,6 +132,7 @@ const AddToInventory = () => {
                         type="number"
                         min={1}
                         {...field}
+                        onChange={(e) => field.onChange(Number(e.target.value) || 0)}
                         required
                       />
                     </FormControl>

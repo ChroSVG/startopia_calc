@@ -22,9 +22,10 @@ import { handleError } from "@/utils"
 interface DeleteFromInventoryProps {
   id: string
   onSuccess: () => void
+  asButton?: boolean
 }
 
-const DeleteFromInventory = ({ id, onSuccess }: DeleteFromInventoryProps) => {
+const DeleteFromInventory = ({ id, onSuccess, asButton }: DeleteFromInventoryProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const queryClient = useQueryClient()
   const { showSuccessToast, showErrorToast } = useCustomToast()
@@ -48,16 +49,29 @@ const DeleteFromInventory = ({ id, onSuccess }: DeleteFromInventoryProps) => {
     mutation.mutate(id)
   }
 
+  const trigger = asButton ? (
+    <Button
+      variant="ghost"
+      size="icon"
+      className="size-8 text-muted-foreground hover:text-destructive"
+      onClick={() => setIsOpen(true)}
+    >
+      <Trash2 className="size-4" />
+    </Button>
+  ) : (
+    <DropdownMenuItem
+      variant="destructive"
+      onSelect={(e) => e.preventDefault()}
+      onClick={() => setIsOpen(true)}
+    >
+      <Trash2 />
+      Remove
+    </DropdownMenuItem>
+  )
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DropdownMenuItem
-        variant="destructive"
-        onSelect={(e) => e.preventDefault()}
-        onClick={() => setIsOpen(true)}
-      >
-        <Trash2 />
-        Remove
-      </DropdownMenuItem>
+      {trigger}
       <DialogContent className="sm:max-w-md">
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogHeader>

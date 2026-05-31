@@ -146,9 +146,15 @@ const EditUser = ({ user, onSuccess }: EditUserProps) => {
                   name="first_name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>First Name <span className="text-destructive">*</span></FormLabel>
+                      <FormLabel>
+                        First Name <span className="text-destructive">*</span>
+                      </FormLabel>
                       <FormControl>
-                        <Input placeholder="First name" type="text" {...field} />
+                        <Input
+                          placeholder="First name"
+                          type="text"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

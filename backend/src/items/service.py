@@ -8,8 +8,8 @@ class ItemService:
         self.repository = repository
         self.log_service = log_service
 
-    async def get_all_items(self, session: AsyncSession, skip: int = 0, limit: int = 100):
-        return await self.repository.get_all_with_count(session, skip, limit)
+    async def get_all_items(self, session: AsyncSession, skip: int = 0, limit: int = 100, search: str | None = None):
+        return await self.repository.get_all_with_count(session, skip, limit, search)
 
     async def create_item(self, item_data, user_uid: str, session: AsyncSession):
         item_data_dict = item_data.model_dump()

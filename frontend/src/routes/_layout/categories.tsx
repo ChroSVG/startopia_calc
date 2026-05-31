@@ -35,8 +35,12 @@ function CategoriesTableContent() {
         <div className="rounded-full bg-muted p-4 mb-4">
           <Search className="h-8 w-8 text-muted-foreground" />
         </div>
-        <h3 className="text-lg font-semibold">You don't have any categories yet</h3>
-        <p className="text-muted-foreground">Add a new category to get started</p>
+        <h3 className="text-lg font-semibold">
+          You don't have any categories yet
+        </h3>
+        <p className="text-muted-foreground">
+          Add a new category to get started
+        </p>
       </div>
     )
   }

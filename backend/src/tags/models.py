@@ -9,9 +9,9 @@ from src.books.models import BookTag
 
 class Tag(SQLModel, table=True):
     __tablename__ = "tags"
-    uid: uuid.UUID = Field(default=uuid.uuid4, primary_key=True)
+    uid: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     name: str
-    created_at: datetime = Field(default=datetime.now)
+    created_at: datetime = Field(default_factory=datetime.now)
     books: List["Book"] = Relationship(
         link_model=BookTag,
         back_populates="tags",

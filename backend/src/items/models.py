@@ -7,7 +7,7 @@ from sqlmodel import Field, Relationship, SQLModel
 
 class ItemLink(SQLModel, table=True):
     __tablename__ = "item_links"
-    uid: uuid.UUID = Field(default=uuid.uuid4, primary_key=True)
+    uid: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     source_uid: uuid.UUID = Field(foreign_key="items.uid")
     target_uid: uuid.UUID = Field(foreign_key="items.uid")
 
@@ -23,7 +23,7 @@ class ItemLink(SQLModel, table=True):
 
 class Item(SQLModel, table=True):
     __tablename__ = "items"
-    uid: uuid.UUID = Field(default=uuid.uuid4, primary_key=True)
+    uid: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     name: str = Field(unique=True)
     rarity: Optional[str] = None
     description: Optional[str] = None
@@ -40,8 +40,8 @@ class Item(SQLModel, table=True):
     restore_time_seconds: Optional[int] = None
     scraped: bool = False
     created_by_uid: Optional[uuid.UUID] = Field(default=None, foreign_key="users.uid")
-    created_at: datetime = Field(default=datetime.now)
-    update_at: datetime = Field(default=datetime.now, sa_column_kwargs={"onupdate": datetime.now})
+    created_at: datetime = Field(default_factory=datetime.now)
+    update_at: datetime = Field(default_factory=datetime.now, sa_column_kwargs={"onupdate": datetime.now})
 
     created_by: Optional["User"] = Relationship(back_populates="created_items")
     outgoing_links: List["ItemLink"] = Relationship(

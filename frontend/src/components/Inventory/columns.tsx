@@ -1,5 +1,5 @@
 import type { ColumnDef } from "@tanstack/react-table"
-
+import { EllipsisVertical } from "lucide-react"
 import type { InventoryItemModel as InventoryItem } from "@/client"
 import { Button } from "@/components/ui/button"
 import {
@@ -7,16 +7,28 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { EllipsisVertical } from "lucide-react"
 import DeleteFromInventory from "./DeleteFromInventory"
 
 export const columns: ColumnDef<InventoryItem>[] = [
   {
-    accessorKey: "item_uid",
-    header: "Item ID",
+    accessorKey: "item_name",
+    header: "Item Name",
     cell: ({ row }) => (
-      <span className="font-mono text-xs text-muted-foreground">
-        {row.original.item_uid.slice(0, 8)}...
+      <span className="font-semibold text-sm">
+        {(row.original as any).item_name ?? (
+          <span className="font-mono text-xs text-muted-foreground">
+            {row.original.item_uid.slice(0, 8)}...
+          </span>
+        )}
+      </span>
+    ),
+  },
+  {
+    accessorKey: "item_type",
+    header: "Category",
+    cell: ({ row }) => (
+      <span className="text-muted-foreground text-xs">
+        {(row.original as any).item_type ?? "—"}
       </span>
     ),
   },

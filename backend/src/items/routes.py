@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, status, HTTPException
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from src.auth.dependencies import AccessTokenBearer, get_current_superuser
+from src.auth.dependencies import AccessTokenBearer, get_current_active_user, get_current_superuser
 from src.db.main import get_session
 from src.db.models import User
 from .schemas import (
@@ -19,11 +19,12 @@ access_token_bearer = AccessTokenBearer()
 async def get_all_items(
     skip: int = 0,
     limit: int = 1000,
+    search: str | None = None,
     session: AsyncSession = Depends(get_session),
     item_service: ItemService = Depends(get_item_service),
-    _: User = Depends(get_current_superuser),
+    _: User = Depends(get_current_active_user),
 ):
-    items, count = await item_service.get_all_items(session, skip, limit)
+    items, count = await item_service.get_all_items(session, skip, limit, search)
     return {"data": items, "count": count}
 
 

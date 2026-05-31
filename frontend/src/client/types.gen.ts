@@ -406,6 +406,7 @@ export type DeleteFromInventoryResponse = (void);
 export type ReadItemsData = {
     limit?: number;
     skip?: number;
+    search?: string;
 };
 
 export type ReadItemsResponse = (ItemsPublicModel);

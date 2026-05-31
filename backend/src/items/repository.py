@@ -1,5 +1,5 @@
-from typing import List, Tuple
-from sqlmodel import select, func
+from typing import List, Tuple, Optional
+from sqlmodel import select, func, col
 from sqlmodel.ext.asyncio.session import AsyncSession
 from src.db.models import Item, ItemLink
 from src.db.base_repository import BaseRepository
@@ -10,11 +10,21 @@ class ItemRepository(BaseRepository[Item]):
         super().__init__(Item)
 
     async def get_all_with_count(
-        self, session: AsyncSession, skip: int = 0, limit: int = 100
+        self, session: AsyncSession, skip: int = 0, limit: int = 100, search: Optional[str] = None
     ) -> Tuple[List[Item], int]:
-        total_count = await self.get_count(session)
-        items = await self.get_all(session, skip, limit)
-        return items, total_count
+        query = select(Item)
+        count_query = select(func.count()).select_from(Item)
+
+        if search:
+            query = query.where(col(Item.name).ilike(f"%{search}%"))
+            count_query = count_query.where(col(Item.name).ilike(f"%{search}%"))
+
+        query = query.offset(skip).limit(limit)
+
+        items_result = await session.exec(query)
+        count_result = await session.exec(count_query)
+
+        return list(items_result.all()), (count_result.one() or 0)
 
 
 class ItemLinkRepository(BaseRepository[ItemLink]):

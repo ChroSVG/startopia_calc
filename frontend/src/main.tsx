@@ -1,4 +1,3 @@
-import axios from "axios"
 import {
   MutationCache,
   QueryCache,
@@ -6,6 +5,7 @@ import {
   QueryClientProvider,
 } from "@tanstack/react-query"
 import { createRouter, RouterProvider } from "@tanstack/react-router"
+import axios from "axios"
 import { StrictMode } from "react"
 import ReactDOM from "react-dom/client"
 import { ApiError, OpenAPI } from "./client"
@@ -95,11 +95,19 @@ axios.interceptors.response.use(
 )
 
 const handleApiError = (error: Error) => {
-  if (error instanceof ApiError && error.status === 403) {
-    clearAuth()
+  if (error instanceof ApiError) {
+    if (error.status === 401 || error.status === 403) {
+      clearAuth()
+    }
   }
 }
 const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false,
+      refetchOnWindowFocus: false,
+    },
+  },
   queryCache: new QueryCache({
     onError: handleApiError,
   }),

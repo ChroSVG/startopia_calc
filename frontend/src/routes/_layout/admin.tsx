@@ -39,10 +39,12 @@ function UsersTableContent() {
   const { user: currentUser } = useAuth()
   const { data: users } = useSuspenseQuery(getUsersQueryOptions())
 
-  const tableData: UserTableData[] = (users.data || []).map((user: UserPublic) => ({
-    ...user,
-    isCurrentUser: currentUser?.uid === user.uid,
-  }))
+  const tableData: UserTableData[] = (users.data || []).map(
+    (user: UserPublic) => ({
+      ...user,
+      isCurrentUser: currentUser?.uid === user.uid,
+    }),
+  )
 
   return <DataTable columns={columns} data={tableData} />
 }

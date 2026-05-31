@@ -31,8 +31,7 @@ const DeleteItem = ({ id, onSuccess }: DeleteItemProps) => {
   const { handleSubmit } = useForm()
 
   const mutation = useMutation({
-    mutationFn: (itemUid: string) =>
-      ItemsService.deleteItem({ itemUid }),
+    mutationFn: (itemUid: string) => ItemsService.deleteItem({ itemUid }),
     onSuccess: () => {
       showSuccessToast("Item deleted successfully")
       setIsOpen(false)
@@ -63,7 +62,8 @@ const DeleteItem = ({ id, onSuccess }: DeleteItemProps) => {
           <DialogHeader>
             <DialogTitle>Delete Item</DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete this item? This action cannot be undone.
+              Are you sure you want to delete this item? This action cannot be
+              undone.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="mt-4">

@@ -417,7 +417,8 @@ export class ItemsService {
             url: '/api/v1/items/',
             query: {
                 skip: data.skip,
-                limit: data.limit
+                limit: data.limit,
+                search: data.search
             },
             errors: {
                 422: 'Validation Error'

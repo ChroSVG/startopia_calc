@@ -1,5 +1,5 @@
 import type { ColumnDef } from "@tanstack/react-table"
-
+import { EllipsisVertical, HandFist, Pickaxe, Timer } from "lucide-react"
 import type { ItemModel as Item } from "@/client"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -8,7 +8,6 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { EllipsisVertical, HandFist, Pickaxe, Timer } from "lucide-react"
 import { ItemActionsMenu } from "./ItemActionsMenu"
 
 export type AdminItemTableData = Item & {}
@@ -42,17 +41,27 @@ function CollisionBadge({ value }: { value: string | null | undefined }) {
   if (!value) return <span className="text-muted-foreground text-xs">—</span>
   const v = value.toLowerCase()
   const label =
-    v.includes("no collision if turned off") || v.includes("conditional") ? "Conditional"
-    : v.includes("none") || v.includes("no collision") ? "None"
-    : v.includes("full") ? "Full"
-    : value.length > 12 ? value.slice(0, 10) + "…" : value
+    v.includes("no collision if turned off") || v.includes("conditional")
+      ? "Conditional"
+      : v.includes("none") || v.includes("no collision")
+        ? "None"
+        : v.includes("full")
+          ? "Full"
+          : value.length > 12
+            ? `${value.slice(0, 10)}…`
+            : value
   const color =
-    label === "Full" ? "bg-red-500/10 text-red-500 border-red-500/30"
-    : label === "None" ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/30"
-    : label === "Conditional" ? "bg-amber-500/10 text-amber-500 border-amber-500/30"
-    : "bg-muted text-muted-foreground"
+    label === "Full"
+      ? "bg-red-500/10 text-red-500 border-red-500/30"
+      : label === "None"
+        ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/30"
+        : label === "Conditional"
+          ? "bg-amber-500/10 text-amber-500 border-amber-500/30"
+          : "bg-muted text-muted-foreground"
   return (
-    <span className={`inline-flex items-center rounded-md border px-1.5 py-0.5 text-[11px] font-medium ${color}`}>
+    <span
+      className={`inline-flex items-center rounded-md border px-1.5 py-0.5 text-[11px] font-medium ${color}`}
+    >
       {label}
     </span>
   )
@@ -72,7 +81,13 @@ export const columns: ColumnDef<AdminItemTableData>[] = [
     header: "Rarity",
     cell: ({ row }) => {
       const r = row.original.rarity
-      return r ? <Badge variant="outline" className="text-[11px]">{r}</Badge> : <span className="text-muted-foreground text-xs">—</span>
+      return r ? (
+        <Badge variant="outline" className="text-[11px]">
+          {r}
+        </Badge>
+      ) : (
+        <span className="text-muted-foreground text-xs">—</span>
+      )
     },
     meta: { filterable: true },
   },
@@ -94,7 +109,11 @@ export const columns: ColumnDef<AdminItemTableData>[] = [
     header: "Chi",
     cell: ({ row }) => {
       const v = row.original.chi
-      return v ? <span className="text-[11px]">{v}</span> : <span className="text-muted-foreground text-xs">—</span>
+      return v ? (
+        <span className="text-[11px]">{v}</span>
+      ) : (
+        <span className="text-muted-foreground text-xs">—</span>
+      )
     },
     meta: { filterable: true },
   },
@@ -143,7 +162,11 @@ export const columns: ColumnDef<AdminItemTableData>[] = [
     header: "Max Drop",
     cell: ({ row }) => {
       const v = row.original.max_drop
-      return v != null ? <span className="text-xs">{v}</span> : <span className="text-muted-foreground text-xs">—</span>
+      return v != null ? (
+        <span className="text-xs">{v}</span>
+      ) : (
+        <span className="text-muted-foreground text-xs">—</span>
+      )
     },
   },
   {
@@ -151,7 +174,11 @@ export const columns: ColumnDef<AdminItemTableData>[] = [
     header: "Gems Drop",
     cell: ({ row }) => {
       const v = row.original.default_gems_drop
-      return v ? <span className="text-xs">{v}</span> : <span className="text-muted-foreground text-xs">—</span>
+      return v ? (
+        <span className="text-xs">{v}</span>
+      ) : (
+        <span className="text-muted-foreground text-xs">—</span>
+      )
     },
   },
   {
@@ -165,7 +192,11 @@ export const columns: ColumnDef<AdminItemTableData>[] = [
     header: "Texture",
     cell: ({ row }) => {
       const v = row.original.texture_type
-      return v ? <span className="text-[11px]">{v}</span> : <span className="text-muted-foreground text-xs">—</span>
+      return v ? (
+        <span className="text-[11px]">{v}</span>
+      ) : (
+        <span className="text-muted-foreground text-xs">—</span>
+      )
     },
     meta: { toggleable: true },
   },

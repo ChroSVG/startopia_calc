@@ -1,11 +1,9 @@
-import { useMemo, useState } from "react"
-
 import {
   type ColumnDef,
-  type PaginationState,
   flexRender,
   getCoreRowModel,
   getPaginationRowModel,
+  type PaginationState,
   useReactTable,
 } from "@tanstack/react-table"
 import {
@@ -15,8 +13,7 @@ import {
   ChevronsRight,
   Filter,
 } from "lucide-react"
-
-import { cn } from "@/lib/utils"
+import { useMemo, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
@@ -39,6 +36,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { cn } from "@/lib/utils"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -70,10 +68,13 @@ export function DataTable<TData, TValue>({
     return initial
   }
 
-  const [internalVisibility, setInternalVisibility] = useState<Record<string, boolean>>(getDefaultVisibility)
+  const [internalVisibility, setInternalVisibility] =
+    useState<Record<string, boolean>>(getDefaultVisibility)
 
   const columnVisibility = controlledColumnVisibility ?? internalVisibility
-  const setColumnVisibility: React.Dispatch<React.SetStateAction<Record<string, boolean>>> =
+  const _setColumnVisibility: React.Dispatch<
+    React.SetStateAction<Record<string, boolean>>
+  > =
     controlledColumnVisibility != null
       ? (updater) => {
           const next =
@@ -94,7 +95,9 @@ export function DataTable<TData, TValue>({
     [columns, columnVisibility],
   )
 
-  const [columnFilters, setColumnFilters] = useState<Record<string, string[]>>({})
+  const [columnFilters, setColumnFilters] = useState<Record<string, string[]>>(
+    {},
+  )
 
   const toggleFilter = (colId: string, value: string) => {
     setColumnFilters((prev) => {
@@ -118,17 +121,25 @@ export function DataTable<TData, TValue>({
     if (!active.length) return data
     return data.filter((row) =>
       active.every(([colId, selected]) => {
-        const col = columns.find((c) => c.id === colId || c.accessorKey === colId)
+        const col = columns.find(
+          (c) => c.id === colId || c.accessorKey === colId,
+        )
         if (!col) return true
-        const accessorKey = (col as Record<string, unknown>).accessorKey as string | undefined
-        const val = accessorKey ? (row as Record<string, unknown>)[accessorKey] : undefined
+        const accessorKey = (col as Record<string, unknown>).accessorKey as
+          | string
+          | undefined
+        const val = accessorKey
+          ? (row as Record<string, unknown>)[accessorKey]
+          : undefined
         return selected.includes(String(val ?? ""))
       }),
     )
   }, [data, columnFilters, columns])
 
   const getUniqueValues = (colDef: ColumnDef<unknown>) => {
-    const accessorKey = (colDef as Record<string, unknown>).accessorKey as string | undefined
+    const accessorKey = (colDef as Record<string, unknown>).accessorKey as
+      | string
+      | undefined
     if (!accessorKey) return []
     const vals = new Set<string>()
     for (const row of data) {
@@ -172,11 +183,17 @@ export function DataTable<TData, TValue>({
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id} className="hover:bg-transparent">
               {headerGroup.headers.map((header) => {
-                const sticky = (header.column.columnDef.meta as Record<string, unknown> | undefined)?.sticky
+                const sticky = (
+                  header.column.columnDef.meta as
+                    | Record<string, unknown>
+                    | undefined
+                )?.sticky
                 return (
                   <TableHead
                     key={header.id}
-                    className={cn(sticky && "sticky left-0 z-20 bg-background border-r")}
+                    className={cn(
+                      sticky && "sticky left-0 z-20 bg-background border-r",
+                    )}
                   >
                     <div className="inline-flex items-center gap-1">
                       {header.isPlaceholder
@@ -185,7 +202,11 @@ export function DataTable<TData, TValue>({
                             header.column.columnDef.header,
                             header.getContext(),
                           )}
-                      {(header.column.columnDef.meta as Record<string, unknown> | undefined)?.filterable && (
+                      {(
+                        header.column.columnDef.meta as
+                          | Record<string, unknown>
+                          | undefined
+                      )?.filterable && (
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <Button
@@ -201,22 +222,32 @@ export function DataTable<TData, TValue>({
                               <Filter className="size-3" />
                             </Button>
                           </DropdownMenuTrigger>
-                          <DropdownMenuContent align="start" className="max-h-64 overflow-y-auto">
-                            {getUniqueValues(header.column.columnDef).map((val) => {
-                              const checked = columnFilters[header.column.id]?.includes(val) ?? false
-                              return (
-                                <label
-                                  key={val}
-                                  className="flex items-center gap-2 px-2 py-1.5 text-xs cursor-pointer hover:bg-muted rounded-sm"
-                                >
-                                  <Checkbox
-                                    checked={checked}
-                                    onCheckedChange={() => toggleFilter(header.column.id, val)}
-                                  />
-                                  {val}
-                                </label>
-                              )
-                            })}
+                          <DropdownMenuContent
+                            align="start"
+                            className="max-h-64 overflow-y-auto"
+                          >
+                            {getUniqueValues(header.column.columnDef).map(
+                              (val) => {
+                                const checked =
+                                  columnFilters[header.column.id]?.includes(
+                                    val,
+                                  ) ?? false
+                                return (
+                                  <label
+                                    key={val}
+                                    className="flex items-center gap-2 px-2 py-1.5 text-xs cursor-pointer hover:bg-muted rounded-sm"
+                                  >
+                                    <Checkbox
+                                      checked={checked}
+                                      onCheckedChange={() =>
+                                        toggleFilter(header.column.id, val)
+                                      }
+                                    />
+                                    {val}
+                                  </label>
+                                )
+                              },
+                            )}
                             {columnFilters[header.column.id]?.length > 0 && (
                               <div className="border-t px-2 py-1 mt-1">
                                 <Button
@@ -244,13 +275,22 @@ export function DataTable<TData, TValue>({
             table.getRowModel().rows.map((row) => (
               <TableRow key={row.id}>
                 {row.getVisibleCells().map((cell) => {
-                  const sticky = (cell.column.columnDef.meta as Record<string, unknown> | undefined)?.sticky
+                  const sticky = (
+                    cell.column.columnDef.meta as
+                      | Record<string, unknown>
+                      | undefined
+                  )?.sticky
                   return (
                     <TableCell
                       key={cell.id}
-                      className={cn(sticky && "sticky left-0 z-10 bg-background border-r")}
+                      className={cn(
+                        sticky && "sticky left-0 z-10 bg-background border-r",
+                      )}
                     >
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
                     </TableCell>
                   )
                 })}
@@ -270,92 +310,96 @@ export function DataTable<TData, TValue>({
       </Table>
 
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 border-t bg-muted/20">
-          <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-            <div className="text-sm text-muted-foreground">
-              {total > 0 ? (
-                <>Showing {from} to {to} of <span className="font-medium text-foreground">{total}</span> entries</>
-              ) : (
-                <span className="font-medium text-foreground">0 entries</span>
-              )}
-            </div>
-            <div className="flex items-center gap-x-2">
-              <p className="text-sm text-muted-foreground">Rows per page</p>
-              <Select
-                value={`${pageSize}`}
-                onValueChange={(value) => {
-                  table.setPageSize(Number(value))
-                }}
-              >
-                <SelectTrigger className="h-8 w-auto min-w-[70px]">
-                  <SelectValue placeholder={pageSize} />
-                </SelectTrigger>
-                <SelectContent side="top">
-                  {[5, 10, 25, 50, 100, filteredData.length].map((ps) => (
-                    <SelectItem key={ps} value={`${ps}`}>
-                      {ps === filteredData.length ? "All" : ps}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+          <div className="text-sm text-muted-foreground">
+            {total > 0 ? (
+              <>
+                Showing {from} to {to} of{" "}
+                <span className="font-medium text-foreground">{total}</span>{" "}
+                entries
+              </>
+            ) : (
+              <span className="font-medium text-foreground">0 entries</span>
+            )}
           </div>
-
-          <div className="flex items-center gap-x-6">
-            <div className="flex items-center gap-x-1 text-sm text-muted-foreground">
-              <span>Page</span>
-              <span className="font-medium text-foreground">
-                {table.getState().pagination.pageIndex + 1}
-              </span>
-              <span>of</span>
-              <span className="font-medium text-foreground">
-                {table.getPageCount()}
-              </span>
-            </div>
-
-            <div className="flex items-center gap-x-1">
-              <Button
-                variant="outline"
-                size="sm"
-                className="h-8 w-8 p-0"
-                onClick={() => table.setPageIndex(0)}
-                disabled={!table.getCanPreviousPage()}
-              >
-                <span className="sr-only">Go to first page</span>
-                <ChevronsLeft className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                className="h-8 w-8 p-0"
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
-              >
-                <span className="sr-only">Go to previous page</span>
-                <ChevronLeft className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                className="h-8 w-8 p-0"
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
-              >
-                <span className="sr-only">Go to next page</span>
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                className="h-8 w-8 p-0"
-                onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-                disabled={!table.getCanNextPage()}
-              >
-                <span className="sr-only">Go to last page</span>
-                <ChevronsRight className="h-4 w-4" />
-              </Button>
-            </div>
+          <div className="flex items-center gap-x-2">
+            <p className="text-sm text-muted-foreground">Rows per page</p>
+            <Select
+              value={`${pageSize}`}
+              onValueChange={(value) => {
+                table.setPageSize(Number(value))
+              }}
+            >
+              <SelectTrigger className="h-8 w-auto min-w-[70px]">
+                <SelectValue placeholder={pageSize} />
+              </SelectTrigger>
+              <SelectContent side="top">
+                {[5, 10, 25, 50, 100, filteredData.length].map((ps) => (
+                  <SelectItem key={ps} value={`${ps}`}>
+                    {ps === filteredData.length ? "All" : ps}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </div>
+
+        <div className="flex items-center gap-x-6">
+          <div className="flex items-center gap-x-1 text-sm text-muted-foreground">
+            <span>Page</span>
+            <span className="font-medium text-foreground">
+              {table.getState().pagination.pageIndex + 1}
+            </span>
+            <span>of</span>
+            <span className="font-medium text-foreground">
+              {table.getPageCount()}
+            </span>
+          </div>
+
+          <div className="flex items-center gap-x-1">
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-8 w-8 p-0"
+              onClick={() => table.setPageIndex(0)}
+              disabled={!table.getCanPreviousPage()}
+            >
+              <span className="sr-only">Go to first page</span>
+              <ChevronsLeft className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-8 w-8 p-0"
+              onClick={() => table.previousPage()}
+              disabled={!table.getCanPreviousPage()}
+            >
+              <span className="sr-only">Go to previous page</span>
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-8 w-8 p-0"
+              onClick={() => table.nextPage()}
+              disabled={!table.getCanNextPage()}
+            >
+              <span className="sr-only">Go to next page</span>
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-8 w-8 p-0"
+              onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+              disabled={!table.getCanNextPage()}
+            >
+              <span className="sr-only">Go to last page</span>
+              <ChevronsRight className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

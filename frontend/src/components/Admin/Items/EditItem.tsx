@@ -81,7 +81,7 @@ const EditItem = ({ item, onSuccess }: EditItemProps) => {
 
   const onSubmit = (data: FormData) => {
     const cleaned = Object.fromEntries(
-      Object.entries(data).filter(([_, v]) => v !== "" && v !== undefined)
+      Object.entries(data).filter(([_, v]) => v !== "" && v !== undefined),
     )
     mutation.mutate(cleaned as FormData)
   }
@@ -108,7 +108,9 @@ const EditItem = ({ item, onSuccess }: EditItemProps) => {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Name <span className="text-destructive">*</span></FormLabel>
+                    <FormLabel>
+                      Name <span className="text-destructive">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input {...field} required />
                     </FormControl>
@@ -123,7 +125,9 @@ const EditItem = ({ item, onSuccess }: EditItemProps) => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Rarity</FormLabel>
-                      <FormControl><Input {...field} /></FormControl>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
                     </FormItem>
                   )}
                 />
@@ -134,7 +138,17 @@ const EditItem = ({ item, onSuccess }: EditItemProps) => {
                     <FormItem>
                       <FormLabel>Max Drop</FormLabel>
                       <FormControl>
-                        <Input type="number" {...field} onChange={e => field.onChange(e.target.value ? Number(e.target.value) : undefined)} />
+                        <Input
+                          type="number"
+                          {...field}
+                          onChange={(e) =>
+                            field.onChange(
+                              e.target.value
+                                ? Number(e.target.value)
+                                : undefined,
+                            )
+                          }
+                        />
                       </FormControl>
                     </FormItem>
                   )}
@@ -147,7 +161,9 @@ const EditItem = ({ item, onSuccess }: EditItemProps) => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Type</FormLabel>
-                      <FormControl><Input {...field} /></FormControl>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
                     </FormItem>
                   )}
                 />
@@ -157,7 +173,9 @@ const EditItem = ({ item, onSuccess }: EditItemProps) => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Chi</FormLabel>
-                      <FormControl><Input {...field} /></FormControl>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
                     </FormItem>
                   )}
                 />
@@ -168,16 +186,22 @@ const EditItem = ({ item, onSuccess }: EditItemProps) => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Description</FormLabel>
-                    <FormControl><Input {...field} /></FormControl>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
                   </FormItem>
                 )}
               />
             </div>
             <DialogFooter>
               <DialogClose asChild>
-                <Button variant="outline" disabled={mutation.isPending}>Cancel</Button>
+                <Button variant="outline" disabled={mutation.isPending}>
+                  Cancel
+                </Button>
               </DialogClose>
-              <LoadingButton type="submit" loading={mutation.isPending}>Save</LoadingButton>
+              <LoadingButton type="submit" loading={mutation.isPending}>
+                Save
+              </LoadingButton>
             </DialogFooter>
           </form>
         </Form>

@@ -12,7 +12,7 @@ class BookTag(SQLModel, table=True):
 
 class Book(SQLModel, table=True):
     __tablename__ = "books"
-    uid: uuid.UUID = Field(default=uuid.uuid4, primary_key=True)
+    uid: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     title: str
     author: str
     publisher: str
@@ -20,8 +20,8 @@ class Book(SQLModel, table=True):
     page_count: int
     language: str
     user_uid: Optional[uuid.UUID] = Field(default=None, foreign_key="users.uid")
-    created_at: datetime = Field(default=datetime.now)
-    update_at: datetime = Field(default=datetime.now, sa_column_kwargs={"onupdate": datetime.now})
+    created_at: datetime = Field(default_factory=datetime.now)
+    update_at: datetime = Field(default_factory=datetime.now, sa_column_kwargs={"onupdate": datetime.now})
     user: Optional["User"] = Relationship(back_populates="books")
     reviews: List["Review"] = Relationship(
         back_populates="book", sa_relationship_kwargs={"lazy": "selectin"}
