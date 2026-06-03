@@ -25,9 +25,9 @@ function SeedColor({ color }: { color: string | null | undefined }) {
   const colors = color.split(" ")
   return (
     <div className="flex gap-0.5">
-      {colors.map((c, i) => (
+      {colors.map((c) => (
         <span
-          key={i}
+          key={c}
           className="inline-block size-4 rounded border"
           style={{ backgroundColor: c }}
           title={c}
@@ -73,8 +73,7 @@ export const columns: ColumnDef<AdminItemTableData>[] = [
     header: "Name",
     cell: ({ row }) => (
       <span className="font-medium whitespace-nowrap">{row.original.name}</span>
-    ),
-    meta: { sticky: true },
+    )
   },
   {
     accessorKey: "rarity",
@@ -168,6 +167,7 @@ export const columns: ColumnDef<AdminItemTableData>[] = [
         <span className="text-muted-foreground text-xs">—</span>
       )
     },
+    meta: { filterable: true },
   },
   {
     accessorKey: "default_gems_drop",

@@ -44,7 +44,7 @@ async def get_item(
     item_uid: str,
     session: AsyncSession = Depends(get_session),
     item_service: ItemService = Depends(get_item_service),
-    _: User = Depends(get_current_superuser),
+    _: User = Depends(get_current_active_user),
 ):
     item = await item_service.get_item(item_uid, session)
     if not item:
