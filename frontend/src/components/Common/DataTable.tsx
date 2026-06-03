@@ -334,7 +334,7 @@ export function DataTable<TData, TValue>({
                 <SelectValue placeholder={pageSize} />
               </SelectTrigger>
               <SelectContent side="top">
-                {[5, 10, 25, 50, 100, filteredData.length].map((ps) => (
+                {[...new Set([5, 10, 25, 50, 100, filteredData.length])].map((ps) => (
                   <SelectItem key={ps} value={`${ps}`}>
                     {ps === filteredData.length ? "All" : ps}
                   </SelectItem>
