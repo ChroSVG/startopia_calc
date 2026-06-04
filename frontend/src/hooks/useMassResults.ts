@@ -1,7 +1,7 @@
 import { useMemo } from "react"
-import type { CalculatorItem } from "@/utils/massTypes"
 import type { MassItemResult } from "@/utils/massCalculator"
 import { calculateItem, formatDuration } from "@/utils/massCalculator"
+import type { CalculatorItem } from "@/utils/massTypes"
 
 export interface Totals {
   totalTrees: number

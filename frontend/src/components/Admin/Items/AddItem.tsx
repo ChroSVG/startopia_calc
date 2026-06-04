@@ -35,7 +35,7 @@ const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
   rarity: z.string().optional(),
   description: z.string().optional(),
-  max_drop: z.coerce.number().int().optional(),
+  max_drop: z.number().int().optional(),
   type: z.string().optional(),
   chi: z.string().optional(),
 })
@@ -77,7 +77,7 @@ const AddItem = () => {
     const cleaned = Object.fromEntries(
       Object.entries(data).filter(([_, v]) => v !== "" && v !== undefined),
     )
-    mutation.mutate(cleaned as ItemCreate)
+    mutation.mutate(cleaned as unknown as ItemCreate)
   }
 
   return (

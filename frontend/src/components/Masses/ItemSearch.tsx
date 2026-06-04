@@ -1,13 +1,10 @@
-
-
-import  {ItemsService , ItemModel }  from "@/client"
 import { useQuery } from "@tanstack/react-query"
+import { Loader2, Search, X } from "lucide-react"
 import { useState } from "react"
-import { Badge } from "@/components/ui/badge"
-import { Search, X , Loader2} from "lucide-react"
-import { Input } from "@/components/ui/input"
 import { useDebounce } from "use-debounce"
-
+import { type ItemModel, ItemsService } from "@/client"
+import { Badge } from "@/components/ui/badge"
+import { Input } from "@/components/ui/input"
 
 function ItemSearch({
   onSelect,
@@ -38,11 +35,7 @@ function ItemSearch({
     return (
       <div className="relative">
         <div className="relative">
-          <Input
-            value={selectedName}
-            readOnly
-            className="pl-7 h-8 text-sm"
-          />
+          <Input value={selectedName} readOnly className="pl-7 h-8 text-sm" />
           <Search className="absolute left-2 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground pointer-events-none" />
           <button
             type="button"
@@ -79,7 +72,9 @@ function ItemSearch({
               <Loader2 className="size-4 animate-spin text-muted-foreground" />
             </div>
           ) : items.length === 0 ? (
-            <p className="px-3 py-2 text-xs text-muted-foreground">No items found.</p>
+            <p className="px-3 py-2 text-xs text-muted-foreground">
+              No items found.
+            </p>
           ) : (
             items.map((item) => (
               <button
@@ -94,7 +89,10 @@ function ItemSearch({
               >
                 <span className="flex-1 truncate">{item.name}</span>
                 {item.rarity && (
-                  <Badge variant="outline" className="text-[10px] px-1.5 py-0 shrink-0">
+                  <Badge
+                    variant="outline"
+                    className="text-[10px] px-1.5 py-0 shrink-0"
+                  >
                     {item.rarity}
                   </Badge>
                 )}

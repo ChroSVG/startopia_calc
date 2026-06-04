@@ -27,7 +27,7 @@ export function Pagination({
   const totalPages = Math.max(1, Math.ceil(total / pageSize))
 
   return (
-    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 rounded-lg border p-4 bg-muted/20">
+    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 rounded-lg border p-4 bg-muted/20 mt-4">
       <div className="flex flex-col sm:flex-row sm:items-center gap-4">
         <div className="text-sm text-muted-foreground">
           {total > 0 ? (

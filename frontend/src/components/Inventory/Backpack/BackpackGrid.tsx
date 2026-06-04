@@ -1,13 +1,7 @@
+import { Package, Search, SlidersHorizontal } from "lucide-react"
 import * as React from "react"
-import { Search, SlidersHorizontal, Package } from "lucide-react"
-import { BackpackItem, BackpackSlot } from "./BackpackSlot"
-import { ItemDetailTooltip } from "./ItemDetailTooltip"
+import AddToInventory from "@/components/Inventory/AddToInventory"
 import { Input } from "@/components/ui/input"
-import {
-  Tabs,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs"
 import {
   Select,
   SelectContent,
@@ -15,7 +9,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import AddToInventory from "@/components/Inventory/AddToInventory"
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { type BackpackItem, BackpackSlot } from "./BackpackSlot"
+import { ItemDetailTooltip } from "./ItemDetailTooltip"
 
 interface BackpackGridProps {
   items: BackpackItem[]
@@ -29,25 +25,35 @@ export const BackpackGrid = ({ items }: BackpackGridProps) => {
 
   // Extract unique types for tabs
   const types = React.useMemo(() => {
-    const t = new Set(items.map(item => item.item_type).filter(Boolean))
+    const t = new Set(items.map((item) => item.item_type).filter(Boolean))
     return Array.from(t) as string[]
   }, [items])
 
   const filteredItems = React.useMemo(() => {
     return items
-      .filter(item => {
-        const matchesSearch = item.item_name.toLowerCase().includes(search.toLowerCase())
-        const matchesCategory = category === "all" || item.item_type === category
+      .filter((item) => {
+        const matchesSearch = item.item_name
+          .toLowerCase()
+          .includes(search.toLowerCase())
+        const matchesCategory =
+          category === "all" || item.item_type === category
         return matchesSearch && matchesCategory
       })
       .sort((a, b) => {
         if (sortBy === "name") return a.item_name.localeCompare(b.item_name)
         if (sortBy === "quantity") return b.quantity - a.quantity
         if (sortBy === "rarity") {
-           const rarities = ["common", "uncommon", "rare", "epic", "legendary", "exotic"]
-           const aIdx = rarities.indexOf(a.item_rarity?.toLowerCase() || "")
-           const bIdx = rarities.indexOf(b.item_rarity?.toLowerCase() || "")
-           return bIdx - aIdx
+          const rarities = [
+            "common",
+            "uncommon",
+            "rare",
+            "epic",
+            "legendary",
+            "exotic",
+          ]
+          const aIdx = rarities.indexOf(a.item_rarity?.toLowerCase() || "")
+          const bIdx = rarities.indexOf(b.item_rarity?.toLowerCase() || "")
+          return bIdx - aIdx
         }
         return 0
       })
@@ -80,33 +86,44 @@ export const BackpackGrid = ({ items }: BackpackGridProps) => {
           </Select>
         </div>
 
-        <Tabs value={category} onValueChange={setCategory} className="w-full md:w-auto">
+        <Tabs
+          value={category}
+          onValueChange={setCategory}
+          className="w-full md:w-auto"
+        >
           <TabsList className="bg-background/50 border-2 p-1 h-11">
-            <TabsTrigger value="all" className="px-4 text-xs font-bold data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+            <TabsTrigger
+              value="all"
+              className="px-4 text-xs font-bold data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+            >
               ALL
             </TabsTrigger>
-            {types.slice(0, 3).map(type => (
-              <TabsTrigger 
-                key={type} 
-                value={type} 
+            {types.slice(0, 3).map((type) => (
+              <TabsTrigger
+                key={type}
+                value={type}
                 className="px-4 text-xs font-bold data-[state=active]:bg-primary data-[state=active]:text-primary-foreground uppercase"
               >
                 {type}
               </TabsTrigger>
             ))}
             {types.length > 3 && (
-               <Select value={category} onValueChange={setCategory}>
-                  <SelectTrigger className="h-8 border-none bg-transparent px-2 text-xs font-bold hover:bg-muted">
-                    <span className="uppercase">More</span>
-                  </SelectTrigger>
-                  <SelectContent>
-                    {types.slice(3).map(type => (
-                      <SelectItem key={type} value={type} className="uppercase text-[10px] font-bold">
-                        {type}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-               </Select>
+              <Select value={category} onValueChange={setCategory}>
+                <SelectTrigger className="h-8 border-none bg-transparent px-2 text-xs font-bold hover:bg-muted">
+                  <span className="uppercase">More</span>
+                </SelectTrigger>
+                <SelectContent>
+                  {types.slice(3).map((type) => (
+                    <SelectItem
+                      key={type}
+                      value={type}
+                      className="uppercase text-[10px] font-bold"
+                    >
+                      {type}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             )}
           </TabsList>
         </Tabs>
@@ -115,9 +132,7 @@ export const BackpackGrid = ({ items }: BackpackGridProps) => {
       {/* The Grid */}
       <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-3 p-1">
         {/* Add Slot */}
-        <AddToInventory trigger={
-          <BackpackSlot isAddSlot />
-        } />
+        <AddToInventory trigger={<BackpackSlot isAddSlot />} />
 
         {filteredItems.map((item) => (
           <ItemDetailTooltip key={item.uid} item={item}>
@@ -126,16 +141,24 @@ export const BackpackGrid = ({ items }: BackpackGridProps) => {
         ))}
 
         {/* Empty Slots to fill the row (optional, but gives a better feel) */}
-        {filteredItems.length < 9 && Array.from({ length: 9 - filteredItems.length }).map((_, i) => (
-          <div key={`empty-${i}`} className="aspect-square w-full rounded-lg border-2 border-muted/20 bg-muted/5 opacity-50" />
-        ))}
+        {filteredItems.length < 9 &&
+          Array.from({ length: 9 - filteredItems.length }).map((_, i) => (
+            <div
+              key={`empty-${i}`}
+              className="aspect-square w-full rounded-lg border-2 border-muted/20 bg-muted/5 opacity-50"
+            />
+          ))}
       </div>
 
       {filteredItems.length === 0 && search && (
         <div className="text-center py-20 border-2 border-dashed rounded-3xl bg-muted/10">
-           <Package className="size-12 mx-auto text-muted-foreground/20 mb-4" />
-           <h3 className="text-lg font-bold text-muted-foreground">No items found</h3>
-           <p className="text-sm text-muted-foreground/60">Try a different search term or category</p>
+          <Package className="size-12 mx-auto text-muted-foreground/20 mb-4" />
+          <h3 className="text-lg font-bold text-muted-foreground">
+            No items found
+          </h3>
+          <p className="text-sm text-muted-foreground/60">
+            Try a different search term or category
+          </p>
         </div>
       )}
     </div>

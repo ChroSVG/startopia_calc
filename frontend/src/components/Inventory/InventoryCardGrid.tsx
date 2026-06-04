@@ -1,3 +1,5 @@
+import DeleteFromInventory from "@/components/Inventory/DeleteFromInventory"
+import { Badge } from "@/components/ui/badge"
 import {
   Card,
   CardContent,
@@ -5,8 +7,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import DeleteFromInventory from "@/components/Inventory/DeleteFromInventory"
 import type { AugmentedInventoryItem } from "@/hooks/useAugmentedInventory"
 
 export function InventoryCardGrid({
@@ -56,7 +56,11 @@ export function InventoryCardGrid({
             <span className="text-[10px] text-muted-foreground">
               Added {new Date(invItem.created_at).toLocaleDateString()}
             </span>
-            <DeleteFromInventory id={invItem.uid} onSuccess={() => {}} asButton />
+            <DeleteFromInventory
+              id={invItem.uid}
+              onSuccess={() => {}}
+              asButton
+            />
           </CardFooter>
         </Card>
       ))}

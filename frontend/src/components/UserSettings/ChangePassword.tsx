@@ -62,7 +62,10 @@ const ChangePassword = () => {
   })
 
   const onSubmit = async (data: FormData) => {
-    mutation.mutate(data)
+    mutation.mutate({
+      old_password: data.current_password,
+      new_password: data.new_password,
+    })
   }
 
   return (

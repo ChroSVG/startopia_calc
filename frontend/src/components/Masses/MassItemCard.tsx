@@ -1,13 +1,12 @@
 import { Trash2 } from "lucide-react"
-
+import ItemSearch from "@/components/Masses/ItemSearch"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
-import ItemSearch from "@/components/Masses/ItemSearch"
-import type { CalculatorItem } from "@/utils/massTypes"
 import type { MassItemResult } from "@/utils/massCalculator"
+import type { CalculatorItem } from "@/utils/massTypes"
 
 interface MassItemCardProps {
   item: CalculatorItem

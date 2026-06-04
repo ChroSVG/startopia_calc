@@ -1,14 +1,15 @@
 import { useQuery } from "@tanstack/react-query"
 import { createFileRoute, useNavigate, useParams } from "@tanstack/react-router"
 import { Loader2, Plus } from "lucide-react"
+import { useEffect } from "react"
 
 import { MassesService } from "@/client"
-import { Button } from "@/components/ui/button"
-import { Separator } from "@/components/ui/separator"
 import { MassCalcHeader } from "@/components/Masses/MassCalcHeader"
+import { MassItemCard } from "@/components/Masses/MassItemCard"
 import { ModeSelector } from "@/components/Masses/ModeSelector"
 import { TotalsCard } from "@/components/Masses/TotalsCard"
-import { MassItemCard } from "@/components/Masses/MassItemCard"
+import { Button } from "@/components/ui/button"
+import { Separator } from "@/components/ui/separator"
 import { useMassCalcState } from "@/hooks/useMassCalcState"
 import { useMassResults } from "@/hooks/useMassResults"
 import { useMassSave } from "@/hooks/useMassSave"
@@ -24,14 +25,16 @@ function MassCalculatorPage() {
   const { massUid } = useParams({ from: "/_layout/masses/$massUid" })
   const navigate = useNavigate()
 
-  if (massUid === "new") {
-    navigate({ to: "/masses", replace: true })
-    return null
-  }
+  useEffect(() => {
+    if (massUid === "new") {
+      navigate({ to: "/masses", replace: true })
+    }
+  }, [massUid, navigate])
 
   const { data: loadedMass, isLoading: isLoadingMass } = useQuery({
     queryKey: ["mass", massUid],
     queryFn: () => MassesService.readMass({ massUid }),
+    enabled: massUid !== "new",
   })
 
   const {
@@ -55,6 +58,8 @@ function MassCalculatorPage() {
   const isDirty = state.items.length > 0
   const isValid = hasItems
 
+  if (massUid === "new") return null
+
   if (isLoadingMass) {
     return (
       <div className="flex items-center justify-center py-20">
@@ -69,7 +74,6 @@ function MassCalculatorPage() {
         name={state.name}
         description={state.description}
         mode={state.mode}
-        hasItems={hasItems}
         isDirty={isDirty}
         isValid={isValid}
         isPending={saveMutation.isPending}

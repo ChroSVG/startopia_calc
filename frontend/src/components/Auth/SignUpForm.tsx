@@ -15,7 +15,7 @@ import { Input } from "@/components/ui/input"
 import { LoadingButton } from "@/components/ui/loading-button"
 import { PasswordInput } from "@/components/ui/password-input"
 import useAuth from "@/hooks/useAuth"
-import { signUpSchema, type SignUpFormData } from "@/utils/validations"
+import { type SignUpFormData, signUpSchema } from "@/utils/validations"
 
 export function SignUpForm() {
   const { signUpMutation } = useAuth()

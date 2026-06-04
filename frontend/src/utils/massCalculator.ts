@@ -121,8 +121,9 @@ export function calculateItem(
 
   const seedsFromSmashVal = seedsFromSmash(totalSmash)
   const totalSeedsReturnVal = seedsFallenVal + seedsFromSmashVal
-  const seedReturnRateVal =
-    jumlahPohon ? (totalSeedsReturnVal / jumlahPohon) * 100 : 0
+  const seedReturnRateVal = jumlahPohon
+    ? (totalSeedsReturnVal / jumlahPohon) * 100
+    : 0
 
   const gemBlocksVal = gemGivingBlocks(totalSmash)
   const avgGemsVal = avgGemsPerBlock(treeRarity)

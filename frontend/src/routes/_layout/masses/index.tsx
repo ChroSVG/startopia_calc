@@ -1,10 +1,16 @@
-import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query"
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query"
 import { createFileRoute, Link } from "@tanstack/react-router"
 import { Calculator, MoreHorizontal, Pencil, Trash2 } from "lucide-react"
 import { Suspense, useState } from "react"
 
 import type { MassModel } from "@/client"
 import { MassesService } from "@/client"
+import AddMassDialog from "@/components/Masses/AddMassDialog"
+import EditMassDialog from "@/components/Masses/EditMassDialog"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import {
@@ -13,8 +19,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import AddMassDialog from "@/components/Masses/AddMassDialog"
-import EditMassDialog from "@/components/Masses/EditMassDialog"
 import useCustomToast from "@/hooks/useCustomToast"
 import { handleError } from "@/utils"
 
@@ -39,8 +43,7 @@ function MassesListContent() {
   const { data: masses } = useSuspenseQuery(getMassesQueryOptions())
 
   const deleteMutation = useMutation({
-    mutationFn: (massUid: string) =>
-      MassesService.deleteMass({ massUid }),
+    mutationFn: (massUid: string) => MassesService.deleteMass({ massUid }),
     onSuccess: () => {
       showSuccessToast("Mass deleted")
       queryClient.invalidateQueries({ queryKey: ["masses"] })
@@ -81,22 +84,23 @@ function MassesListContent() {
                     <p className="text-sm text-muted-foreground">
                       {mass.items?.length ?? 0} items &middot;{" "}
                       {mass.mode.toUpperCase()}
-                      {mass.description && (
-                        <> &middot; {mass.description}</>
-                      )}
+                      {mass.description && <> &middot; {mass.description}</>}
                     </p>
                   </div>
-                  <div className="shrink-0 ml-3" onClick={(e) => e.stopPropagation()}>
+                  <div className="shrink-0 ml-3">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" className="size-8">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="size-8"
+                          onClick={(e) => e.stopPropagation()}
+                        >
                           <MoreHorizontal className="size-4" />
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem
-                          onClick={() => setEditingMass(mass)}
-                        >
+                        <DropdownMenuItem onClick={() => setEditingMass(mass)}>
                           <Pencil className="size-4 mr-2" />
                           Edit
                         </DropdownMenuItem>
@@ -124,7 +128,9 @@ function MassesListContent() {
       <EditMassDialog
         mass={editingMass}
         open={!!editingMass}
-        onOpenChange={(open) => { if (!open) setEditingMass(null) }}
+        onOpenChange={(open) => {
+          if (!open) setEditingMass(null)
+        }}
       />
     </>
   )
@@ -132,7 +138,13 @@ function MassesListContent() {
 
 function MassesList() {
   return (
-    <Suspense fallback={<div className="py-8 text-center text-muted-foreground">Loading masses...</div>}>
+    <Suspense
+      fallback={
+        <div className="py-8 text-center text-muted-foreground">
+          Loading masses...
+        </div>
+      }
+    >
       <MassesListContent />
     </Suspense>
   )
@@ -145,7 +157,8 @@ function MassesIndex() {
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Masses</h1>
           <p className="text-muted-foreground">
-            Saved mass configurations. Click one to analyze, or create a new one.
+            Saved mass configurations. Click one to analyze, or create a new
+            one.
           </p>
         </div>
         <AddMassDialog />

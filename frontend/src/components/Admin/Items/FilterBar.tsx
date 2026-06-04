@@ -33,7 +33,9 @@ interface FilterBarProps {
   rarityOptions: string[]
   chiOptions: string[]
   columnVisibility: Record<string, boolean>
-  setColumnVisibility: React.Dispatch<React.SetStateAction<Record<string, boolean>>>
+  setColumnVisibility: React.Dispatch<
+    React.SetStateAction<Record<string, boolean>>
+  >
   viewMode: "table" | "card"
   onViewModeChange: (mode: "table" | "card") => void
 }

@@ -1,5 +1,5 @@
-import { ArrowLeft, RotateCcw } from "lucide-react"
 import { Link } from "@tanstack/react-router"
+import { ArrowLeft, RotateCcw } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -10,7 +10,6 @@ interface MassCalcHeaderProps {
   name: string
   description: string
   mode: string
-  hasItems: boolean
   isDirty: boolean
   isValid: boolean
   isPending: boolean
@@ -23,7 +22,6 @@ export function MassCalcHeader({
   name,
   description,
   mode,
-  hasItems,
   isDirty,
   isValid,
   isPending,
@@ -60,7 +58,12 @@ export function MassCalcHeader({
         >
           {uid ? "Update" : "Save"}
         </LoadingButton>
-        <Button variant="outline" size="sm" onClick={onReset} disabled={!isDirty}>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={onReset}
+          disabled={!isDirty}
+        >
           <RotateCcw className="size-3.5 mr-1" />
           Reset
         </Button>

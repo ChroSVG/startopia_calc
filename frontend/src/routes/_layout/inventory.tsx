@@ -2,11 +2,12 @@ import { createFileRoute } from "@tanstack/react-router"
 import { Search } from "lucide-react"
 import { Suspense, useMemo, useState } from "react"
 
+import type { InventoryItemModel } from "@/client"
+import { DataTable } from "@/components/Common/DataTable"
 import AddToInventory from "@/components/Inventory/AddToInventory"
+import { columns } from "@/components/Inventory/columns"
 import { InventoryCardGrid } from "@/components/Inventory/InventoryCardGrid"
 import { InventoryToolbar } from "@/components/Inventory/InventoryToolbar"
-import { DataTable } from "@/components/Common/DataTable"
-import { columns } from "@/components/Inventory/columns"
 import PendingItems from "@/components/Pending/PendingItems"
 import { Button } from "@/components/ui/button"
 import { useAugmentedInventory } from "@/hooks/useAugmentedInventory"
@@ -85,7 +86,10 @@ function InventoryContent() {
         </div>
       ) : viewMode === "table" ? (
         <div className="border rounded-xl overflow-hidden bg-card">
-          <DataTable columns={columns} data={filteredData} />
+          <DataTable
+            columns={columns}
+            data={filteredData as unknown as InventoryItemModel[]}
+          />
         </div>
       ) : (
         <InventoryCardGrid items={filteredData} />

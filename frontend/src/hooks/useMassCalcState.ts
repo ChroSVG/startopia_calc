@@ -1,7 +1,11 @@
 import { useCallback, useEffect, useState } from "react"
 import type { ItemModel, MassModel } from "@/client"
 import type { CalcState, CalculatorItem } from "@/utils/massTypes"
-import { blankItem, massToCalcState, resetTempIdCounter } from "@/utils/massTypes"
+import {
+  blankItem,
+  massToCalcState,
+  resetTempIdCounter,
+} from "@/utils/massTypes"
 
 export function useMassCalcState(loadedMass: MassModel | undefined) {
   const [state, setState] = useState<CalcState>(() => ({
@@ -20,8 +24,7 @@ export function useMassCalcState(loadedMass: MassModel | undefined) {
   }, [loadedMass])
 
   const update = useCallback(
-    (patch: Partial<CalcState>) =>
-      setState((prev) => ({ ...prev, ...patch })),
+    (patch: Partial<CalcState>) => setState((prev) => ({ ...prev, ...patch })),
     [],
   )
 
@@ -64,7 +67,10 @@ export function useMassCalcState(loadedMass: MassModel | undefined) {
 
   const handleItemSelect = useCallback(
     (tempId: string, item: ItemModel) => {
-      const maxBlocks = Math.max(1, Math.min(4, Math.floor((item.max_drop ?? 4) / 4)))
+      const maxBlocks = Math.max(
+        1,
+        Math.min(4, Math.floor((item.max_drop ?? 4) / 4)),
+      )
       updateItem(tempId, {
         itemUid: item.uid,
         itemName: item.name,

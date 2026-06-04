@@ -22,7 +22,7 @@ const PendingItems = () => (
     </TableHeader>
     <TableBody>
       {Array.from({ length: 5 }).map((_, index) => (
-        <TableRow key={"skeleton-" + index}>
+        <TableRow key={`skeleton-${index}`}>
           <TableCell>
             <Skeleton className="h-4 w-64 font-mono" />
           </TableCell>

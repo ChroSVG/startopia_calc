@@ -73,7 +73,7 @@ export const columns: ColumnDef<AdminItemTableData>[] = [
     header: "Name",
     cell: ({ row }) => (
       <span className="font-medium whitespace-nowrap">{row.original.name}</span>
-    )
+    ),
   },
   {
     accessorKey: "rarity",

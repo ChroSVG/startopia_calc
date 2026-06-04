@@ -53,7 +53,7 @@ export function DataTable<TData, TValue>({
   pagination: controlledPagination,
   onPaginationChange,
   columnVisibility: controlledColumnVisibility,
-  onColumnVisibilityChange,
+  onColumnVisibilityChange: _onColumnVisibilityChange,
 }: DataTableProps<TData, TValue>) {
   const isControlled = controlledPagination != null
 
@@ -68,23 +68,10 @@ export function DataTable<TData, TValue>({
     return initial
   }
 
-  const [internalVisibility, setInternalVisibility] =
+  const [internalVisibility, _setInternalVisibility] =
     useState<Record<string, boolean>>(getDefaultVisibility)
 
   const columnVisibility = controlledColumnVisibility ?? internalVisibility
-  const _setColumnVisibility: React.Dispatch<
-    React.SetStateAction<Record<string, boolean>>
-  > =
-    controlledColumnVisibility != null
-      ? (updater) => {
-          const next =
-            typeof updater === "function"
-              ? updater(controlledColumnVisibility)
-              : updater
-          onColumnVisibilityChange?.(next)
-        }
-      : setInternalVisibility
-
   const visibleColumns = useMemo(
     () =>
       columns.filter((col) => {
@@ -122,12 +109,13 @@ export function DataTable<TData, TValue>({
     return data.filter((row) =>
       active.every(([colId, selected]) => {
         const col = columns.find(
-          (c) => c.id === colId || c.accessorKey === colId,
+          (c) =>
+            c.id === colId ||
+            (c as unknown as Record<string, unknown>).accessorKey === colId,
         )
         if (!col) return true
-        const accessorKey = (col as Record<string, unknown>).accessorKey as
-          | string
-          | undefined
+        const accessorKey = (col as unknown as Record<string, unknown>)
+          .accessorKey as string | undefined
         const val = accessorKey
           ? (row as Record<string, unknown>)[accessorKey]
           : undefined
@@ -137,9 +125,8 @@ export function DataTable<TData, TValue>({
   }, [data, columnFilters, columns])
 
   const getUniqueValues = (colDef: ColumnDef<unknown>) => {
-    const accessorKey = (colDef as Record<string, unknown>).accessorKey as
-      | string
-      | undefined
+    const accessorKey = (colDef as unknown as Record<string, unknown>)
+      .accessorKey as string | undefined
     if (!accessorKey) return []
     const vals = new Set<string>()
     for (const row of data) {
@@ -183,9 +170,9 @@ export function DataTable<TData, TValue>({
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id} className="hover:bg-transparent">
               {headerGroup.headers.map((header) => {
-                const sticky = (
+                const sticky = !!(
                   header.column.columnDef.meta as
-                    | Record<string, unknown>
+                    | Record<string, boolean>
                     | undefined
                 )?.sticky
                 return (
@@ -204,7 +191,7 @@ export function DataTable<TData, TValue>({
                           )}
                       {(
                         header.column.columnDef.meta as
-                          | Record<string, unknown>
+                          | Record<string, boolean>
                           | undefined
                       )?.filterable && (
                         <DropdownMenu>
@@ -226,28 +213,40 @@ export function DataTable<TData, TValue>({
                             align="start"
                             className="max-h-64 overflow-y-auto"
                           >
-                            {getUniqueValues(header.column.columnDef).map(
-                              (val) => {
-                                const checked =
-                                  columnFilters[header.column.id]?.includes(
-                                    val,
-                                  ) ?? false
-                                return (
-                                  <label
-                                    key={val}
-                                    className="flex items-center gap-2 px-2 py-1.5 text-xs cursor-pointer hover:bg-muted rounded-sm"
-                                  >
-                                    <Checkbox
-                                      checked={checked}
-                                      onCheckedChange={() =>
-                                        toggleFilter(header.column.id, val)
-                                      }
-                                    />
-                                    {val}
-                                  </label>
-                                )
-                              },
-                            )}
+                            {getUniqueValues(
+                              header.column.columnDef as ColumnDef<unknown>,
+                            ).map((val) => {
+                              const checked =
+                                columnFilters[header.column.id]?.includes(
+                                  val,
+                                ) ?? false
+                              return (
+                                <div
+                                  key={val}
+                                  role="option"
+                                  tabIndex={0}
+                                  aria-selected={checked}
+                                  className="flex items-center gap-2 px-2 py-1.5 text-xs cursor-pointer hover:bg-muted rounded-sm"
+                                  onClick={() =>
+                                    toggleFilter(header.column.id, val)
+                                  }
+                                  onKeyDown={(e) => {
+                                    if (e.key === "Enter" || e.key === " ") {
+                                      e.preventDefault()
+                                      toggleFilter(header.column.id, val)
+                                    }
+                                  }}
+                                >
+                                  <Checkbox
+                                    checked={checked}
+                                    onCheckedChange={() =>
+                                      toggleFilter(header.column.id, val)
+                                    }
+                                  />
+                                  {val}
+                                </div>
+                              )
+                            })}
                             {columnFilters[header.column.id]?.length > 0 && (
                               <div className="border-t px-2 py-1 mt-1">
                                 <Button
@@ -275,9 +274,9 @@ export function DataTable<TData, TValue>({
             table.getRowModel().rows.map((row) => (
               <TableRow key={row.id}>
                 {row.getVisibleCells().map((cell) => {
-                  const sticky = (
+                  const sticky = !!(
                     cell.column.columnDef.meta as
-                      | Record<string, unknown>
+                      | Record<string, boolean>
                       | undefined
                   )?.sticky
                   return (
@@ -334,11 +333,13 @@ export function DataTable<TData, TValue>({
                 <SelectValue placeholder={pageSize} />
               </SelectTrigger>
               <SelectContent side="top">
-                {[...new Set([5, 10, 25, 50, 100, filteredData.length])].map((ps) => (
-                  <SelectItem key={ps} value={`${ps}`}>
-                    {ps === filteredData.length ? "All" : ps}
-                  </SelectItem>
-                ))}
+                {[...new Set([5, 10, 25, 50, 100, filteredData.length])].map(
+                  (ps) => (
+                    <SelectItem key={ps} value={`${ps}`}>
+                      {ps === filteredData.length ? "All" : ps}
+                    </SelectItem>
+                  ),
+                )}
               </SelectContent>
             </Select>
           </div>

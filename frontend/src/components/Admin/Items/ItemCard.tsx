@@ -63,7 +63,7 @@ const ItemCard = ({ item }: ItemCardProps) => {
         </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="text-muted-foreground hover:text-foreground rounded-md p-1 -mr-1 -mt-1">
+            <button type="button" className="text-muted-foreground hover:text-foreground rounded-md p-1 -mr-1 -mt-1">
               <EllipsisVertical className="size-4" />
             </button>
           </DropdownMenuTrigger>
@@ -122,7 +122,9 @@ const ItemCard = ({ item }: ItemCardProps) => {
         {item.scraped != null && (
           <div className="text-muted-foreground">
             Scraped:{" "}
-            <span className={item.scraped ? "text-emerald-500" : "text-foreground"}>
+            <span
+              className={item.scraped ? "text-emerald-500" : "text-foreground"}
+            >
               {item.scraped ? "✓" : "—"}
             </span>
           </div>
