@@ -167,6 +167,10 @@ export type ItemsPublicModel = {
     count: number;
 };
 
+export type IngredientsResponse = {
+    ingredients: Array<ItemModel>;
+};
+
 export type ItemUpdateModel = {
     name?: (string | null);
     rarity?: (string | null);
@@ -494,6 +498,12 @@ export type DeleteItemData = {
 };
 
 export type DeleteItemResponse = (void);
+
+export type ReadItemIngredientsData = {
+    itemUid: string;
+};
+
+export type ReadItemIngredientsResponse = (IngredientsResponse);
 
 export type CreateItemLinkData = {
     requestBody: ItemLinkCreateModel;

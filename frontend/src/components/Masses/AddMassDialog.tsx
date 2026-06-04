@@ -6,6 +6,7 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
+import type { ItemModel } from "@/client"
 import { MassesService } from "@/client"
 import { Button } from "@/components/ui/button"
 import {
@@ -28,6 +29,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { LoadingButton } from "@/components/ui/loading-button"
+import ItemSearch from "@/components/Masses/ItemSearch"
 import useCustomToast from "@/hooks/useCustomToast"
 import { handleError } from "@/utils"
 
@@ -40,6 +42,7 @@ type FormData = z.infer<typeof formSchema>
 
 const AddMassDialog = () => {
   const [isOpen, setIsOpen] = useState(false)
+  const [selectedItem, setSelectedItem] = useState<ItemModel | null>(null)
   const queryClient = useQueryClient()
   const navigate = useNavigate()
   const { showSuccessToast, showErrorToast } = useCustomToast()
@@ -55,11 +58,12 @@ const AddMassDialog = () => {
   })
 
   const mutation = useMutation({
-    mutationFn: (data: { name: string; description?: string | null }) =>
+    mutationFn: (data: { name: string; description?: string | null; items?: Array<{ item_uid: string; item_name: string; tree_rarity: number; max_blocks: number; jumlah_pohon: number }> }) =>
       MassesService.createMass({ requestBody: data }),
     onSuccess: (data) => {
       showSuccessToast("Mass created")
       form.reset()
+      setSelectedItem(null)
       setIsOpen(false)
       queryClient.invalidateQueries({ queryKey: ["masses"] })
       const saved = data as { uid: string }
@@ -72,6 +76,23 @@ const AddMassDialog = () => {
     mutation.mutate({
       name: data.name,
       description: data.description || null,
+      items: selectedItem
+        ? [
+            {
+              item_uid: selectedItem.uid,
+              item_name: selectedItem.name,
+              tree_rarity: parseInt(selectedItem.rarity ?? "1", 10),
+              max_blocks: Math.max(
+                1,
+                Math.min(
+                  4,
+                  Math.floor((selectedItem.max_drop ?? 4) / 4),
+                ),
+              ),
+              jumlah_pohon: 1,
+            },
+          ]
+        : undefined,
     })
   }
 
@@ -93,6 +114,22 @@ const AddMassDialog = () => {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <div className="grid gap-4 py-4">
+              <FormItem>
+                <FormLabel>Base Item</FormLabel>
+                <FormControl>
+                  <ItemSearch
+                    selectedName={selectedItem?.name}
+                    onSelect={(item) => {
+                      setSelectedItem(item)
+                      form.setValue("name", item.name)
+                    }}
+                    onClear={() => {
+                      setSelectedItem(null)
+                      form.setValue("name", "")
+                    }}
+                  />
+                </FormControl>
+              </FormItem>
               <FormField
                 name="name"
                 render={({ field }) => (

@@ -76,3 +76,7 @@ class ItemLinkCreateModel(BaseModel):
 class ItemsPublicModel(BaseModel):
     data: List[ItemModel]
     count: int
+
+
+class IngredientsResponse(BaseModel):
+    ingredients: List[ItemModel]

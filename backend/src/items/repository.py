@@ -30,3 +30,8 @@ class ItemRepository(BaseRepository[Item]):
 class ItemLinkRepository(BaseRepository[ItemLink]):
     def __init__(self):
         super().__init__(ItemLink)
+
+    async def get_by_target_uid(self, session: AsyncSession, target_uid: str) -> List[ItemLink]:
+        query = select(ItemLink).where(col(ItemLink.target_uid) == target_uid)
+        result = await session.exec(query)
+        return list(result.all())

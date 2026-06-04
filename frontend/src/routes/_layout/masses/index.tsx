@@ -100,13 +100,19 @@ function MassesListContent() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => setEditingMass(mass)}>
+                        <DropdownMenuItem
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            setEditingMass(mass)
+                          }}
+                        >
                           <Pencil className="size-4 mr-2" />
                           Edit
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           className="text-destructive focus:text-destructive"
-                          onClick={() => {
+                          onClick={(e) => {
+                            e.stopPropagation()
                             if (confirm("Delete this mass?")) {
                               deleteMutation.mutate(mass.uid)
                             }

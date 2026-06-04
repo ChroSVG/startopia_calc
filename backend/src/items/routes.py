@@ -6,7 +6,7 @@ from src.db.main import get_session
 from src.db.models import User
 from .schemas import (
     ItemModel, ItemCreateModel, ItemUpdateModel, ItemsPublicModel,
-    ItemLinkModel, ItemLinkCreateModel,
+    ItemLinkModel, ItemLinkCreateModel, IngredientsResponse,
 )
 from .service import ItemService, ItemLinkService
 from .dependencies import get_item_service, get_item_link_service
@@ -77,6 +77,17 @@ async def delete_item(
     if not deleted:
         raise HTTPException(status_code=404, detail="Item not found")
     return None
+
+
+@item_router.get("/{item_uid}/ingredients", response_model=IngredientsResponse, operation_id="readItemIngredients")
+async def get_item_ingredients(
+    item_uid: str,
+    session: AsyncSession = Depends(get_session),
+    item_service: ItemService = Depends(get_item_service),
+    _: User = Depends(get_current_active_user),
+):
+    ingredients = await item_service.get_ingredients(item_uid, session)
+    return {"ingredients": ingredients}
 
 
 @item_router.post("/links", status_code=status.HTTP_201_CREATED, response_model=ItemLinkModel, operation_id="createItemLink")

@@ -4,8 +4,9 @@ from .repository import ItemRepository, ItemLinkRepository
 
 
 class ItemService:
-    def __init__(self, repository: ItemRepository, log_service: ActivityLogService):
+    def __init__(self, repository: ItemRepository, link_repository: ItemLinkRepository, log_service: ActivityLogService):
         self.repository = repository
+        self.link_repository = link_repository
         self.log_service = log_service
 
     async def get_all_items(self, session: AsyncSession, skip: int = 0, limit: int = 100, search: str | None = None):
@@ -41,6 +42,29 @@ class ItemService:
         await self.log_service.log(session, str(item.created_by_uid) if item.created_by_uid else "system",
             "item.delete", f"Deleted item: {name}", "Item", str(item_uid))
         return item
+
+    async def get_ingredients(self, item_uid: str, session: AsyncSession) -> list:
+        visited_uids: set[str] = set()
+        queue: list[str] = [item_uid]
+
+        while queue:
+            current_uid = queue.pop(0)
+            links = await self.link_repository.get_by_target_uid(session, current_uid)
+            for link in links:
+                source_uid_str = str(link.source_uid)
+                if source_uid_str not in visited_uids and source_uid_str != item_uid:
+                    visited_uids.add(source_uid_str)
+                    queue.append(source_uid_str)
+
+        if not visited_uids:
+            return []
+
+        items = []
+        for uid in visited_uids:
+            item = await self.repository.get_by_uid(session, uid)
+            if item:
+                items.append(item)
+        return items
 
 
 class ItemLinkService:

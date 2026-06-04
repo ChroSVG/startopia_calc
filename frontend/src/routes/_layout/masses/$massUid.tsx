@@ -7,6 +7,7 @@ import { MassesService } from "@/client"
 import { MassCalcHeader } from "@/components/Masses/MassCalcHeader"
 import { MassItemCard } from "@/components/Masses/MassItemCard"
 import { ModeSelector } from "@/components/Masses/ModeSelector"
+import RecipeCheatsheet from "@/components/Masses/RecipeCheatsheet"
 import { TotalsCard } from "@/components/Masses/TotalsCard"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
@@ -83,6 +84,10 @@ function MassCalculatorPage() {
       />
 
       <ModeSelector value={state.mode} onChange={(v) => update({ mode: v })} />
+
+      {state.items[0]?.itemUid && (
+        <RecipeCheatsheet itemUid={state.items[0].itemUid} />
+      )}
 
       {hasItems && <TotalsCard totals={totals} />}
 

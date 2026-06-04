@@ -3,7 +3,7 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { ReadActivityLogsData, ReadActivityLogsResponse, RegisterUserData, RegisterUserResponse, VerifyUserAccountApiV1AuthVerifyTokenGetData, VerifyUserAccountApiV1AuthVerifyTokenGetResponse, GetNewAccessTokenApiV1AuthRefreshTokenGetResponse, LogoutResponse, ReadBooksResponse, CreateBookData, CreateBookResponse, ReadUserSubmissionsData, ReadUserSubmissionsResponse, ReadBookData, ReadBookResponse, UpdateBookData, UpdateBookResponse, DeleteBookData, DeleteBookResponse, ReadCategoriesData, ReadCategoriesResponse, CreateCategoryData, CreateCategoryResponse, ReadCategoryData, ReadCategoryResponse, UpdateCategoryData, UpdateCategoryResponse, DeleteCategoryData, DeleteCategoryResponse, ReadInventoryData, ReadInventoryResponse, AddToInventoryData, AddToInventoryResponse, UpdateInventoryItemData, UpdateInventoryItemResponse, DeleteFromInventoryData, DeleteFromInventoryResponse, ReadItemsData, ReadItemsResponse, CreateItemData, CreateItemResponse, ReadItemData, ReadItemResponse, UpdateItemData, UpdateItemResponse, DeleteItemData, DeleteItemResponse, CreateItemLinkData, CreateItemLinkResponse, DeleteItemLinkData, DeleteItemLinkResponse, LoginAccessTokenData, LoginAccessTokenResponse, ReadMassesData, ReadMassesResponse, CreateMassData, CreateMassResponse, ReadMassData, ReadMassResponse, UpdateMassData, UpdateMassResponse, DeleteMassData, DeleteMassResponse, CalculateMassData, CalculateMassResponse, ReadReviewsResponse, ReadReviewData, ReadReviewResponse, DeleteReviewData, DeleteReviewResponse, CreateReviewData, CreateReviewResponse, ReadTagsResponse, CreateTagData, CreateTagResponse, AddTagsToBookData, AddTagsToBookResponse, UpdateTagData, UpdateTagResponse, DeleteTagData, DeleteTagResponse, ReadUserMeResponse, DeleteUserMeResponse, UpdateUserMeData, UpdateUserMeResponse, UpdatePasswordMeData, UpdatePasswordMeResponse, ReadUsersData, ReadUsersResponse, CreateUserData, CreateUserResponse, UpdateUserData, UpdateUserResponse, DeleteUserData, DeleteUserResponse } from './types.gen';
+import type { ReadActivityLogsData, ReadActivityLogsResponse, RegisterUserData, RegisterUserResponse, VerifyUserAccountApiV1AuthVerifyTokenGetData, VerifyUserAccountApiV1AuthVerifyTokenGetResponse, GetNewAccessTokenApiV1AuthRefreshTokenGetResponse, LogoutResponse, ReadBooksResponse, CreateBookData, CreateBookResponse, ReadUserSubmissionsData, ReadUserSubmissionsResponse, ReadBookData, ReadBookResponse, UpdateBookData, UpdateBookResponse, DeleteBookData, DeleteBookResponse, ReadCategoriesData, ReadCategoriesResponse, CreateCategoryData, CreateCategoryResponse, ReadCategoryData, ReadCategoryResponse, UpdateCategoryData, UpdateCategoryResponse, DeleteCategoryData, DeleteCategoryResponse, ReadInventoryData, ReadInventoryResponse, AddToInventoryData, AddToInventoryResponse, UpdateInventoryItemData, UpdateInventoryItemResponse, DeleteFromInventoryData, DeleteFromInventoryResponse, ReadItemsData, ReadItemsResponse, CreateItemData, CreateItemResponse, ReadItemData, ReadItemResponse, UpdateItemData, UpdateItemResponse, DeleteItemData, DeleteItemResponse, ReadItemIngredientsData, ReadItemIngredientsResponse, CreateItemLinkData, CreateItemLinkResponse, DeleteItemLinkData, DeleteItemLinkResponse, LoginAccessTokenData, LoginAccessTokenResponse, ReadMassesData, ReadMassesResponse, CreateMassData, CreateMassResponse, ReadMassData, ReadMassResponse, UpdateMassData, UpdateMassResponse, DeleteMassData, DeleteMassResponse, CalculateMassData, CalculateMassResponse, ReadReviewsResponse, ReadReviewData, ReadReviewResponse, DeleteReviewData, DeleteReviewResponse, CreateReviewData, CreateReviewResponse, ReadTagsResponse, CreateTagData, CreateTagResponse, AddTagsToBookData, AddTagsToBookResponse, UpdateTagData, UpdateTagResponse, DeleteTagData, DeleteTagResponse, ReadUserMeResponse, DeleteUserMeResponse, UpdateUserMeData, UpdateUserMeResponse, UpdatePasswordMeData, UpdatePasswordMeResponse, ReadUsersData, ReadUsersResponse, CreateUserData, CreateUserResponse, UpdateUserData, UpdateUserResponse, DeleteUserData, DeleteUserResponse } from './types.gen';
 
 export class ActivityLogsService {
     /**
@@ -500,6 +500,26 @@ export class ItemsService {
         return __request(OpenAPI, {
             method: 'DELETE',
             url: '/api/v1/items/{item_uid}',
+            path: {
+                item_uid: data.itemUid
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Get Item Ingredients
+     * @param data The data for the request.
+     * @param data.itemUid
+     * @returns IngredientsResponse Successful Response
+     * @throws ApiError
+     */
+    public static readItemIngredients(data: ReadItemIngredientsData): CancelablePromise<ReadItemIngredientsResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/items/{item_uid}/ingredients',
             path: {
                 item_uid: data.itemUid
             },
