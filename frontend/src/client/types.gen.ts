@@ -185,6 +185,65 @@ export type ItemUpdateModel = {
     scraped?: (boolean | null);
 };
 
+export type MassCreate = {
+    name: string;
+    description?: (string | null);
+    mode?: string;
+    items?: Array<MassItemInput>;
+};
+
+export type MassesPublic = {
+    data: Array<MassModel>;
+    count: number;
+};
+
+export type MassItemInput = {
+    item_uid?: (string | null);
+    item_name?: string;
+    tree_rarity?: number;
+    max_blocks?: number;
+    jumlah_pohon?: number;
+};
+
+export type MassItemResult = {
+    item_uid?: (string | null);
+    item_name?: string;
+    tree_rarity?: number;
+    max_blocks?: number;
+    jumlah_pohon?: number;
+    uid: string;
+    blok_yielded: number;
+    total_smash_efektif: number;
+    seeds_fallen: number;
+    seeds_from_smash: number;
+    total_seeds_return: number;
+    seed_return_rate: number;
+    gem_blocks: number;
+    avg_gems_per_block: number;
+    harvest_gems: number;
+    total_gems_didapat: number;
+    grow_time_seconds: number;
+    grow_time_readable: string;
+};
+
+export type MassModel = {
+    uid: string;
+    name: string;
+    description?: (string | null);
+    mode: string;
+    user_uid: string;
+    created_at: string;
+    update_at: string;
+    items?: Array<MassItemResult>;
+};
+
+export type MassUpdate = {
+    name?: (string | null);
+    description?: (string | null);
+    mode?: (string | null);
+    items?: (Array<MassItemInput> | null);
+};
+
 export type ReviewCreateModel = {
     rating: number;
     review_text: string;
@@ -405,8 +464,8 @@ export type DeleteFromInventoryResponse = (void);
 
 export type ReadItemsData = {
     limit?: number;
+    search?: (string | null);
     skip?: number;
-    search?: string;
 };
 
 export type ReadItemsResponse = (ItemsPublicModel);
@@ -455,6 +514,44 @@ export type LoginAccessTokenData = {
 export type LoginAccessTokenResponse = ({
     [key: string]: unknown;
 });
+
+export type ReadMassesData = {
+    limit?: number;
+    skip?: number;
+};
+
+export type ReadMassesResponse = (MassesPublic);
+
+export type CreateMassData = {
+    requestBody: MassCreate;
+};
+
+export type CreateMassResponse = (MassModel);
+
+export type ReadMassData = {
+    massUid: string;
+};
+
+export type ReadMassResponse = (MassModel);
+
+export type UpdateMassData = {
+    massUid: string;
+    requestBody: MassUpdate;
+};
+
+export type UpdateMassResponse = (MassModel);
+
+export type DeleteMassData = {
+    massUid: string;
+};
+
+export type DeleteMassResponse = (void);
+
+export type CalculateMassData = {
+    massUid: string;
+};
+
+export type CalculateMassResponse = (MassModel);
 
 export type ReadReviewsResponse = (unknown);
 

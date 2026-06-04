@@ -1,1 +1,4305 @@
-{"openapi":"3.1.0","info":{"title":"Bookly","description":"\nA REST API for a book review web service.\n\nThis REST API is able to;\n- Create Read Update And delete books\n- Add reviews to books\n- Add tags to Books e.t.c.\n    ","termsOfService":"httpS://example.com/tos","contact":{"name":"Ssali Jonathan","url":"https://github.com/jod35","email":"ssalijonathank@gmail.com"},"license":{"name":"MIT License","url":"https://opensource.org/license/mit"},"version":"v1"},"paths":{"/api/v1/books/":{"get":{"tags":["books"],"summary":"Get All Books","operationId":"readBooks","responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"items":{"$ref":"#/components/schemas/Book"},"type":"array","title":"Response Readbooks"}}}}},"security":[{"AccessTokenBearer":[]}]},"post":{"tags":["books"],"summary":"Create A Book","operationId":"createBook","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/BookCreateModel"}}},"required":true},"responses":{"201":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/Book"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}},"security":[{"AccessTokenBearer":[]}]}},"/api/v1/books/user/{user_uid}":{"get":{"tags":["books"],"summary":"Get User Book Submissions","operationId":"readUserSubmissions","security":[{"AccessTokenBearer":[]}],"parameters":[{"name":"user_uid","in":"path","required":true,"schema":{"type":"string","title":"User Uid"}}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"type":"array","items":{"$ref":"#/components/schemas/Book"},"title":"Response Readusersubmissions"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/api/v1/books/{book_uid}":{"get":{"tags":["books"],"summary":"Get Book","operationId":"readBook","security":[{"AccessTokenBearer":[]}],"parameters":[{"name":"book_uid","in":"path","required":true,"schema":{"type":"string","title":"Book Uid"}}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/BookDetailModel"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}},"patch":{"tags":["books"],"summary":"Update Book","operationId":"updateBook","security":[{"AccessTokenBearer":[]}],"parameters":[{"name":"book_uid","in":"path","required":true,"schema":{"type":"string","title":"Book Uid"}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/BookUpdateModel"}}}},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/Book"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}},"delete":{"tags":["books"],"summary":"Delete Book","operationId":"deleteBook","security":[{"AccessTokenBearer":[]}],"parameters":[{"name":"book_uid","in":"path","required":true,"schema":{"type":"string","title":"Book Uid"}}],"responses":{"204":{"description":"Successful Response"},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/api/v1/items/":{"get":{"tags":["items"],"summary":"Get All Items","operationId":"readItems","security":[{"AccessTokenBearer":[]}],"parameters":[{"name":"skip","in":"query","required":false,"schema":{"type":"integer","default":0,"title":"Skip"}},{"name":"limit","in":"query","required":false,"schema":{"type":"integer","default":100,"title":"Limit"}}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/ItemsPublicModel"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}},"post":{"tags":["items"],"summary":"Create Item","operationId":"createItem","security":[{"AccessTokenBearer":[]}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/ItemCreateModel"}}}},"responses":{"201":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/ItemModel"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/api/v1/items/{item_uid}":{"get":{"tags":["items"],"summary":"Get Item","operationId":"readItem","security":[{"AccessTokenBearer":[]}],"parameters":[{"name":"item_uid","in":"path","required":true,"schema":{"type":"string","title":"Item Uid"}}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/ItemModel"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}},"patch":{"tags":["items"],"summary":"Update Item","operationId":"updateItem","security":[{"AccessTokenBearer":[]}],"parameters":[{"name":"item_uid","in":"path","required":true,"schema":{"type":"string","title":"Item Uid"}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/ItemUpdateModel"}}}},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/ItemModel"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}},"delete":{"tags":["items"],"summary":"Delete Item","operationId":"deleteItem","security":[{"AccessTokenBearer":[]}],"parameters":[{"name":"item_uid","in":"path","required":true,"schema":{"type":"string","title":"Item Uid"}}],"responses":{"204":{"description":"Successful Response"},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/api/v1/items/links":{"post":{"tags":["items"],"summary":"Create Item Link","operationId":"createItemLink","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/ItemLinkCreateModel"}}},"required":true},"responses":{"201":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/ItemLinkModel"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}},"security":[{"AccessTokenBearer":[]}]}},"/api/v1/items/links/{link_uid}":{"delete":{"tags":["items"],"summary":"Delete Item Link","operationId":"deleteItemLink","security":[{"AccessTokenBearer":[]}],"parameters":[{"name":"link_uid","in":"path","required":true,"schema":{"type":"string","title":"Link Uid"}}],"responses":{"204":{"description":"Successful Response"},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/api/v1/auth/signup":{"post":{"tags":["auth"],"summary":"Create User Account","operationId":"registerUser","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/UserCreate"}}},"required":true},"responses":{"201":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/UserRegisterResponse"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/api/v1/auth/verify/{token}":{"get":{"tags":["auth"],"summary":"Verify User Account","operationId":"verify_user_account_api_v1_auth_verify__token__get","parameters":[{"name":"token","in":"path","required":true,"schema":{"type":"string","title":"Token"}}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/api/v1/auth/refresh_token":{"get":{"tags":["auth"],"summary":"Get New Access Token","operationId":"get_new_access_token_api_v1_auth_refresh_token_get","responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}}},"security":[{"RefreshTokenBearer":[]}]}},"/api/v1/auth/logout":{"get":{"tags":["auth"],"summary":"Logout And Blacklist Token","operationId":"logout","responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}}},"security":[{"AccessTokenBearer":[]}]}},"/api/v1/login/":{"post":{"tags":["login"],"summary":"Login For Access Token","operationId":"loginAccessToken","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/UserLoginModel"}}},"required":true},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"additionalProperties":true,"type":"object","title":"Response Loginaccesstoken"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/api/v1/users/me":{"get":{"tags":["users"],"summary":"Get Current User","operationId":"readUserMe","responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/User"}}}}},"security":[{"AccessTokenBearer":[]}]},"delete":{"tags":["users"],"summary":"Delete User Me","operationId":"deleteUserMe","responses":{"204":{"description":"Successful Response"}},"security":[{"AccessTokenBearer":[]}]},"patch":{"tags":["users"],"summary":"Update User Me","operationId":"updateUserMe","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/UserUpdateMe"}}},"required":true},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/User"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}},"security":[{"AccessTokenBearer":[]}]}},"/api/v1/users/me/password":{"patch":{"tags":["users"],"summary":"Update Password Me","operationId":"updatePasswordMe","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/UpdatePassword"}}},"required":true},"responses":{"204":{"description":"Successful Response"},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}},"security":[{"AccessTokenBearer":[]}]}},"/api/v1/users/":{"get":{"tags":["users"],"summary":"Get All Users","operationId":"readUsers","security":[{"AccessTokenBearer":[]}],"parameters":[{"name":"skip","in":"query","required":false,"schema":{"type":"integer","default":0,"title":"Skip"}},{"name":"limit","in":"query","required":false,"schema":{"type":"integer","default":100,"title":"Limit"}}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/UsersPublicModel"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}},"post":{"tags":["users"],"summary":"Create User","operationId":"createUser","security":[{"AccessTokenBearer":[]}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/UserCreate"}}}},"responses":{"201":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/User"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/api/v1/users/{user_uid}":{"patch":{"tags":["users"],"summary":"Update User","operationId":"updateUser","security":[{"AccessTokenBearer":[]}],"parameters":[{"name":"user_uid","in":"path","required":true,"schema":{"type":"string","title":"User Uid"}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/UserUpdate"}}}},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/User"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}},"delete":{"tags":["users"],"summary":"Delete User","operationId":"deleteUser","security":[{"AccessTokenBearer":[]}],"parameters":[{"name":"user_uid","in":"path","required":true,"schema":{"type":"string","title":"User Uid"}}],"responses":{"204":{"description":"Successful Response"},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/api/v1/reviews/":{"get":{"tags":["reviews"],"summary":"Get All Reviews","operationId":"readReviews","responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}}},"security":[{"AccessTokenBearer":[]}]}},"/api/v1/reviews/{review_uid}":{"get":{"tags":["reviews"],"summary":"Get Review","operationId":"readReview","security":[{"AccessTokenBearer":[]}],"parameters":[{"name":"review_uid","in":"path","required":true,"schema":{"type":"string","title":"Review Uid"}}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}},"delete":{"tags":["reviews"],"summary":"Delete Review","operationId":"deleteReview","security":[{"AccessTokenBearer":[]}],"parameters":[{"name":"review_uid","in":"path","required":true,"schema":{"type":"string","title":"Review Uid"}}],"responses":{"204":{"description":"Successful Response"},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/api/v1/reviews/book/{book_uid}":{"post":{"tags":["reviews"],"summary":"Add Review To Books","operationId":"createReview","security":[{"AccessTokenBearer":[]}],"parameters":[{"name":"book_uid","in":"path","required":true,"schema":{"type":"string","title":"Book Uid"}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/ReviewCreateModel"}}}},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/api/v1/tags/":{"get":{"tags":["tags"],"summary":"Get All Tags","operationId":"readTags","responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"items":{"$ref":"#/components/schemas/TagModel"},"type":"array","title":"Response Readtags"}}}}},"security":[{"AccessTokenBearer":[]}]},"post":{"tags":["tags"],"summary":"Add Tag","operationId":"createTag","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/TagCreateModel"}}},"required":true},"responses":{"201":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/TagModel"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}},"security":[{"AccessTokenBearer":[]}]}},"/api/v1/tags/book/{book_uid}/tags":{"post":{"tags":["tags"],"summary":"Add Tags To Book","operationId":"addTagsToBook","security":[{"AccessTokenBearer":[]}],"parameters":[{"name":"book_uid","in":"path","required":true,"schema":{"type":"string","title":"Book Uid"}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/TagAddModel"}}}},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/Book"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/api/v1/tags/{tag_uid}":{"put":{"tags":["tags"],"summary":"Update Tag","operationId":"updateTag","security":[{"AccessTokenBearer":[]}],"parameters":[{"name":"tag_uid","in":"path","required":true,"schema":{"type":"string","title":"Tag Uid"}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/TagCreateModel"}}}},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/TagModel"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}},"delete":{"tags":["tags"],"summary":"Delete Tag","operationId":"deleteTag","security":[{"AccessTokenBearer":[]}],"parameters":[{"name":"tag_uid","in":"path","required":true,"schema":{"type":"string","title":"Tag Uid"}}],"responses":{"204":{"description":"Successful Response"},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/api/v1/categories/":{"get":{"tags":["categories"],"summary":"Get All Categories","operationId":"readCategories","security":[{"AccessTokenBearer":[]}],"parameters":[{"name":"skip","in":"query","required":false,"schema":{"type":"integer","default":0,"title":"Skip"}},{"name":"limit","in":"query","required":false,"schema":{"type":"integer","default":100,"title":"Limit"}}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/CategoriesPublicModel"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}},"post":{"tags":["categories"],"summary":"Create Category","operationId":"createCategory","security":[{"AccessTokenBearer":[]}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/CategoryCreateModel"}}}},"responses":{"201":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/CategoryModel"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/api/v1/categories/{category_uid}":{"get":{"tags":["categories"],"summary":"Get Category","operationId":"readCategory","security":[{"AccessTokenBearer":[]}],"parameters":[{"name":"category_uid","in":"path","required":true,"schema":{"type":"string","title":"Category Uid"}}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/CategoryModel"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}},"patch":{"tags":["categories"],"summary":"Update Category","operationId":"updateCategory","security":[{"AccessTokenBearer":[]}],"parameters":[{"name":"category_uid","in":"path","required":true,"schema":{"type":"string","title":"Category Uid"}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/CategoryUpdateModel"}}}},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/CategoryModel"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}},"delete":{"tags":["categories"],"summary":"Delete Category","operationId":"deleteCategory","security":[{"AccessTokenBearer":[]}],"parameters":[{"name":"category_uid","in":"path","required":true,"schema":{"type":"string","title":"Category Uid"}}],"responses":{"204":{"description":"Successful Response"},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/api/v1/inventory/":{"get":{"tags":["inventory"],"summary":"Get My Inventory","operationId":"readInventory","security":[{"AccessTokenBearer":[]}],"parameters":[{"name":"skip","in":"query","required":false,"schema":{"type":"integer","default":0,"title":"Skip"}},{"name":"limit","in":"query","required":false,"schema":{"type":"integer","default":100,"title":"Limit"}}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/InventoryPublicModel"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}},"post":{"tags":["inventory"],"summary":"Add To Inventory","operationId":"addToInventory","security":[{"AccessTokenBearer":[]}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/InventoryCreateModel"}}}},"responses":{"201":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/InventoryItemModel"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/api/v1/inventory/{item_uid}":{"patch":{"tags":["inventory"],"summary":"Update Inventory Item","operationId":"updateInventoryItem","security":[{"AccessTokenBearer":[]}],"parameters":[{"name":"item_uid","in":"path","required":true,"schema":{"type":"string","title":"Item Uid"}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/InventoryUpdateModel"}}}},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/InventoryItemModel"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}},"delete":{"tags":["inventory"],"summary":"Delete From Inventory","operationId":"deleteFromInventory","security":[{"AccessTokenBearer":[]}],"parameters":[{"name":"item_uid","in":"path","required":true,"schema":{"type":"string","title":"Item Uid"}}],"responses":{"204":{"description":"Successful Response"},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/api/v1/activity-logs/":{"get":{"tags":["activity-logs"],"summary":"Get Activity Logs","operationId":"readActivityLogs","security":[{"AccessTokenBearer":[]}],"parameters":[{"name":"skip","in":"query","required":false,"schema":{"type":"integer","default":0,"title":"Skip"}},{"name":"limit","in":"query","required":false,"schema":{"type":"integer","default":100,"title":"Limit"}}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/ActivityLogsPublicModel"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}}},"components":{"schemas":{"ActivityLogDetailModel":{"properties":{"uid":{"type":"string","format":"uuid","title":"Uid"},"user_uid":{"type":"string","format":"uuid","title":"User Uid"},"action":{"type":"string","title":"Action"},"reference_type":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Reference Type"},"reference_uid":{"anyOf":[{"type":"string","format":"uuid"},{"type":"null"}],"title":"Reference Uid"},"message":{"type":"string","title":"Message"},"created_at":{"type":"string","format":"date-time","title":"Created At"},"data":{"anyOf":[{"additionalProperties":true,"type":"object"},{"type":"null"}],"title":"Data"}},"type":"object","required":["uid","user_uid","action","message","created_at"],"title":"ActivityLogDetailModel"},"ActivityLogsPublicModel":{"properties":{"data":{"items":{"$ref":"#/components/schemas/ActivityLogDetailModel"},"type":"array","title":"Data"},"count":{"type":"integer","title":"Count"}},"type":"object","required":["data","count"],"title":"ActivityLogsPublicModel"},"Book":{"properties":{"uid":{"type":"string","format":"uuid","title":"Uid"},"title":{"type":"string","title":"Title"},"author":{"type":"string","title":"Author"},"publisher":{"type":"string","title":"Publisher"},"published_date":{"type":"string","format":"date","title":"Published Date"},"page_count":{"type":"integer","title":"Page Count"},"language":{"type":"string","title":"Language"},"created_at":{"type":"string","format":"date-time","title":"Created At"},"update_at":{"type":"string","format":"date-time","title":"Update At"}},"type":"object","required":["uid","title","author","publisher","published_date","page_count","language","created_at","update_at"],"title":"Book"},"BookCreateModel":{"properties":{"title":{"type":"string","title":"Title"},"author":{"type":"string","title":"Author"},"publisher":{"type":"string","title":"Publisher"},"published_date":{"type":"string","title":"Published Date"},"page_count":{"type":"integer","title":"Page Count"},"language":{"type":"string","title":"Language"}},"type":"object","required":["title","author","publisher","published_date","page_count","language"],"title":"BookCreateModel"},"BookDetailModel":{"properties":{"uid":{"type":"string","format":"uuid","title":"Uid"},"title":{"type":"string","title":"Title"},"author":{"type":"string","title":"Author"},"publisher":{"type":"string","title":"Publisher"},"published_date":{"type":"string","format":"date","title":"Published Date"},"page_count":{"type":"integer","title":"Page Count"},"language":{"type":"string","title":"Language"},"created_at":{"type":"string","format":"date-time","title":"Created At"},"update_at":{"type":"string","format":"date-time","title":"Update At"},"reviews":{"items":{"$ref":"#/components/schemas/ReviewModel"},"type":"array","title":"Reviews"},"tags":{"items":{"$ref":"#/components/schemas/TagModel"},"type":"array","title":"Tags"}},"type":"object","required":["uid","title","author","publisher","published_date","page_count","language","created_at","update_at","reviews","tags"],"title":"BookDetailModel"},"BookUpdateModel":{"properties":{"title":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Title"},"author":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Author"},"publisher":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Publisher"},"page_count":{"anyOf":[{"type":"integer"},{"type":"null"}],"title":"Page Count"},"language":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Language"}},"type":"object","title":"BookUpdateModel"},"CategoriesPublicModel":{"properties":{"data":{"items":{"$ref":"#/components/schemas/CategoryModel"},"type":"array","title":"Data"},"count":{"type":"integer","title":"Count"}},"type":"object","required":["data","count"],"title":"CategoriesPublicModel"},"CategoryCreateModel":{"properties":{"name":{"type":"string","title":"Name"},"description":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Description"}},"type":"object","required":["name"],"title":"CategoryCreateModel"},"CategoryModel":{"properties":{"uid":{"type":"string","format":"uuid","title":"Uid"},"name":{"type":"string","title":"Name"},"description":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Description"},"user_uid":{"anyOf":[{"type":"string","format":"uuid"},{"type":"null"}],"title":"User Uid"},"created_at":{"type":"string","format":"date-time","title":"Created At"},"update_at":{"type":"string","format":"date-time","title":"Update At"}},"type":"object","required":["uid","name","description","user_uid","created_at","update_at"],"title":"CategoryModel"},"CategoryUpdateModel":{"properties":{"name":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Name"},"description":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Description"}},"type":"object","title":"CategoryUpdateModel"},"HTTPValidationError":{"properties":{"detail":{"items":{"$ref":"#/components/schemas/ValidationError"},"type":"array","title":"Detail"}},"type":"object","title":"HTTPValidationError"},"InventoryCreateModel":{"properties":{"item_uid":{"type":"string","format":"uuid","title":"Item Uid"},"quantity":{"type":"integer","title":"Quantity","default":1}},"type":"object","required":["item_uid"],"title":"InventoryCreateModel"},"InventoryItemModel":{"properties":{"uid":{"type":"string","format":"uuid","title":"Uid"},"user_uid":{"type":"string","format":"uuid","title":"User Uid"},"item_uid":{"type":"string","format":"uuid","title":"Item Uid"},"quantity":{"type":"integer","title":"Quantity"},"created_at":{"type":"string","format":"date-time","title":"Created At"}},"type":"object","required":["uid","user_uid","item_uid","quantity","created_at"],"title":"InventoryItemModel"},"InventoryPublicModel":{"properties":{"data":{"items":{"$ref":"#/components/schemas/InventoryItemModel"},"type":"array","title":"Data"},"count":{"type":"integer","title":"Count"}},"type":"object","required":["data","count"],"title":"InventoryPublicModel"},"InventoryUpdateModel":{"properties":{"quantity":{"anyOf":[{"type":"integer"},{"type":"null"}],"title":"Quantity"}},"type":"object","title":"InventoryUpdateModel"},"ItemCreateModel":{"properties":{"name":{"type":"string","title":"Name"},"rarity":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Rarity"},"description":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Description"},"max_drop":{"anyOf":[{"type":"integer"},{"type":"null"}],"title":"Max Drop"},"type":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Type"},"chi":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Chi"},"texture_type":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Texture Type"},"collision_type":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Collision Type"},"seed_color":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Seed Color"},"grow_time":{"anyOf":[{"type":"integer"},{"type":"null"}],"title":"Grow Time"},"default_gems_drop":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Default Gems Drop"},"hits_with_hand":{"anyOf":[{"type":"integer"},{"type":"null"}],"title":"Hits With Hand"},"hits_with_pickaxe":{"anyOf":[{"type":"integer"},{"type":"null"}],"title":"Hits With Pickaxe"},"restore_time_seconds":{"anyOf":[{"type":"integer"},{"type":"null"}],"title":"Restore Time Seconds"},"scraped":{"type":"boolean","title":"Scraped","default":false}},"type":"object","required":["name"],"title":"ItemCreateModel"},"ItemLinkCreateModel":{"properties":{"source_uid":{"type":"string","format":"uuid","title":"Source Uid"},"target_uid":{"type":"string","format":"uuid","title":"Target Uid"}},"type":"object","required":["source_uid","target_uid"],"title":"ItemLinkCreateModel"},"ItemLinkModel":{"properties":{"uid":{"type":"string","format":"uuid","title":"Uid"},"source_uid":{"type":"string","format":"uuid","title":"Source Uid"},"target_uid":{"type":"string","format":"uuid","title":"Target Uid"}},"type":"object","required":["uid","source_uid","target_uid"],"title":"ItemLinkModel"},"ItemModel":{"properties":{"uid":{"type":"string","format":"uuid","title":"Uid"},"name":{"type":"string","title":"Name"},"rarity":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Rarity"},"description":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Description"},"max_drop":{"anyOf":[{"type":"integer"},{"type":"null"}],"title":"Max Drop"},"type":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Type"},"chi":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Chi"},"texture_type":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Texture Type"},"collision_type":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Collision Type"},"seed_color":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Seed Color"},"grow_time":{"anyOf":[{"type":"integer"},{"type":"null"}],"title":"Grow Time"},"default_gems_drop":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Default Gems Drop"},"hits_with_hand":{"anyOf":[{"type":"integer"},{"type":"null"}],"title":"Hits With Hand"},"hits_with_pickaxe":{"anyOf":[{"type":"integer"},{"type":"null"}],"title":"Hits With Pickaxe"},"restore_time_seconds":{"anyOf":[{"type":"integer"},{"type":"null"}],"title":"Restore Time Seconds"},"scraped":{"type":"boolean","title":"Scraped","default":false},"created_by_uid":{"anyOf":[{"type":"string","format":"uuid"},{"type":"null"}],"title":"Created By Uid"},"created_at":{"type":"string","format":"date-time","title":"Created At"},"update_at":{"type":"string","format":"date-time","title":"Update At"}},"type":"object","required":["uid","name","created_at","update_at"],"title":"ItemModel"},"ItemUpdateModel":{"properties":{"name":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Name"},"rarity":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Rarity"},"description":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Description"},"max_drop":{"anyOf":[{"type":"integer"},{"type":"null"}],"title":"Max Drop"},"type":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Type"},"chi":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Chi"},"texture_type":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Texture Type"},"collision_type":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Collision Type"},"seed_color":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Seed Color"},"grow_time":{"anyOf":[{"type":"integer"},{"type":"null"}],"title":"Grow Time"},"default_gems_drop":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Default Gems Drop"},"hits_with_hand":{"anyOf":[{"type":"integer"},{"type":"null"}],"title":"Hits With Hand"},"hits_with_pickaxe":{"anyOf":[{"type":"integer"},{"type":"null"}],"title":"Hits With Pickaxe"},"restore_time_seconds":{"anyOf":[{"type":"integer"},{"type":"null"}],"title":"Restore Time Seconds"},"scraped":{"anyOf":[{"type":"boolean"},{"type":"null"}],"title":"Scraped"}},"type":"object","title":"ItemUpdateModel"},"ItemsPublicModel":{"properties":{"data":{"items":{"$ref":"#/components/schemas/ItemModel"},"type":"array","title":"Data"},"count":{"type":"integer","title":"Count"}},"type":"object","required":["data","count"],"title":"ItemsPublicModel"},"ReviewCreateModel":{"properties":{"rating":{"type":"integer","exclusiveMaximum":5.0,"title":"Rating"},"review_text":{"type":"string","title":"Review Text"}},"type":"object","required":["rating","review_text"],"title":"ReviewCreateModel"},"ReviewModel":{"properties":{"uid":{"type":"string","format":"uuid","title":"Uid"},"rating":{"type":"integer","exclusiveMaximum":5.0,"title":"Rating"},"review_text":{"type":"string","title":"Review Text"},"user_uid":{"anyOf":[{"type":"string","format":"uuid"},{"type":"null"}],"title":"User Uid"},"book_uid":{"anyOf":[{"type":"string","format":"uuid"},{"type":"null"}],"title":"Book Uid"},"created_at":{"type":"string","format":"date-time","title":"Created At"},"update_at":{"type":"string","format":"date-time","title":"Update At"}},"type":"object","required":["uid","rating","review_text","user_uid","book_uid","created_at","update_at"],"title":"ReviewModel"},"TagAddModel":{"properties":{"tags":{"items":{"$ref":"#/components/schemas/TagCreateModel"},"type":"array","title":"Tags"}},"type":"object","required":["tags"],"title":"TagAddModel"},"TagCreateModel":{"properties":{"name":{"type":"string","title":"Name"}},"type":"object","required":["name"],"title":"TagCreateModel"},"TagModel":{"properties":{"uid":{"type":"string","format":"uuid","title":"Uid"},"name":{"type":"string","title":"Name"},"created_at":{"type":"string","format":"date-time","title":"Created At"}},"type":"object","required":["uid","name","created_at"],"title":"TagModel"},"UpdatePassword":{"properties":{"old_password":{"type":"string","title":"Old Password"},"new_password":{"type":"string","title":"New Password"}},"type":"object","required":["old_password","new_password"],"title":"UpdatePassword"},"User":{"properties":{"uid":{"type":"string","format":"uuid","title":"Uid"},"username":{"type":"string","title":"Username"},"first_name":{"type":"string","title":"First Name"},"last_name":{"type":"string","title":"Last Name"},"email":{"type":"string","title":"Email"},"role":{"type":"string","title":"Role"},"is_verified":{"type":"boolean","title":"Is Verified"},"is_superuser":{"type":"boolean","title":"Is Superuser"},"is_active":{"type":"boolean","title":"Is Active"},"created_at":{"type":"string","format":"date-time","title":"Created At"},"update_at":{"type":"string","format":"date-time","title":"Update At"}},"type":"object","required":["uid","username","first_name","last_name","email","role","is_verified","is_superuser","is_active","created_at","update_at"],"title":"User"},"UserCreate":{"properties":{"first_name":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"First Name"},"last_name":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Last Name"},"username":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Username"},"email":{"type":"string","title":"Email"},"password":{"type":"string","title":"Password"},"role":{"type":"string","title":"Role","default":"user"},"is_superuser":{"type":"boolean","title":"Is Superuser","default":false},"is_active":{"type":"boolean","title":"Is Active","default":true}},"type":"object","required":["email","password"],"title":"UserCreate"},"UserLoginModel":{"properties":{"email":{"type":"string","maxLength":40,"title":"Email"},"password":{"type":"string","minLength":6,"title":"Password"}},"type":"object","required":["email","password"],"title":"UserLoginModel"},"UserRegisterResponse":{"properties":{"message":{"type":"string","title":"Message"},"user":{"additionalProperties":true,"type":"object","title":"User"}},"type":"object","required":["message","user"],"title":"UserRegisterResponse"},"UserUpdate":{"properties":{"first_name":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"First Name"},"last_name":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Last Name"},"username":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Username"},"email":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Email"},"role":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Role"},"is_active":{"anyOf":[{"type":"boolean"},{"type":"null"}],"title":"Is Active"},"is_superuser":{"anyOf":[{"type":"boolean"},{"type":"null"}],"title":"Is Superuser"},"password":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Password"}},"type":"object","title":"UserUpdate"},"UserUpdateMe":{"properties":{"first_name":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"First Name"},"last_name":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Last Name"},"username":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Username"},"email":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Email"}},"type":"object","title":"UserUpdateMe"},"UsersPublicModel":{"properties":{"data":{"items":{"$ref":"#/components/schemas/User"},"type":"array","title":"Data"},"count":{"type":"integer","title":"Count"}},"type":"object","required":["data","count"],"title":"UsersPublicModel"},"ValidationError":{"properties":{"loc":{"items":{"anyOf":[{"type":"string"},{"type":"integer"}]},"type":"array","title":"Location"},"msg":{"type":"string","title":"Message"},"type":{"type":"string","title":"Error Type"},"input":{"title":"Input"},"ctx":{"type":"object","title":"Context"}},"type":"object","required":["loc","msg","type"],"title":"ValidationError"}},"securitySchemes":{"AccessTokenBearer":{"type":"http","scheme":"bearer"},"RefreshTokenBearer":{"type":"http","scheme":"bearer"}}}}
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "Bookly",
+        "description": "\nA REST API for a book review web service.\n\nThis REST API is able to;\n- Create Read Update And delete books\n- Add reviews to books\n- Add tags to Books e.t.c.\n    ",
+        "termsOfService": "httpS://example.com/tos",
+        "contact": {
+            "name": "Ssali Jonathan",
+            "url": "https://github.com/jod35",
+            "email": "ssalijonathank@gmail.com"
+        },
+        "license": {
+            "name": "MIT License",
+            "url": "https://opensource.org/license/mit"
+        },
+        "version": "v1"
+    },
+    "paths": {
+        "/api/v1/books/": {
+            "get": {
+                "tags": [
+                    "books"
+                ],
+                "summary": "Get All Books",
+                "operationId": "readBooks",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "$ref": "#/components/schemas/Book"
+                                    },
+                                    "type": "array",
+                                    "title": "Response Readbooks"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "AccessTokenBearer": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "books"
+                ],
+                "summary": "Create A Book",
+                "operationId": "createBook",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BookCreateModel"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Book"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "AccessTokenBearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/books/user/{user_uid}": {
+            "get": {
+                "tags": [
+                    "books"
+                ],
+                "summary": "Get User Book Submissions",
+                "operationId": "readUserSubmissions",
+                "security": [
+                    {
+                        "AccessTokenBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "user_uid",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "User Uid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Book"
+                                    },
+                                    "title": "Response Readusersubmissions"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/books/{book_uid}": {
+            "get": {
+                "tags": [
+                    "books"
+                ],
+                "summary": "Get Book",
+                "operationId": "readBook",
+                "security": [
+                    {
+                        "AccessTokenBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "book_uid",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Book Uid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BookDetailModel"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "books"
+                ],
+                "summary": "Update Book",
+                "operationId": "updateBook",
+                "security": [
+                    {
+                        "AccessTokenBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "book_uid",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Book Uid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BookUpdateModel"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Book"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "books"
+                ],
+                "summary": "Delete Book",
+                "operationId": "deleteBook",
+                "security": [
+                    {
+                        "AccessTokenBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "book_uid",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Book Uid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Successful Response"
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/items/": {
+            "get": {
+                "tags": [
+                    "items"
+                ],
+                "summary": "Get All Items",
+                "operationId": "readItems",
+                "security": [
+                    {
+                        "AccessTokenBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "skip",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 0,
+                            "title": "Skip"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1000,
+                            "title": "Limit"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ],
+                            "title": "Search"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ItemsPublicModel"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "items"
+                ],
+                "summary": "Create Item",
+                "operationId": "createItem",
+                "security": [
+                    {
+                        "AccessTokenBearer": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ItemCreateModel"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ItemModel"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/items/{item_uid}": {
+            "get": {
+                "tags": [
+                    "items"
+                ],
+                "summary": "Get Item",
+                "operationId": "readItem",
+                "security": [
+                    {
+                        "AccessTokenBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "item_uid",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Item Uid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ItemModel"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "items"
+                ],
+                "summary": "Update Item",
+                "operationId": "updateItem",
+                "security": [
+                    {
+                        "AccessTokenBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "item_uid",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Item Uid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ItemUpdateModel"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ItemModel"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "items"
+                ],
+                "summary": "Delete Item",
+                "operationId": "deleteItem",
+                "security": [
+                    {
+                        "AccessTokenBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "item_uid",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Item Uid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Successful Response"
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/items/links": {
+            "post": {
+                "tags": [
+                    "items"
+                ],
+                "summary": "Create Item Link",
+                "operationId": "createItemLink",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ItemLinkCreateModel"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ItemLinkModel"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "AccessTokenBearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/items/links/{link_uid}": {
+            "delete": {
+                "tags": [
+                    "items"
+                ],
+                "summary": "Delete Item Link",
+                "operationId": "deleteItemLink",
+                "security": [
+                    {
+                        "AccessTokenBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "link_uid",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Link Uid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Successful Response"
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/signup": {
+            "post": {
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Create User Account",
+                "operationId": "registerUser",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserCreate"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserRegisterResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/verify/{token}": {
+            "get": {
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Verify User Account",
+                "operationId": "verify_user_account_api_v1_auth_verify__token__get",
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Token"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/refresh_token": {
+            "get": {
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Get New Access Token",
+                "operationId": "get_new_access_token_api_v1_auth_refresh_token_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "RefreshTokenBearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/auth/logout": {
+            "get": {
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Logout And Blacklist Token",
+                "operationId": "logout",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "AccessTokenBearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/login/": {
+            "post": {
+                "tags": [
+                    "login"
+                ],
+                "summary": "Login For Access Token",
+                "operationId": "loginAccessToken",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserLoginModel"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "additionalProperties": true,
+                                    "type": "object",
+                                    "title": "Response Loginaccesstoken"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/users/me": {
+            "get": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Get Current User",
+                "operationId": "readUserMe",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "AccessTokenBearer": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Delete User Me",
+                "operationId": "deleteUserMe",
+                "responses": {
+                    "204": {
+                        "description": "Successful Response"
+                    }
+                },
+                "security": [
+                    {
+                        "AccessTokenBearer": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Update User Me",
+                "operationId": "updateUserMe",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserUpdateMe"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "AccessTokenBearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/users/me/password": {
+            "patch": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Update Password Me",
+                "operationId": "updatePasswordMe",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdatePassword"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "204": {
+                        "description": "Successful Response"
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "AccessTokenBearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/users/": {
+            "get": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Get All Users",
+                "operationId": "readUsers",
+                "security": [
+                    {
+                        "AccessTokenBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "skip",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 0,
+                            "title": "Skip"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 100,
+                            "title": "Limit"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UsersPublicModel"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Create User",
+                "operationId": "createUser",
+                "security": [
+                    {
+                        "AccessTokenBearer": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserCreate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/users/{user_uid}": {
+            "patch": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Update User",
+                "operationId": "updateUser",
+                "security": [
+                    {
+                        "AccessTokenBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "user_uid",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "User Uid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserUpdate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Delete User",
+                "operationId": "deleteUser",
+                "security": [
+                    {
+                        "AccessTokenBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "user_uid",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "User Uid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Successful Response"
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/reviews/": {
+            "get": {
+                "tags": [
+                    "reviews"
+                ],
+                "summary": "Get All Reviews",
+                "operationId": "readReviews",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "AccessTokenBearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/reviews/{review_uid}": {
+            "get": {
+                "tags": [
+                    "reviews"
+                ],
+                "summary": "Get Review",
+                "operationId": "readReview",
+                "security": [
+                    {
+                        "AccessTokenBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "review_uid",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Review Uid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "reviews"
+                ],
+                "summary": "Delete Review",
+                "operationId": "deleteReview",
+                "security": [
+                    {
+                        "AccessTokenBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "review_uid",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Review Uid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Successful Response"
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/reviews/book/{book_uid}": {
+            "post": {
+                "tags": [
+                    "reviews"
+                ],
+                "summary": "Add Review To Books",
+                "operationId": "createReview",
+                "security": [
+                    {
+                        "AccessTokenBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "book_uid",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Book Uid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ReviewCreateModel"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/tags/": {
+            "get": {
+                "tags": [
+                    "tags"
+                ],
+                "summary": "Get All Tags",
+                "operationId": "readTags",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "$ref": "#/components/schemas/TagModel"
+                                    },
+                                    "type": "array",
+                                    "title": "Response Readtags"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "AccessTokenBearer": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "tags"
+                ],
+                "summary": "Add Tag",
+                "operationId": "createTag",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TagCreateModel"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TagModel"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "AccessTokenBearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/tags/book/{book_uid}/tags": {
+            "post": {
+                "tags": [
+                    "tags"
+                ],
+                "summary": "Add Tags To Book",
+                "operationId": "addTagsToBook",
+                "security": [
+                    {
+                        "AccessTokenBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "book_uid",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Book Uid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TagAddModel"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Book"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/tags/{tag_uid}": {
+            "put": {
+                "tags": [
+                    "tags"
+                ],
+                "summary": "Update Tag",
+                "operationId": "updateTag",
+                "security": [
+                    {
+                        "AccessTokenBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "tag_uid",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Tag Uid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TagCreateModel"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TagModel"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "tags"
+                ],
+                "summary": "Delete Tag",
+                "operationId": "deleteTag",
+                "security": [
+                    {
+                        "AccessTokenBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "tag_uid",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Tag Uid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Successful Response"
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/categories/": {
+            "get": {
+                "tags": [
+                    "categories"
+                ],
+                "summary": "Get All Categories",
+                "operationId": "readCategories",
+                "security": [
+                    {
+                        "AccessTokenBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "skip",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 0,
+                            "title": "Skip"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 100,
+                            "title": "Limit"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CategoriesPublicModel"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "categories"
+                ],
+                "summary": "Create Category",
+                "operationId": "createCategory",
+                "security": [
+                    {
+                        "AccessTokenBearer": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CategoryCreateModel"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CategoryModel"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/categories/{category_uid}": {
+            "get": {
+                "tags": [
+                    "categories"
+                ],
+                "summary": "Get Category",
+                "operationId": "readCategory",
+                "security": [
+                    {
+                        "AccessTokenBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "category_uid",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Category Uid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CategoryModel"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "categories"
+                ],
+                "summary": "Update Category",
+                "operationId": "updateCategory",
+                "security": [
+                    {
+                        "AccessTokenBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "category_uid",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Category Uid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CategoryUpdateModel"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CategoryModel"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "categories"
+                ],
+                "summary": "Delete Category",
+                "operationId": "deleteCategory",
+                "security": [
+                    {
+                        "AccessTokenBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "category_uid",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Category Uid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Successful Response"
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/inventory/": {
+            "get": {
+                "tags": [
+                    "inventory"
+                ],
+                "summary": "Get My Inventory",
+                "operationId": "readInventory",
+                "security": [
+                    {
+                        "AccessTokenBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "skip",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 0,
+                            "title": "Skip"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 100,
+                            "title": "Limit"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/InventoryPublicModel"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "inventory"
+                ],
+                "summary": "Add To Inventory",
+                "operationId": "addToInventory",
+                "security": [
+                    {
+                        "AccessTokenBearer": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/InventoryCreateModel"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/InventoryItemModel"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/inventory/{item_uid}": {
+            "patch": {
+                "tags": [
+                    "inventory"
+                ],
+                "summary": "Update Inventory Item",
+                "operationId": "updateInventoryItem",
+                "security": [
+                    {
+                        "AccessTokenBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "item_uid",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Item Uid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/InventoryUpdateModel"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/InventoryItemModel"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "inventory"
+                ],
+                "summary": "Delete From Inventory",
+                "operationId": "deleteFromInventory",
+                "security": [
+                    {
+                        "AccessTokenBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "item_uid",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Item Uid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Successful Response"
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/activity-logs/": {
+            "get": {
+                "tags": [
+                    "activity-logs"
+                ],
+                "summary": "Get Activity Logs",
+                "operationId": "readActivityLogs",
+                "security": [
+                    {
+                        "AccessTokenBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "skip",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 0,
+                            "title": "Skip"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 100,
+                            "title": "Limit"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ActivityLogsPublicModel"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/masses/": {
+            "get": {
+                "tags": [
+                    "masses"
+                ],
+                "summary": "Get Masses",
+                "operationId": "readMasses",
+                "security": [
+                    {
+                        "AccessTokenBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "skip",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 0,
+                            "title": "Skip"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 100,
+                            "title": "Limit"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MassesPublic"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "masses"
+                ],
+                "summary": "Create Mass",
+                "operationId": "createMass",
+                "security": [
+                    {
+                        "AccessTokenBearer": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/MassCreate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MassModel"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/masses/{mass_uid}": {
+            "get": {
+                "tags": [
+                    "masses"
+                ],
+                "summary": "Get Mass",
+                "operationId": "readMass",
+                "security": [
+                    {
+                        "AccessTokenBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "mass_uid",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Mass Uid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MassModel"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "masses"
+                ],
+                "summary": "Update Mass",
+                "operationId": "updateMass",
+                "security": [
+                    {
+                        "AccessTokenBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "mass_uid",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Mass Uid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/MassUpdate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MassModel"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "masses"
+                ],
+                "summary": "Delete Mass",
+                "operationId": "deleteMass",
+                "security": [
+                    {
+                        "AccessTokenBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "mass_uid",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Mass Uid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Successful Response"
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/masses/{mass_uid}/calculate": {
+            "post": {
+                "tags": [
+                    "masses"
+                ],
+                "summary": "Calculate Mass",
+                "operationId": "calculateMass",
+                "security": [
+                    {
+                        "AccessTokenBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "mass_uid",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Mass Uid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MassModel"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "ActivityLogDetailModel": {
+                "properties": {
+                    "uid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "title": "Uid"
+                    },
+                    "user_uid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "title": "User Uid"
+                    },
+                    "action": {
+                        "type": "string",
+                        "title": "Action"
+                    },
+                    "reference_type": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Reference Type"
+                    },
+                    "reference_uid": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "uuid"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Reference Uid"
+                    },
+                    "message": {
+                        "type": "string",
+                        "title": "Message"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Created At"
+                    },
+                    "data": {
+                        "anyOf": [
+                            {
+                                "additionalProperties": true,
+                                "type": "object"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Data"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "uid",
+                    "user_uid",
+                    "action",
+                    "message",
+                    "created_at"
+                ],
+                "title": "ActivityLogDetailModel"
+            },
+            "ActivityLogsPublicModel": {
+                "properties": {
+                    "data": {
+                        "items": {
+                            "$ref": "#/components/schemas/ActivityLogDetailModel"
+                        },
+                        "type": "array",
+                        "title": "Data"
+                    },
+                    "count": {
+                        "type": "integer",
+                        "title": "Count"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "data",
+                    "count"
+                ],
+                "title": "ActivityLogsPublicModel"
+            },
+            "Book": {
+                "properties": {
+                    "uid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "title": "Uid"
+                    },
+                    "title": {
+                        "type": "string",
+                        "title": "Title"
+                    },
+                    "author": {
+                        "type": "string",
+                        "title": "Author"
+                    },
+                    "publisher": {
+                        "type": "string",
+                        "title": "Publisher"
+                    },
+                    "published_date": {
+                        "type": "string",
+                        "format": "date",
+                        "title": "Published Date"
+                    },
+                    "page_count": {
+                        "type": "integer",
+                        "title": "Page Count"
+                    },
+                    "language": {
+                        "type": "string",
+                        "title": "Language"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Created At"
+                    },
+                    "update_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Update At"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "uid",
+                    "title",
+                    "author",
+                    "publisher",
+                    "published_date",
+                    "page_count",
+                    "language",
+                    "created_at",
+                    "update_at"
+                ],
+                "title": "Book"
+            },
+            "BookCreateModel": {
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "title": "Title"
+                    },
+                    "author": {
+                        "type": "string",
+                        "title": "Author"
+                    },
+                    "publisher": {
+                        "type": "string",
+                        "title": "Publisher"
+                    },
+                    "published_date": {
+                        "type": "string",
+                        "title": "Published Date"
+                    },
+                    "page_count": {
+                        "type": "integer",
+                        "title": "Page Count"
+                    },
+                    "language": {
+                        "type": "string",
+                        "title": "Language"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "title",
+                    "author",
+                    "publisher",
+                    "published_date",
+                    "page_count",
+                    "language"
+                ],
+                "title": "BookCreateModel"
+            },
+            "BookDetailModel": {
+                "properties": {
+                    "uid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "title": "Uid"
+                    },
+                    "title": {
+                        "type": "string",
+                        "title": "Title"
+                    },
+                    "author": {
+                        "type": "string",
+                        "title": "Author"
+                    },
+                    "publisher": {
+                        "type": "string",
+                        "title": "Publisher"
+                    },
+                    "published_date": {
+                        "type": "string",
+                        "format": "date",
+                        "title": "Published Date"
+                    },
+                    "page_count": {
+                        "type": "integer",
+                        "title": "Page Count"
+                    },
+                    "language": {
+                        "type": "string",
+                        "title": "Language"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Created At"
+                    },
+                    "update_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Update At"
+                    },
+                    "reviews": {
+                        "items": {
+                            "$ref": "#/components/schemas/ReviewModel"
+                        },
+                        "type": "array",
+                        "title": "Reviews"
+                    },
+                    "tags": {
+                        "items": {
+                            "$ref": "#/components/schemas/TagModel"
+                        },
+                        "type": "array",
+                        "title": "Tags"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "uid",
+                    "title",
+                    "author",
+                    "publisher",
+                    "published_date",
+                    "page_count",
+                    "language",
+                    "created_at",
+                    "update_at",
+                    "reviews",
+                    "tags"
+                ],
+                "title": "BookDetailModel"
+            },
+            "BookUpdateModel": {
+                "properties": {
+                    "title": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Title"
+                    },
+                    "author": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Author"
+                    },
+                    "publisher": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Publisher"
+                    },
+                    "page_count": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Page Count"
+                    },
+                    "language": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Language"
+                    }
+                },
+                "type": "object",
+                "title": "BookUpdateModel"
+            },
+            "CategoriesPublicModel": {
+                "properties": {
+                    "data": {
+                        "items": {
+                            "$ref": "#/components/schemas/CategoryModel"
+                        },
+                        "type": "array",
+                        "title": "Data"
+                    },
+                    "count": {
+                        "type": "integer",
+                        "title": "Count"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "data",
+                    "count"
+                ],
+                "title": "CategoriesPublicModel"
+            },
+            "CategoryCreateModel": {
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "title": "Name"
+                    },
+                    "description": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Description"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "name"
+                ],
+                "title": "CategoryCreateModel"
+            },
+            "CategoryModel": {
+                "properties": {
+                    "uid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "title": "Uid"
+                    },
+                    "name": {
+                        "type": "string",
+                        "title": "Name"
+                    },
+                    "description": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Description"
+                    },
+                    "user_uid": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "uuid"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "User Uid"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Created At"
+                    },
+                    "update_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Update At"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "uid",
+                    "name",
+                    "description",
+                    "user_uid",
+                    "created_at",
+                    "update_at"
+                ],
+                "title": "CategoryModel"
+            },
+            "CategoryUpdateModel": {
+                "properties": {
+                    "name": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Name"
+                    },
+                    "description": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Description"
+                    }
+                },
+                "type": "object",
+                "title": "CategoryUpdateModel"
+            },
+            "HTTPValidationError": {
+                "properties": {
+                    "detail": {
+                        "items": {
+                            "$ref": "#/components/schemas/ValidationError"
+                        },
+                        "type": "array",
+                        "title": "Detail"
+                    }
+                },
+                "type": "object",
+                "title": "HTTPValidationError"
+            },
+            "InventoryCreateModel": {
+                "properties": {
+                    "item_uid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "title": "Item Uid"
+                    },
+                    "quantity": {
+                        "type": "integer",
+                        "title": "Quantity",
+                        "default": 1
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "item_uid"
+                ],
+                "title": "InventoryCreateModel"
+            },
+            "InventoryItemModel": {
+                "properties": {
+                    "uid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "title": "Uid"
+                    },
+                    "user_uid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "title": "User Uid"
+                    },
+                    "item_uid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "title": "Item Uid"
+                    },
+                    "quantity": {
+                        "type": "integer",
+                        "title": "Quantity"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Created At"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "uid",
+                    "user_uid",
+                    "item_uid",
+                    "quantity",
+                    "created_at"
+                ],
+                "title": "InventoryItemModel"
+            },
+            "InventoryPublicModel": {
+                "properties": {
+                    "data": {
+                        "items": {
+                            "$ref": "#/components/schemas/InventoryItemModel"
+                        },
+                        "type": "array",
+                        "title": "Data"
+                    },
+                    "count": {
+                        "type": "integer",
+                        "title": "Count"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "data",
+                    "count"
+                ],
+                "title": "InventoryPublicModel"
+            },
+            "InventoryUpdateModel": {
+                "properties": {
+                    "quantity": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Quantity"
+                    }
+                },
+                "type": "object",
+                "title": "InventoryUpdateModel"
+            },
+            "ItemCreateModel": {
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "title": "Name"
+                    },
+                    "rarity": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Rarity"
+                    },
+                    "description": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Description"
+                    },
+                    "max_drop": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Max Drop"
+                    },
+                    "type": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Type"
+                    },
+                    "chi": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Chi"
+                    },
+                    "texture_type": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Texture Type"
+                    },
+                    "collision_type": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Collision Type"
+                    },
+                    "seed_color": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Seed Color"
+                    },
+                    "grow_time": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Grow Time"
+                    },
+                    "default_gems_drop": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Default Gems Drop"
+                    },
+                    "hits_with_hand": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Hits With Hand"
+                    },
+                    "hits_with_pickaxe": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Hits With Pickaxe"
+                    },
+                    "restore_time_seconds": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Restore Time Seconds"
+                    },
+                    "scraped": {
+                        "type": "boolean",
+                        "title": "Scraped",
+                        "default": false
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "name"
+                ],
+                "title": "ItemCreateModel"
+            },
+            "ItemLinkCreateModel": {
+                "properties": {
+                    "source_uid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "title": "Source Uid"
+                    },
+                    "target_uid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "title": "Target Uid"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "source_uid",
+                    "target_uid"
+                ],
+                "title": "ItemLinkCreateModel"
+            },
+            "ItemLinkModel": {
+                "properties": {
+                    "uid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "title": "Uid"
+                    },
+                    "source_uid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "title": "Source Uid"
+                    },
+                    "target_uid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "title": "Target Uid"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "uid",
+                    "source_uid",
+                    "target_uid"
+                ],
+                "title": "ItemLinkModel"
+            },
+            "ItemModel": {
+                "properties": {
+                    "uid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "title": "Uid"
+                    },
+                    "name": {
+                        "type": "string",
+                        "title": "Name"
+                    },
+                    "rarity": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Rarity"
+                    },
+                    "description": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Description"
+                    },
+                    "max_drop": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Max Drop"
+                    },
+                    "type": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Type"
+                    },
+                    "chi": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Chi"
+                    },
+                    "texture_type": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Texture Type"
+                    },
+                    "collision_type": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Collision Type"
+                    },
+                    "seed_color": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Seed Color"
+                    },
+                    "grow_time": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Grow Time"
+                    },
+                    "default_gems_drop": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Default Gems Drop"
+                    },
+                    "hits_with_hand": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Hits With Hand"
+                    },
+                    "hits_with_pickaxe": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Hits With Pickaxe"
+                    },
+                    "restore_time_seconds": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Restore Time Seconds"
+                    },
+                    "scraped": {
+                        "type": "boolean",
+                        "title": "Scraped",
+                        "default": false
+                    },
+                    "created_by_uid": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "uuid"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Created By Uid"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Created At"
+                    },
+                    "update_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Update At"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "uid",
+                    "name",
+                    "created_at",
+                    "update_at"
+                ],
+                "title": "ItemModel"
+            },
+            "ItemUpdateModel": {
+                "properties": {
+                    "name": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Name"
+                    },
+                    "rarity": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Rarity"
+                    },
+                    "description": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Description"
+                    },
+                    "max_drop": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Max Drop"
+                    },
+                    "type": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Type"
+                    },
+                    "chi": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Chi"
+                    },
+                    "texture_type": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Texture Type"
+                    },
+                    "collision_type": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Collision Type"
+                    },
+                    "seed_color": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Seed Color"
+                    },
+                    "grow_time": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Grow Time"
+                    },
+                    "default_gems_drop": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Default Gems Drop"
+                    },
+                    "hits_with_hand": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Hits With Hand"
+                    },
+                    "hits_with_pickaxe": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Hits With Pickaxe"
+                    },
+                    "restore_time_seconds": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Restore Time Seconds"
+                    },
+                    "scraped": {
+                        "anyOf": [
+                            {
+                                "type": "boolean"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Scraped"
+                    }
+                },
+                "type": "object",
+                "title": "ItemUpdateModel"
+            },
+            "ItemsPublicModel": {
+                "properties": {
+                    "data": {
+                        "items": {
+                            "$ref": "#/components/schemas/ItemModel"
+                        },
+                        "type": "array",
+                        "title": "Data"
+                    },
+                    "count": {
+                        "type": "integer",
+                        "title": "Count"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "data",
+                    "count"
+                ],
+                "title": "ItemsPublicModel"
+            },
+            "MassCreate": {
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "title": "Name"
+                    },
+                    "description": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Description"
+                    },
+                    "mode": {
+                        "type": "string",
+                        "title": "Mode",
+                        "default": "a"
+                    },
+                    "items": {
+                        "items": {
+                            "$ref": "#/components/schemas/MassItemInput"
+                        },
+                        "type": "array",
+                        "title": "Items",
+                        "default": []
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "name"
+                ],
+                "title": "MassCreate"
+            },
+            "MassItemInput": {
+                "properties": {
+                    "item_uid": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "uuid"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Item Uid"
+                    },
+                    "item_name": {
+                        "type": "string",
+                        "title": "Item Name",
+                        "default": "Item"
+                    },
+                    "tree_rarity": {
+                        "type": "integer",
+                        "title": "Tree Rarity",
+                        "default": 1
+                    },
+                    "max_blocks": {
+                        "type": "integer",
+                        "title": "Max Blocks",
+                        "default": 1
+                    },
+                    "jumlah_pohon": {
+                        "type": "integer",
+                        "title": "Jumlah Pohon",
+                        "default": 0
+                    }
+                },
+                "type": "object",
+                "title": "MassItemInput"
+            },
+            "MassItemResult": {
+                "properties": {
+                    "item_uid": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "uuid"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Item Uid"
+                    },
+                    "item_name": {
+                        "type": "string",
+                        "title": "Item Name",
+                        "default": "Item"
+                    },
+                    "tree_rarity": {
+                        "type": "integer",
+                        "title": "Tree Rarity",
+                        "default": 1
+                    },
+                    "max_blocks": {
+                        "type": "integer",
+                        "title": "Max Blocks",
+                        "default": 1
+                    },
+                    "jumlah_pohon": {
+                        "type": "integer",
+                        "title": "Jumlah Pohon",
+                        "default": 0
+                    },
+                    "uid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "title": "Uid"
+                    },
+                    "blok_yielded": {
+                        "type": "integer",
+                        "title": "Blok Yielded"
+                    },
+                    "total_smash_efektif": {
+                        "type": "integer",
+                        "title": "Total Smash Efektif"
+                    },
+                    "seeds_fallen": {
+                        "type": "integer",
+                        "title": "Seeds Fallen"
+                    },
+                    "seeds_from_smash": {
+                        "type": "integer",
+                        "title": "Seeds From Smash"
+                    },
+                    "total_seeds_return": {
+                        "type": "integer",
+                        "title": "Total Seeds Return"
+                    },
+                    "seed_return_rate": {
+                        "type": "number",
+                        "title": "Seed Return Rate"
+                    },
+                    "gem_blocks": {
+                        "type": "integer",
+                        "title": "Gem Blocks"
+                    },
+                    "avg_gems_per_block": {
+                        "type": "number",
+                        "title": "Avg Gems Per Block"
+                    },
+                    "harvest_gems": {
+                        "type": "integer",
+                        "title": "Harvest Gems"
+                    },
+                    "total_gems_didapat": {
+                        "type": "integer",
+                        "title": "Total Gems Didapat"
+                    },
+                    "grow_time_seconds": {
+                        "type": "integer",
+                        "title": "Grow Time Seconds"
+                    },
+                    "grow_time_readable": {
+                        "type": "string",
+                        "title": "Grow Time Readable",
+                        "default": ""
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "uid",
+                    "blok_yielded",
+                    "total_smash_efektif",
+                    "seeds_fallen",
+                    "seeds_from_smash",
+                    "total_seeds_return",
+                    "seed_return_rate",
+                    "gem_blocks",
+                    "avg_gems_per_block",
+                    "harvest_gems",
+                    "total_gems_didapat",
+                    "grow_time_seconds"
+                ],
+                "title": "MassItemResult"
+            },
+            "MassModel": {
+                "properties": {
+                    "uid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "title": "Uid"
+                    },
+                    "name": {
+                        "type": "string",
+                        "title": "Name"
+                    },
+                    "description": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Description"
+                    },
+                    "mode": {
+                        "type": "string",
+                        "title": "Mode"
+                    },
+                    "user_uid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "title": "User Uid"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Created At"
+                    },
+                    "update_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Update At"
+                    },
+                    "items": {
+                        "items": {
+                            "$ref": "#/components/schemas/MassItemResult"
+                        },
+                        "type": "array",
+                        "title": "Items",
+                        "default": []
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "uid",
+                    "name",
+                    "mode",
+                    "user_uid",
+                    "created_at",
+                    "update_at"
+                ],
+                "title": "MassModel"
+            },
+            "MassUpdate": {
+                "properties": {
+                    "name": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Name"
+                    },
+                    "description": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Description"
+                    },
+                    "mode": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Mode"
+                    },
+                    "items": {
+                        "anyOf": [
+                            {
+                                "items": {
+                                    "$ref": "#/components/schemas/MassItemInput"
+                                },
+                                "type": "array"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Items"
+                    }
+                },
+                "type": "object",
+                "title": "MassUpdate"
+            },
+            "MassesPublic": {
+                "properties": {
+                    "data": {
+                        "items": {
+                            "$ref": "#/components/schemas/MassModel"
+                        },
+                        "type": "array",
+                        "title": "Data"
+                    },
+                    "count": {
+                        "type": "integer",
+                        "title": "Count"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "data",
+                    "count"
+                ],
+                "title": "MassesPublic"
+            },
+            "ReviewCreateModel": {
+                "properties": {
+                    "rating": {
+                        "type": "integer",
+                        "exclusiveMaximum": 5.0,
+                        "title": "Rating"
+                    },
+                    "review_text": {
+                        "type": "string",
+                        "title": "Review Text"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "rating",
+                    "review_text"
+                ],
+                "title": "ReviewCreateModel"
+            },
+            "ReviewModel": {
+                "properties": {
+                    "uid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "title": "Uid"
+                    },
+                    "rating": {
+                        "type": "integer",
+                        "exclusiveMaximum": 5.0,
+                        "title": "Rating"
+                    },
+                    "review_text": {
+                        "type": "string",
+                        "title": "Review Text"
+                    },
+                    "user_uid": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "uuid"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "User Uid"
+                    },
+                    "book_uid": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "format": "uuid"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Book Uid"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Created At"
+                    },
+                    "update_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Update At"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "uid",
+                    "rating",
+                    "review_text",
+                    "user_uid",
+                    "book_uid",
+                    "created_at",
+                    "update_at"
+                ],
+                "title": "ReviewModel"
+            },
+            "TagAddModel": {
+                "properties": {
+                    "tags": {
+                        "items": {
+                            "$ref": "#/components/schemas/TagCreateModel"
+                        },
+                        "type": "array",
+                        "title": "Tags"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "tags"
+                ],
+                "title": "TagAddModel"
+            },
+            "TagCreateModel": {
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "title": "Name"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "name"
+                ],
+                "title": "TagCreateModel"
+            },
+            "TagModel": {
+                "properties": {
+                    "uid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "title": "Uid"
+                    },
+                    "name": {
+                        "type": "string",
+                        "title": "Name"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Created At"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "uid",
+                    "name",
+                    "created_at"
+                ],
+                "title": "TagModel"
+            },
+            "UpdatePassword": {
+                "properties": {
+                    "old_password": {
+                        "type": "string",
+                        "title": "Old Password"
+                    },
+                    "new_password": {
+                        "type": "string",
+                        "title": "New Password"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "old_password",
+                    "new_password"
+                ],
+                "title": "UpdatePassword"
+            },
+            "User": {
+                "properties": {
+                    "uid": {
+                        "type": "string",
+                        "format": "uuid",
+                        "title": "Uid"
+                    },
+                    "username": {
+                        "type": "string",
+                        "title": "Username"
+                    },
+                    "first_name": {
+                        "type": "string",
+                        "title": "First Name"
+                    },
+                    "last_name": {
+                        "type": "string",
+                        "title": "Last Name"
+                    },
+                    "email": {
+                        "type": "string",
+                        "title": "Email"
+                    },
+                    "role": {
+                        "type": "string",
+                        "title": "Role"
+                    },
+                    "is_verified": {
+                        "type": "boolean",
+                        "title": "Is Verified"
+                    },
+                    "is_superuser": {
+                        "type": "boolean",
+                        "title": "Is Superuser"
+                    },
+                    "is_active": {
+                        "type": "boolean",
+                        "title": "Is Active"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Created At"
+                    },
+                    "update_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Update At"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "uid",
+                    "username",
+                    "first_name",
+                    "last_name",
+                    "email",
+                    "role",
+                    "is_verified",
+                    "is_superuser",
+                    "is_active",
+                    "created_at",
+                    "update_at"
+                ],
+                "title": "User"
+            },
+            "UserCreate": {
+                "properties": {
+                    "first_name": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "First Name"
+                    },
+                    "last_name": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Last Name"
+                    },
+                    "username": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Username"
+                    },
+                    "email": {
+                        "type": "string",
+                        "title": "Email"
+                    },
+                    "password": {
+                        "type": "string",
+                        "title": "Password"
+                    },
+                    "role": {
+                        "type": "string",
+                        "title": "Role",
+                        "default": "user"
+                    },
+                    "is_superuser": {
+                        "type": "boolean",
+                        "title": "Is Superuser",
+                        "default": false
+                    },
+                    "is_active": {
+                        "type": "boolean",
+                        "title": "Is Active",
+                        "default": true
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "email",
+                    "password"
+                ],
+                "title": "UserCreate"
+            },
+            "UserLoginModel": {
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "maxLength": 40,
+                        "title": "Email"
+                    },
+                    "password": {
+                        "type": "string",
+                        "minLength": 6,
+                        "title": "Password"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "email",
+                    "password"
+                ],
+                "title": "UserLoginModel"
+            },
+            "UserRegisterResponse": {
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "title": "Message"
+                    },
+                    "user": {
+                        "additionalProperties": true,
+                        "type": "object",
+                        "title": "User"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "message",
+                    "user"
+                ],
+                "title": "UserRegisterResponse"
+            },
+            "UserUpdate": {
+                "properties": {
+                    "first_name": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "First Name"
+                    },
+                    "last_name": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Last Name"
+                    },
+                    "username": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Username"
+                    },
+                    "email": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Email"
+                    },
+                    "role": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Role"
+                    },
+                    "is_active": {
+                        "anyOf": [
+                            {
+                                "type": "boolean"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Is Active"
+                    },
+                    "is_superuser": {
+                        "anyOf": [
+                            {
+                                "type": "boolean"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Is Superuser"
+                    },
+                    "password": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Password"
+                    }
+                },
+                "type": "object",
+                "title": "UserUpdate"
+            },
+            "UserUpdateMe": {
+                "properties": {
+                    "first_name": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "First Name"
+                    },
+                    "last_name": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Last Name"
+                    },
+                    "username": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Username"
+                    },
+                    "email": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Email"
+                    }
+                },
+                "type": "object",
+                "title": "UserUpdateMe"
+            },
+            "UsersPublicModel": {
+                "properties": {
+                    "data": {
+                        "items": {
+                            "$ref": "#/components/schemas/User"
+                        },
+                        "type": "array",
+                        "title": "Data"
+                    },
+                    "count": {
+                        "type": "integer",
+                        "title": "Count"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "data",
+                    "count"
+                ],
+                "title": "UsersPublicModel"
+            },
+            "ValidationError": {
+                "properties": {
+                    "loc": {
+                        "items": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "integer"
+                                }
+                            ]
+                        },
+                        "type": "array",
+                        "title": "Location"
+                    },
+                    "msg": {
+                        "type": "string",
+                        "title": "Message"
+                    },
+                    "type": {
+                        "type": "string",
+                        "title": "Error Type"
+                    },
+                    "input": {
+                        "title": "Input"
+                    },
+                    "ctx": {
+                        "type": "object",
+                        "title": "Context"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "loc",
+                    "msg",
+                    "type"
+                ],
+                "title": "ValidationError"
+            }
+        },
+        "securitySchemes": {
+            "AccessTokenBearer": {
+                "type": "http",
+                "scheme": "bearer"
+            },
+            "RefreshTokenBearer": {
+                "type": "http",
+                "scheme": "bearer"
+            }
+        }
+    }
+}

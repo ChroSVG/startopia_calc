@@ -2,7 +2,9 @@ import uuid
 from datetime import datetime
 from typing import List, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, model_validator
+
+from .calculator import format_duration
 
 
 class MassItemInput(BaseModel):
@@ -26,7 +28,13 @@ class MassItemResult(MassItemInput):
     harvest_gems: int
     total_gems_didapat: int
     grow_time_seconds: int
-    grow_time_readable: str
+    grow_time_readable: str = ""
+
+    @model_validator(mode="after")
+    def compute_grow_time_readable(self) -> "MassItemResult":
+        if not self.grow_time_readable and self.grow_time_seconds:
+            self.grow_time_readable = format_duration(self.grow_time_seconds)
+        return self
 
 
 class MassCreate(BaseModel):

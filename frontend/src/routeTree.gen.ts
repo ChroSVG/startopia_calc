@@ -16,6 +16,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as LayoutRouteImport } from './routes/_layout'
 import { Route as LayoutIndexRouteImport } from './routes/_layout/index'
 import { Route as LayoutSettingsRouteImport } from './routes/_layout/settings'
+import { Route as LayoutMassesRouteImport } from './routes/_layout/masses'
 import { Route as LayoutInventoryRouteImport } from './routes/_layout/inventory'
 import { Route as LayoutCategoriesRouteImport } from './routes/_layout/categories'
 import { Route as LayoutAdminLogsRouteImport } from './routes/_layout/admin-logs'
@@ -56,6 +57,11 @@ const LayoutSettingsRoute = LayoutSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => LayoutRoute,
 } as any)
+const LayoutMassesRoute = LayoutMassesRouteImport.update({
+  id: '/masses',
+  path: '/masses',
+  getParentRoute: () => LayoutRoute,
+} as any)
 const LayoutInventoryRoute = LayoutInventoryRouteImport.update({
   id: '/inventory',
   path: '/inventory',
@@ -93,6 +99,7 @@ export interface FileRoutesByFullPath {
   '/admin-logs': typeof LayoutAdminLogsRoute
   '/categories': typeof LayoutCategoriesRoute
   '/inventory': typeof LayoutInventoryRoute
+  '/masses': typeof LayoutMassesRoute
   '/settings': typeof LayoutSettingsRoute
 }
 export interface FileRoutesByTo {
@@ -105,6 +112,7 @@ export interface FileRoutesByTo {
   '/admin-logs': typeof LayoutAdminLogsRoute
   '/categories': typeof LayoutCategoriesRoute
   '/inventory': typeof LayoutInventoryRoute
+  '/masses': typeof LayoutMassesRoute
   '/settings': typeof LayoutSettingsRoute
   '/': typeof LayoutIndexRoute
 }
@@ -120,6 +128,7 @@ export interface FileRoutesById {
   '/_layout/admin-logs': typeof LayoutAdminLogsRoute
   '/_layout/categories': typeof LayoutCategoriesRoute
   '/_layout/inventory': typeof LayoutInventoryRoute
+  '/_layout/masses': typeof LayoutMassesRoute
   '/_layout/settings': typeof LayoutSettingsRoute
   '/_layout/': typeof LayoutIndexRoute
 }
@@ -136,6 +145,7 @@ export interface FileRouteTypes {
     | '/admin-logs'
     | '/categories'
     | '/inventory'
+    | '/masses'
     | '/settings'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -148,6 +158,7 @@ export interface FileRouteTypes {
     | '/admin-logs'
     | '/categories'
     | '/inventory'
+    | '/masses'
     | '/settings'
     | '/'
   id:
@@ -162,6 +173,7 @@ export interface FileRouteTypes {
     | '/_layout/admin-logs'
     | '/_layout/categories'
     | '/_layout/inventory'
+    | '/_layout/masses'
     | '/_layout/settings'
     | '/_layout/'
   fileRoutesById: FileRoutesById
@@ -225,6 +237,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutSettingsRouteImport
       parentRoute: typeof LayoutRoute
     }
+    '/_layout/masses': {
+      id: '/_layout/masses'
+      path: '/masses'
+      fullPath: '/masses'
+      preLoaderRoute: typeof LayoutMassesRouteImport
+      parentRoute: typeof LayoutRoute
+    }
     '/_layout/inventory': {
       id: '/_layout/inventory'
       path: '/inventory'
@@ -269,6 +288,7 @@ interface LayoutRouteChildren {
   LayoutAdminLogsRoute: typeof LayoutAdminLogsRoute
   LayoutCategoriesRoute: typeof LayoutCategoriesRoute
   LayoutInventoryRoute: typeof LayoutInventoryRoute
+  LayoutMassesRoute: typeof LayoutMassesRoute
   LayoutSettingsRoute: typeof LayoutSettingsRoute
   LayoutIndexRoute: typeof LayoutIndexRoute
 }
@@ -279,6 +299,7 @@ const LayoutRouteChildren: LayoutRouteChildren = {
   LayoutAdminLogsRoute: LayoutAdminLogsRoute,
   LayoutCategoriesRoute: LayoutCategoriesRoute,
   LayoutInventoryRoute: LayoutInventoryRoute,
+  LayoutMassesRoute: LayoutMassesRoute,
   LayoutSettingsRoute: LayoutSettingsRoute,
   LayoutIndexRoute: LayoutIndexRoute,
 }

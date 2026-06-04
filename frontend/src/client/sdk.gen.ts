@@ -3,7 +3,7 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { ReadActivityLogsData, ReadActivityLogsResponse, RegisterUserData, RegisterUserResponse, VerifyUserAccountApiV1AuthVerifyTokenGetData, VerifyUserAccountApiV1AuthVerifyTokenGetResponse, GetNewAccessTokenApiV1AuthRefreshTokenGetResponse, LogoutResponse, ReadBooksResponse, CreateBookData, CreateBookResponse, ReadUserSubmissionsData, ReadUserSubmissionsResponse, ReadBookData, ReadBookResponse, UpdateBookData, UpdateBookResponse, DeleteBookData, DeleteBookResponse, ReadCategoriesData, ReadCategoriesResponse, CreateCategoryData, CreateCategoryResponse, ReadCategoryData, ReadCategoryResponse, UpdateCategoryData, UpdateCategoryResponse, DeleteCategoryData, DeleteCategoryResponse, ReadInventoryData, ReadInventoryResponse, AddToInventoryData, AddToInventoryResponse, UpdateInventoryItemData, UpdateInventoryItemResponse, DeleteFromInventoryData, DeleteFromInventoryResponse, ReadItemsData, ReadItemsResponse, CreateItemData, CreateItemResponse, ReadItemData, ReadItemResponse, UpdateItemData, UpdateItemResponse, DeleteItemData, DeleteItemResponse, CreateItemLinkData, CreateItemLinkResponse, DeleteItemLinkData, DeleteItemLinkResponse, LoginAccessTokenData, LoginAccessTokenResponse, ReadReviewsResponse, ReadReviewData, ReadReviewResponse, DeleteReviewData, DeleteReviewResponse, CreateReviewData, CreateReviewResponse, ReadTagsResponse, CreateTagData, CreateTagResponse, AddTagsToBookData, AddTagsToBookResponse, UpdateTagData, UpdateTagResponse, DeleteTagData, DeleteTagResponse, ReadUserMeResponse, DeleteUserMeResponse, UpdateUserMeData, UpdateUserMeResponse, UpdatePasswordMeData, UpdatePasswordMeResponse, ReadUsersData, ReadUsersResponse, CreateUserData, CreateUserResponse, UpdateUserData, UpdateUserResponse, DeleteUserData, DeleteUserResponse } from './types.gen';
+import type { ReadActivityLogsData, ReadActivityLogsResponse, RegisterUserData, RegisterUserResponse, VerifyUserAccountApiV1AuthVerifyTokenGetData, VerifyUserAccountApiV1AuthVerifyTokenGetResponse, GetNewAccessTokenApiV1AuthRefreshTokenGetResponse, LogoutResponse, ReadBooksResponse, CreateBookData, CreateBookResponse, ReadUserSubmissionsData, ReadUserSubmissionsResponse, ReadBookData, ReadBookResponse, UpdateBookData, UpdateBookResponse, DeleteBookData, DeleteBookResponse, ReadCategoriesData, ReadCategoriesResponse, CreateCategoryData, CreateCategoryResponse, ReadCategoryData, ReadCategoryResponse, UpdateCategoryData, UpdateCategoryResponse, DeleteCategoryData, DeleteCategoryResponse, ReadInventoryData, ReadInventoryResponse, AddToInventoryData, AddToInventoryResponse, UpdateInventoryItemData, UpdateInventoryItemResponse, DeleteFromInventoryData, DeleteFromInventoryResponse, ReadItemsData, ReadItemsResponse, CreateItemData, CreateItemResponse, ReadItemData, ReadItemResponse, UpdateItemData, UpdateItemResponse, DeleteItemData, DeleteItemResponse, CreateItemLinkData, CreateItemLinkResponse, DeleteItemLinkData, DeleteItemLinkResponse, LoginAccessTokenData, LoginAccessTokenResponse, ReadMassesData, ReadMassesResponse, CreateMassData, CreateMassResponse, ReadMassData, ReadMassResponse, UpdateMassData, UpdateMassResponse, DeleteMassData, DeleteMassResponse, CalculateMassData, CalculateMassResponse, ReadReviewsResponse, ReadReviewData, ReadReviewResponse, DeleteReviewData, DeleteReviewResponse, CreateReviewData, CreateReviewResponse, ReadTagsResponse, CreateTagData, CreateTagResponse, AddTagsToBookData, AddTagsToBookResponse, UpdateTagData, UpdateTagResponse, DeleteTagData, DeleteTagResponse, ReadUserMeResponse, DeleteUserMeResponse, UpdateUserMeData, UpdateUserMeResponse, UpdatePasswordMeData, UpdatePasswordMeResponse, ReadUsersData, ReadUsersResponse, CreateUserData, CreateUserResponse, UpdateUserData, UpdateUserResponse, DeleteUserData, DeleteUserResponse } from './types.gen';
 
 export class ActivityLogsService {
     /**
@@ -408,6 +408,7 @@ export class ItemsService {
      * @param data The data for the request.
      * @param data.skip
      * @param data.limit
+     * @param data.search
      * @returns ItemsPublicModel Successful Response
      * @throws ApiError
      */
@@ -562,6 +563,132 @@ export class LoginService {
             url: '/api/v1/login/',
             body: data.requestBody,
             mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+}
+
+export class MassesService {
+    /**
+     * Get Masses
+     * @param data The data for the request.
+     * @param data.skip
+     * @param data.limit
+     * @returns MassesPublic Successful Response
+     * @throws ApiError
+     */
+    public static readMasses(data: ReadMassesData = {}): CancelablePromise<ReadMassesResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/masses/',
+            query: {
+                skip: data.skip,
+                limit: data.limit
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Create Mass
+     * @param data The data for the request.
+     * @param data.requestBody
+     * @returns MassModel Successful Response
+     * @throws ApiError
+     */
+    public static createMass(data: CreateMassData): CancelablePromise<CreateMassResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/masses/',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Get Mass
+     * @param data The data for the request.
+     * @param data.massUid
+     * @returns MassModel Successful Response
+     * @throws ApiError
+     */
+    public static readMass(data: ReadMassData): CancelablePromise<ReadMassResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/masses/{mass_uid}',
+            path: {
+                mass_uid: data.massUid
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Update Mass
+     * @param data The data for the request.
+     * @param data.massUid
+     * @param data.requestBody
+     * @returns MassModel Successful Response
+     * @throws ApiError
+     */
+    public static updateMass(data: UpdateMassData): CancelablePromise<UpdateMassResponse> {
+        return __request(OpenAPI, {
+            method: 'PATCH',
+            url: '/api/v1/masses/{mass_uid}',
+            path: {
+                mass_uid: data.massUid
+            },
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Delete Mass
+     * @param data The data for the request.
+     * @param data.massUid
+     * @returns void Successful Response
+     * @throws ApiError
+     */
+    public static deleteMass(data: DeleteMassData): CancelablePromise<DeleteMassResponse> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/api/v1/masses/{mass_uid}',
+            path: {
+                mass_uid: data.massUid
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Calculate Mass
+     * @param data The data for the request.
+     * @param data.massUid
+     * @returns MassModel Successful Response
+     * @throws ApiError
+     */
+    public static calculateMass(data: CalculateMassData): CancelablePromise<CalculateMassResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/masses/{mass_uid}/calculate',
+            path: {
+                mass_uid: data.massUid
+            },
             errors: {
                 422: 'Validation Error'
             }

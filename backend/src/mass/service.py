@@ -99,6 +99,7 @@ class MassService:
         items = await self.mass_item_repo.get_by_mass_uid(session, mass_uid)
         for item in items:
             result = calculate_item(item.tree_rarity, item.max_blocks, item.jumlah_pohon, mass.mode)
+            result.pop("grow_time_readable", None)
             for key, value in result.items():
                 setattr(item, key, value)
             session.add(item)
@@ -118,14 +119,18 @@ class MassService:
         item_data = item_in.model_dump() if hasattr(item_in, "model_dump") else item_in
 
         if item_data.get("item_uid"):
-            existing = await session.exec(
+            result = await session.exec(
                 select(Item).where(Item.uid == item_data["item_uid"])
             )
-            if not existing.first():
+            item = result.first()
+            if not item:
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
                     detail=f"Item with uid {item_data['item_uid']} not found",
                 )
+            item_data["item_name"] = item.name
+            item_data["tree_rarity"] = int(item.rarity or 1)
+            item_data["max_blocks"] = (item.max_drop or 4) // 4
 
         result = calculate_item(
             item_data.get("tree_rarity", 1),
@@ -134,6 +139,7 @@ class MassService:
             mode,
         )
 
+        result.pop("grow_time_readable", None)
         mass_item_data = {
             "mass_uid": mass_uid,
             "item_uid": item_data.get("item_uid"),

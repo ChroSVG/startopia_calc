@@ -1,5 +1,6 @@
 import {
   Briefcase,
+  Calculator,
   Folder,
   Home,
   Package,
@@ -21,6 +22,7 @@ import { User } from "./User"
 
 const baseItems: Item[] = [
   { icon: Home, title: "Dashboard", path: "/" },
+  { icon: Calculator, title: "Masses", path: "/masses" },
   { icon: Folder, title: "Categories", path: "/categories" },
   { icon: Package, title: "Inventory", path: "/inventory" },
 ]

@@ -1090,6 +1090,302 @@ export const ItemsPublicModelSchema = {
     title: 'ItemsPublicModel'
 } as const;
 
+export const MassCreateSchema = {
+    properties: {
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        description: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Description'
+        },
+        mode: {
+            type: 'string',
+            title: 'Mode',
+            default: 'a'
+        },
+        items: {
+            items: {
+                '$ref': '#/components/schemas/MassItemInput'
+            },
+            type: 'array',
+            title: 'Items',
+            default: []
+        }
+    },
+    type: 'object',
+    required: ['name'],
+    title: 'MassCreate'
+} as const;
+
+export const MassItemInputSchema = {
+    properties: {
+        item_uid: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'uuid'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Item Uid'
+        },
+        item_name: {
+            type: 'string',
+            title: 'Item Name',
+            default: 'Item'
+        },
+        tree_rarity: {
+            type: 'integer',
+            title: 'Tree Rarity',
+            default: 1
+        },
+        max_blocks: {
+            type: 'integer',
+            title: 'Max Blocks',
+            default: 1
+        },
+        jumlah_pohon: {
+            type: 'integer',
+            title: 'Jumlah Pohon',
+            default: 0
+        }
+    },
+    type: 'object',
+    title: 'MassItemInput'
+} as const;
+
+export const MassItemResultSchema = {
+    properties: {
+        item_uid: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'uuid'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Item Uid'
+        },
+        item_name: {
+            type: 'string',
+            title: 'Item Name',
+            default: 'Item'
+        },
+        tree_rarity: {
+            type: 'integer',
+            title: 'Tree Rarity',
+            default: 1
+        },
+        max_blocks: {
+            type: 'integer',
+            title: 'Max Blocks',
+            default: 1
+        },
+        jumlah_pohon: {
+            type: 'integer',
+            title: 'Jumlah Pohon',
+            default: 0
+        },
+        uid: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Uid'
+        },
+        blok_yielded: {
+            type: 'integer',
+            title: 'Blok Yielded'
+        },
+        total_smash_efektif: {
+            type: 'integer',
+            title: 'Total Smash Efektif'
+        },
+        seeds_fallen: {
+            type: 'integer',
+            title: 'Seeds Fallen'
+        },
+        seeds_from_smash: {
+            type: 'integer',
+            title: 'Seeds From Smash'
+        },
+        total_seeds_return: {
+            type: 'integer',
+            title: 'Total Seeds Return'
+        },
+        seed_return_rate: {
+            type: 'number',
+            title: 'Seed Return Rate'
+        },
+        gem_blocks: {
+            type: 'integer',
+            title: 'Gem Blocks'
+        },
+        avg_gems_per_block: {
+            type: 'number',
+            title: 'Avg Gems Per Block'
+        },
+        harvest_gems: {
+            type: 'integer',
+            title: 'Harvest Gems'
+        },
+        total_gems_didapat: {
+            type: 'integer',
+            title: 'Total Gems Didapat'
+        },
+        grow_time_seconds: {
+            type: 'integer',
+            title: 'Grow Time Seconds'
+        },
+        grow_time_readable: {
+            type: 'string',
+            title: 'Grow Time Readable'
+        }
+    },
+    type: 'object',
+    required: ['uid', 'blok_yielded', 'total_smash_efektif', 'seeds_fallen', 'seeds_from_smash', 'total_seeds_return', 'seed_return_rate', 'gem_blocks', 'avg_gems_per_block', 'harvest_gems', 'total_gems_didapat', 'grow_time_seconds', 'grow_time_readable'],
+    title: 'MassItemResult'
+} as const;
+
+export const MassModelSchema = {
+    properties: {
+        uid: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Uid'
+        },
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        description: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Description'
+        },
+        mode: {
+            type: 'string',
+            title: 'Mode'
+        },
+        user_uid: {
+            type: 'string',
+            format: 'uuid',
+            title: 'User Uid'
+        },
+        created_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Created At'
+        },
+        update_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Update At'
+        },
+        items: {
+            items: {
+                '$ref': '#/components/schemas/MassItemResult'
+            },
+            type: 'array',
+            title: 'Items',
+            default: []
+        }
+    },
+    type: 'object',
+    required: ['uid', 'name', 'mode', 'user_uid', 'created_at', 'update_at'],
+    title: 'MassModel'
+} as const;
+
+export const MassUpdateSchema = {
+    properties: {
+        name: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Name'
+        },
+        description: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Description'
+        },
+        mode: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Mode'
+        },
+        items: {
+            anyOf: [
+                {
+                    items: {
+                        '$ref': '#/components/schemas/MassItemInput'
+                    },
+                    type: 'array'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Items'
+        }
+    },
+    type: 'object',
+    title: 'MassUpdate'
+} as const;
+
+export const MassesPublicSchema = {
+    properties: {
+        data: {
+            items: {
+                '$ref': '#/components/schemas/MassModel'
+            },
+            type: 'array',
+            title: 'Data'
+        },
+        count: {
+            type: 'integer',
+            title: 'Count'
+        }
+    },
+    type: 'object',
+    required: ['data', 'count'],
+    title: 'MassesPublic'
+} as const;
+
 export const ReviewCreateModelSchema = {
     properties: {
         rating: {
