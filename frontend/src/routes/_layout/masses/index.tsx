@@ -1,12 +1,20 @@
 import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query"
 import { createFileRoute, Link } from "@tanstack/react-router"
-import { Calculator, Trash2 } from "lucide-react"
-import { Suspense } from "react"
+import { Calculator, MoreHorizontal, Pencil, Trash2 } from "lucide-react"
+import { Suspense, useState } from "react"
 
+import type { MassModel } from "@/client"
 import { MassesService } from "@/client"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import AddMassDialog from "@/components/Masses/AddMassDialog"
+import EditMassDialog from "@/components/Masses/EditMassDialog"
 import useCustomToast from "@/hooks/useCustomToast"
 import { handleError } from "@/utils"
 
@@ -25,6 +33,7 @@ export const Route = createFileRoute("/_layout/masses/")({
 })
 
 function MassesListContent() {
+  const [editingMass, setEditingMass] = useState<MassModel | null>(null)
   const queryClient = useQueryClient()
   const { showSuccessToast, showErrorToast } = useCustomToast()
   const { data: masses } = useSuspenseQuery(getMassesQueryOptions())
@@ -55,61 +64,69 @@ function MassesListContent() {
   }
 
   return (
-    <div className="grid gap-3">
-      {masses.data.map((mass) => (
-        <Link
-          key={mass.uid}
-          to="/masses/$massUid"
-          params={{ massUid: mass.uid }}
-          className="block"
-        >
-          <Card className="cursor-pointer hover:border-primary/50 transition-colors">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div className="flex-1 min-w-0">
-                  <p className="font-semibold truncate">{mass.name}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {mass.items?.length ?? 0} items &middot;{" "}
-                    {mass.mode.toUpperCase()}
-                    {mass.description && (
-                      <> &middot; {mass.description}</>
-                    )}
-                  </p>
+    <>
+      <div className="grid gap-3">
+        {masses.data.map((mass) => (
+          <Link
+            key={mass.uid}
+            to="/masses/$massUid"
+            params={{ massUid: mass.uid }}
+            className="block"
+          >
+            <Card className="cursor-pointer hover:border-primary/50 transition-colors">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex-1 min-w-0">
+                    <p className="font-semibold truncate">{mass.name}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {mass.items?.length ?? 0} items &middot;{" "}
+                      {mass.mode.toUpperCase()}
+                      {mass.description && (
+                        <> &middot; {mass.description}</>
+                      )}
+                    </p>
+                  </div>
+                  <div className="shrink-0 ml-3" onClick={(e) => e.stopPropagation()}>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon" className="size-8">
+                          <MoreHorizontal className="size-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem
+                          onClick={() => setEditingMass(mass)}
+                        >
+                          <Pencil className="size-4 mr-2" />
+                          Edit
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          className="text-destructive focus:text-destructive"
+                          onClick={() => {
+                            if (confirm("Delete this mass?")) {
+                              deleteMutation.mutate(mass.uid)
+                            }
+                          }}
+                        >
+                          <Trash2 className="size-4 mr-2" />
+                          Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
                 </div>
-                <div className="flex items-center gap-1 shrink-0 ml-3">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-8"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      window.location.href = `/masses/${mass.uid}`
-                    }}
-                  >
-                    <Calculator className="size-3.5 mr-1.5" />
-                    Analyze
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-8 text-destructive hover:text-destructive"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      if (confirm("Delete this mass?")) {
-                        deleteMutation.mutate(mass.uid)
-                      }
-                    }}
-                  >
-                    <Trash2 className="size-3.5 mr-1.5" />
-                    Delete
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </Link>
-      ))}
-    </div>
+              </CardContent>
+            </Card>
+          </Link>
+        ))}
+      </div>
+
+      <EditMassDialog
+        mass={editingMass}
+        open={!!editingMass}
+        onOpenChange={(open) => { if (!open) setEditingMass(null) }}
+      />
+    </>
   )
 }
 

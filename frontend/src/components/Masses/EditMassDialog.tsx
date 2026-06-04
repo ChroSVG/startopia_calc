@@ -1,11 +1,10 @@
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useEffect } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { Plus } from "lucide-react"
-import { useState } from "react"
 import { useForm } from "react-hook-form"
-import { useNavigate } from "@tanstack/react-router"
 import { z } from "zod"
 
+import type { MassModel } from "@/client"
 import { MassesService } from "@/client"
 import { Button } from "@/components/ui/button"
 import {
@@ -16,7 +15,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog"
 import {
   Form,
@@ -38,10 +36,16 @@ const formSchema = z.object({
 
 type FormData = z.infer<typeof formSchema>
 
-const AddMassDialog = () => {
-  const [isOpen, setIsOpen] = useState(false)
+const EditMassDialog = ({
+  mass,
+  open,
+  onOpenChange,
+}: {
+  mass: MassModel | null
+  open: boolean
+  onOpenChange: (open: boolean) => void
+}) => {
   const queryClient = useQueryClient()
-  const navigate = useNavigate()
   const { showSuccessToast, showErrorToast } = useCustomToast()
 
   const form = useForm<FormData>({
@@ -49,21 +53,27 @@ const AddMassDialog = () => {
     mode: "onBlur",
     criteriaMode: "all",
     defaultValues: {
-      name: "",
-      description: "",
+      name: mass?.name ?? "",
+      description: mass?.description ?? "",
     },
   })
 
+  useEffect(() => {
+    if (mass) {
+      form.reset({ name: mass.name, description: mass.description ?? "" })
+    }
+  }, [mass, form])
+
   const mutation = useMutation({
     mutationFn: (data: { name: string; description?: string | null }) =>
-      MassesService.createMass({ requestBody: data }),
-    onSuccess: (data) => {
-      showSuccessToast("Mass created")
-      form.reset()
-      setIsOpen(false)
+      MassesService.updateMass({
+        massUid: mass!.uid,
+        requestBody: data,
+      }),
+    onSuccess: () => {
+      showSuccessToast("Mass updated")
+      onOpenChange(false)
       queryClient.invalidateQueries({ queryKey: ["masses"] })
-      const saved = data as { uid: string }
-      navigate({ to: "/masses/$massUid", params: { massUid: saved.uid } })
     },
     onError: handleError.bind(showErrorToast),
   })
@@ -76,18 +86,12 @@ const AddMassDialog = () => {
   }
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        <Button>
-          <Plus className="mr-2" />
-          New Mass
-        </Button>
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>New Mass</DialogTitle>
+          <DialogTitle>Edit Mass</DialogTitle>
           <DialogDescription>
-            Create a new mass configuration, then add items and analyze.
+            Update mass name and description.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -138,7 +142,7 @@ const AddMassDialog = () => {
                 </Button>
               </DialogClose>
               <LoadingButton type="submit" loading={mutation.isPending}>
-                Create & Analyze
+                Save
               </LoadingButton>
             </DialogFooter>
           </form>
@@ -148,4 +152,4 @@ const AddMassDialog = () => {
   )
 }
 
-export default AddMassDialog
+export default EditMassDialog
