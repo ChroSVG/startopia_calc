@@ -1,8 +1,16 @@
 import uuid
 from datetime import datetime
-from typing import List
+from typing import TYPE_CHECKING, List
 
 from sqlmodel import Field, Relationship, SQLModel
+
+if TYPE_CHECKING:
+    from src.books.models import Book
+    from src.categories.models import Category
+    from src.inventory.models import InventoryItem
+    from src.items.models import Item
+    from src.mass.models import Mass
+    from src.reviews.models import Review
 
 
 class User(SQLModel, table=True):
@@ -30,6 +38,9 @@ class User(SQLModel, table=True):
         back_populates="created_by", sa_relationship_kwargs={"lazy": "selectin"}
     )
     inventory: List["InventoryItem"] = Relationship(
+        back_populates="user", sa_relationship_kwargs={"lazy": "selectin"}
+    )
+    masses: List["Mass"] = Relationship(
         back_populates="user", sa_relationship_kwargs={"lazy": "selectin"}
     )
     is_active: bool = Field(default=True)

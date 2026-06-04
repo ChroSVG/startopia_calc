@@ -26,6 +26,6 @@ class CategoryRepository(BaseRepository[Category]):
             .limit(limit)
         )
         result = await session.exec(statement)
-        categories = result.all()
+        categories = list(result.all())
 
         return categories, total

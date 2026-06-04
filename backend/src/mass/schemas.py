@@ -1,0 +1,59 @@
+import uuid
+from datetime import datetime
+from typing import List, Optional
+
+from pydantic import BaseModel
+
+
+class MassItemInput(BaseModel):
+    item_uid: Optional[uuid.UUID] = None
+    item_name: str = "Item"
+    tree_rarity: int = 1
+    max_blocks: int = 1
+    jumlah_pohon: int = 0
+
+
+class MassItemResult(MassItemInput):
+    uid: uuid.UUID
+    blok_yielded: int
+    total_smash_efektif: int
+    seeds_fallen: int
+    seeds_from_smash: int
+    total_seeds_return: int
+    seed_return_rate: float
+    gem_blocks: int
+    avg_gems_per_block: float
+    harvest_gems: int
+    total_gems_didapat: int
+    grow_time_seconds: int
+    grow_time_readable: str
+
+
+class MassCreate(BaseModel):
+    name: str
+    description: Optional[str] = None
+    mode: str = "a"
+    items: List[MassItemInput] = []
+
+
+class MassUpdate(BaseModel):
+    name: Optional[str] = None
+    description: Optional[str] = None
+    mode: Optional[str] = None
+    items: Optional[List[MassItemInput]] = None
+
+
+class MassModel(BaseModel):
+    uid: uuid.UUID
+    name: str
+    description: Optional[str] = None
+    mode: str
+    user_uid: uuid.UUID
+    created_at: datetime
+    update_at: datetime
+    items: List[MassItemResult] = []
+
+
+class MassesPublic(BaseModel):
+    data: List[MassModel]
+    count: int

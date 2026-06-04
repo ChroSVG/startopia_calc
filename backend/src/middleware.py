@@ -18,7 +18,10 @@ def register_middleware(app: FastAPI):
         response = await call_next(request)
         processing_time = time.time() - start_time
 
-        message = f"{request.client.host}:{request.client.port} - {request.method} - {request.url.path} - {response.status_code} completed after {processing_time}s"
+        client = request.client
+        host = client.host if client else "unknown"
+        port = client.port if client else "unknown"
+        message = f"{host}:{port} - {request.method} - {request.url.path} - {response.status_code} completed after {processing_time}s"
 
         print(message)
         return response

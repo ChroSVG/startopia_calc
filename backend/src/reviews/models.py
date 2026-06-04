@@ -1,8 +1,12 @@
 import uuid
 from datetime import datetime
-from typing import Optional
+from typing import TYPE_CHECKING, Optional
 
 from sqlmodel import Field, Relationship, SQLModel
+
+if TYPE_CHECKING:
+    from src.books.models import Book
+    from src.users.models import User
 
 
 class Review(SQLModel, table=True):

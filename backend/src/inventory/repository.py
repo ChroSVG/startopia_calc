@@ -25,6 +25,6 @@ class InventoryRepository(BaseRepository[InventoryItem]):
             .offset(skip).limit(limit)
         )
         result = await session.exec(statement)
-        items = result.all()
+        items = list(result.all())
 
         return items, total_count

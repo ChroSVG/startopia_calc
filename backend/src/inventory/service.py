@@ -35,7 +35,7 @@ class InventoryService:
             return None
         updated = await self.repository.update(session, item, update_data.model_dump(exclude_unset=True))
         await self.log_service.log(session, user_uid, "inventory.update",
-            f"Updated inventory item quantity", "InventoryItem", str(item_uid))
+            "Updated inventory item quantity", "InventoryItem", str(item_uid))
         return updated
 
     async def delete_item(self, item_uid: str, user_uid: str, session: AsyncSession):
@@ -44,5 +44,5 @@ class InventoryService:
             return None
         await self.repository.delete(session, item)
         await self.log_service.log(session, user_uid, "inventory.remove",
-            f"Removed item from inventory", "InventoryItem", str(item_uid))
+            "Removed item from inventory", "InventoryItem", str(item_uid))
         return item

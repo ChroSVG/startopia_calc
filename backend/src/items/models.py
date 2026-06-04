@@ -1,8 +1,12 @@
 import uuid
 from datetime import datetime
-from typing import List, Optional
+from typing import TYPE_CHECKING, List, Optional
 
 from sqlmodel import Field, Relationship, SQLModel
+
+if TYPE_CHECKING:
+    from src.mass.models import MassItem
+    from src.users.models import User
 
 
 class ItemLink(SQLModel, table=True):
@@ -51,6 +55,10 @@ class Item(SQLModel, table=True):
     incoming_links: List["ItemLink"] = Relationship(
         back_populates="target",
         sa_relationship_kwargs={"foreign_keys": "ItemLink.target_uid", "lazy": "selectin"},
+    )
+    mass_items: List["MassItem"] = Relationship(
+        back_populates="item",
+        sa_relationship_kwargs={"lazy": "selectin"},
     )
 
     def __repr__(self):

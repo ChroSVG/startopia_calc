@@ -1,8 +1,13 @@
 import uuid
 from datetime import date, datetime
-from typing import List, Optional
+from typing import TYPE_CHECKING, List, Optional
 
 from sqlmodel import Field, Relationship, SQLModel
+
+if TYPE_CHECKING:
+    from src.reviews.models import Review
+    from src.tags.models import Tag
+    from src.users.models import User
 
 
 class BookTag(SQLModel, table=True):

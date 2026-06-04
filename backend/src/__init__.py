@@ -8,6 +8,7 @@ from src.tags.routes import tags_router
 from src.categories.routes import category_router
 from src.inventory.routes import inventory_router
 from src.activity_log.routes import activity_log_router
+from src.mass.routes import mass_router
 from .errors import register_all_errors
 from .middleware import register_middleware
 
@@ -56,3 +57,4 @@ app.include_router(tags_router, prefix=f"{version_prefix}/tags", tags=["tags"])
 app.include_router(category_router, prefix=f"{version_prefix}/categories", tags=["categories"])
 app.include_router(inventory_router, prefix=f"{version_prefix}/inventory", tags=["inventory"])
 app.include_router(activity_log_router, prefix=f"{version_prefix}/activity-logs", tags=["activity-logs"])
+app.include_router(mass_router, prefix=f"{version_prefix}/masses", tags=["masses"])

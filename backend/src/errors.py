@@ -1,4 +1,4 @@
-from typing import Any, Callable
+from typing import Any, Awaitable, Callable
 from fastapi.requests import Request
 from fastapi.responses import JSONResponse
 from fastapi import FastAPI, status
@@ -82,9 +82,9 @@ class AccountNotVerified(Exception):
 
 def create_exception_handler(
     status_code: int, initial_detail: Any
-) -> Callable[[Request, Exception], JSONResponse]:
+) -> Callable[[Request, Exception], Awaitable[JSONResponse]]:
 
-    async def exception_handler(request: Request, exc: BooklyException):
+    async def exception_handler(request: Request, exc: Exception) -> JSONResponse:
 
         return JSONResponse(content=initial_detail, status_code=status_code)
 

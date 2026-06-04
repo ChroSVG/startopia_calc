@@ -1,5 +1,4 @@
 from sqlmodel.ext.asyncio.session import AsyncSession
-from src.db.models import Book
 from .repository import BookRepository
 
 class BookService:

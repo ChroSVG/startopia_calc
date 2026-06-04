@@ -11,4 +11,4 @@ class ReviewRepository(BaseRepository[Review]):
     async def get_all_ordered(self, session: AsyncSession) -> List[Review]:
         statement = select(Review).order_by(desc(Review.created_at))
         result = await session.exec(statement)
-        return result.all()
+        return list(result.all())

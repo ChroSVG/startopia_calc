@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 from src.db.models import Book
@@ -11,4 +11,4 @@ class BookRepository(BaseRepository[Book]):
     async def get_user_books(self, session: AsyncSession, user_uid: str) -> List[Book]:
         statement = select(Book).where(Book.user_uid == user_uid)
         result = await session.exec(statement)
-        return result.all()
+        return list(result.all())

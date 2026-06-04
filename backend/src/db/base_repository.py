@@ -9,14 +9,14 @@ class BaseRepository(Generic[ModelType]):
         self.model = model
 
     async def get_by_uid(self, session: AsyncSession, uid: Any) -> Optional[ModelType]:
-        statement = select(self.model).where(self.model.uid == uid)
+        statement = select(self.model).where(self.model.uid == uid)  # type: ignore[attr-defined]
         result = await session.exec(statement)
         return result.first()
 
     async def get_all(self, session: AsyncSession, skip: int = 0, limit: int = 100) -> List[ModelType]:
         statement = select(self.model).offset(skip).limit(limit)
         result = await session.exec(statement)
-        return result.all()
+        return list(result.all())
 
     async def get_count(self, session: AsyncSession) -> int:
         statement = select(func.count()).select_from(self.model)

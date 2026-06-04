@@ -11,7 +11,7 @@ class TagRepository(BaseRepository[Tag]):
     async def get_all_ordered(self, session: AsyncSession) -> List[Tag]:
         statement = select(Tag).order_by(desc(Tag.created_at))
         result = await session.exec(statement)
-        return result.all()
+        return list(result.all())
 
     async def get_by_name(self, session: AsyncSession, name: str) -> Optional[Tag]:
         statement = select(Tag).where(Tag.name == name)

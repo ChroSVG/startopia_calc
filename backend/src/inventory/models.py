@@ -1,7 +1,12 @@
 import uuid
 from datetime import datetime
+from typing import TYPE_CHECKING
 
 from sqlmodel import Field, Relationship, SQLModel
+
+if TYPE_CHECKING:
+    from src.items.models import Item
+    from src.users.models import User
 
 
 class InventoryItem(SQLModel, table=True):
