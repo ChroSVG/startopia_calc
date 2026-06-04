@@ -1,7 +1,7 @@
-import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from "@tanstack/react-query"
-import { createFileRoute } from "@tanstack/react-router"
-import { Loader2, Plus, RotateCcw, Search, Trash2, X } from "lucide-react"
-import { useCallback, useMemo, useState } from "react"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { createFileRoute, Link, useParams } from "@tanstack/react-router"
+import { ArrowLeft, Loader2, Plus, RotateCcw, Search, Trash2, X } from "lucide-react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { useDebounce } from "use-debounce"
 
 import type { ItemModel, MassModel } from "@/client"
@@ -20,7 +20,6 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Separator } from "@/components/ui/separator"
-
 import type { MassItemResult } from "@/utils/massCalculator"
 import { calculateItem, formatDuration } from "@/utils/massCalculator"
 import useCustomToast from "@/hooks/useCustomToast"
@@ -84,14 +83,7 @@ function massToCalcState(mass: MassModel): CalcState {
   }
 }
 
-function getMassesQueryOptions() {
-  return {
-    queryFn: () => MassesService.readMasses({ skip: 0, limit: 100 }),
-    queryKey: ["masses"],
-  }
-}
-
-export const Route = createFileRoute("/_layout/masses")({
+export const Route = createFileRoute("/_layout/masses/$massUid")({
   component: MassCalculatorPage,
   head: () => ({
     meta: [{ title: "Mass Calculator - Startopia Calc" }],
@@ -116,7 +108,7 @@ function ItemSearch({
         search: debouncedSearch || undefined,
         limit: 20,
       }),
-    enabled: open && debouncedSearch.length >= 0,
+    enabled: open,
   })
 
   const items = itemsData?.data ?? []
@@ -185,16 +177,32 @@ function ItemSearch({
 }
 
 function MassCalculatorPage() {
+  const { massUid } = useParams({ from: "/_layout/masses/$massUid" })
   const queryClient = useQueryClient()
   const { showSuccessToast, showErrorToast } = useCustomToast()
 
-  const [state, setState] = useState<CalcState>({
+  const isNew = massUid === "new"
+
+  const { data: loadedMass, isLoading: isLoadingMass } = useQuery({
+    queryKey: ["mass", massUid],
+    queryFn: () => MassesService.readMass({ massUid }),
+    enabled: !isNew,
+  })
+
+  const [state, setState] = useState<CalcState>(() => ({
     uid: null,
     name: "",
     description: "",
     mode: "a",
     items: [blankItem()],
-  })
+  }))
+
+  useEffect(() => {
+    if (!isNew && loadedMass) {
+      tempIdCounter = 0
+      setState(massToCalcState(loadedMass))
+    }
+  }, [isNew, loadedMass])
 
   const update = useCallback(
     (patch: Partial<CalcState>) =>
@@ -255,22 +263,13 @@ function MassCalculatorPage() {
     [updateItem],
   )
 
-  const { data: massesData } = useSuspenseQuery(getMassesQueryOptions())
-
   const resultsCache = useMemo(() => {
     const map = new Map<string, MassItemResult>()
     for (const item of state.items) {
-      if (item.jumlahPohon > 0 && item.itemUid) {
-        map.set(
-          item.tempId,
-          calculateItem(item.treeRarity, item.maxBlocks, item.jumlahPohon, state.mode),
-        )
-      } else {
-        map.set(
-          item.tempId,
-          calculateItem(item.treeRarity, item.maxBlocks, item.jumlahPohon, state.mode),
-        )
-      }
+      map.set(
+        item.tempId,
+        calculateItem(item.treeRarity, item.maxBlocks, item.jumlahPohon, state.mode),
+      )
     }
     return map
   }, [state.items, state.mode])
@@ -333,46 +332,50 @@ function MassCalculatorPage() {
       showSuccessToast(state.uid ? "Mass updated" : "Mass saved")
       queryClient.invalidateQueries({ queryKey: ["masses"] })
       if (!state.uid) {
+        const saved = data as MassModel
         tempIdCounter = 0
-        setState(massToCalcState(data as MassModel))
+        setState(massToCalcState(saved))
+        window.location.href = `/masses/${saved.uid}`
       }
     },
     onError: handleError.bind(showErrorToast),
   })
 
-  const loadMass = useCallback((mass: MassModel) => {
-    tempIdCounter = 0
-    setState(massToCalcState(mass))
-  }, [])
-
-  const deleteMutation = useMutation({
-    mutationFn: (massUid: string) =>
-      MassesService.deleteMass({ massUid }),
-    onSuccess: () => {
-      showSuccessToast("Mass deleted")
-      queryClient.invalidateQueries({ queryKey: ["masses"] })
-    },
-    onError: handleError.bind(showErrorToast),
-  })
-
-  const hasItems = state.items.length > 0 && state.items.some((i) => i.itemUid && i.jumlahPohon > 0)
-
+  const hasItems = state.items.some((i) => i.itemUid && i.jumlahPohon > 0)
   const isDirty = state.items.length > 0 || state.name || state.description
+  const isValid = state.name.trim() && hasItems
+
+  if (isLoadingMass) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <Loader2 className="size-6 animate-spin text-muted-foreground" />
+      </div>
+    )
+  }
 
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Mass Calculator</h1>
-          <p className="text-muted-foreground text-sm">
-            Add items and trees, see results instantly.
-          </p>
+        <div className="flex items-center gap-3">
+          <Link to="/masses">
+            <Button variant="ghost" size="icon">
+              <ArrowLeft className="size-5" />
+            </Button>
+          </Link>
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight">
+              {isNew ? "New Mass" : state.name || "Mass Calculator"}
+            </h1>
+            <p className="text-muted-foreground text-sm">
+              Add items and trees, see results instantly.
+            </p>
+          </div>
         </div>
         <div className="flex items-center gap-2">
           <LoadingButton
             onClick={() => saveMutation.mutate()}
             loading={saveMutation.isPending}
-            disabled={!state.name || !hasItems}
+            disabled={!isValid}
             size="sm"
           >
             {state.uid ? "Update" : "Save"}
@@ -600,63 +603,6 @@ function MassCalculatorPage() {
           </Card>
         </>
       )}
-
-      <Separator />
-
-      <div>
-        <h2 className="text-lg font-semibold mb-3">Saved Masses</h2>
-        {massesData.data.length === 0 ? (
-          <p className="text-sm text-muted-foreground italic">
-            No saved masses yet. Save your current calculation above.
-          </p>
-        ) : (
-          <div className="space-y-2">
-            {massesData.data.map((mass) => (
-              <div
-                key={mass.uid}
-                className="flex items-center justify-between p-3 border rounded-lg"
-              >
-                <div className="flex-1 min-w-0">
-                  <p className="font-medium text-sm truncate">{mass.name}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {mass.items?.length ?? 0} items &middot;{" "}
-                    {mass.mode.toUpperCase()}
-                    {mass.description && (
-                      <>
-                        {" "}&middot; {mass.description}
-                      </>
-                    )}
-                  </p>
-                </div>
-                <div className="flex items-center gap-1 shrink-0 ml-3">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-7 text-xs"
-                    onClick={() => loadMass(mass)}
-                  >
-                    <RotateCcw className="size-3 mr-1" />
-                    Load
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-7 text-xs text-destructive hover:text-destructive"
-                    onClick={() => {
-                      if (confirm("Delete this saved mass?")) {
-                        deleteMutation.mutate(mass.uid)
-                      }
-                    }}
-                  >
-                    <Trash2 className="size-3 mr-1" />
-                    Delete
-                  </Button>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
     </div>
   )
 }
