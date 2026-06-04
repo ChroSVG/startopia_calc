@@ -1,48 +1,19 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router"
-import type { ColumnDef } from "@tanstack/react-table"
-import {
-  ChevronLeft,
-  ChevronRight,
-  ChevronsLeft,
-  ChevronsRight,
-  Columns3,
-  LayoutGrid,
-  Search,
-  Table2,
-  X,
-} from "lucide-react"
-import {
-  memo,
-  Suspense,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react"
-import { useDebouncedCallback } from "use-debounce"
+import { Search } from "lucide-react"
+import { Suspense, useCallback, useMemo, useState } from "react"
 import { z } from "zod"
+
 import { ItemsService, UsersService } from "@/client"
 import AddItem from "@/components/Admin/Items/AddItem"
 import { columns } from "@/components/Admin/Items/columns"
+import { FilterBar } from "@/components/Admin/Items/FilterBar"
+import { Button } from "@/components/ui/button"
 import ItemCard from "@/components/Admin/Items/ItemCard"
 import { DataTable } from "@/components/Common/DataTable"
+import { Pagination } from "@/components/ui/Pagination"
+import { getUniqueValues } from "@/utils/adminItemUtils"
 import PendingItems from "@/components/Pending/PendingItems"
-import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 
 const searchSchema = z.object({
   search: z.string().catch(""),
@@ -56,7 +27,6 @@ const searchSchema = z.object({
 
 type SearchParams = z.infer<typeof searchSchema>
 
-
 export const Route = createFileRoute("/_layout/admin-items")({
   component: AdminItems,
   validateSearch: searchSchema,
@@ -67,200 +37,8 @@ export const Route = createFileRoute("/_layout/admin-items")({
     }
   },
   head: () => ({
-    meta: [
-      {
-        title: "Admin Items - Startopia Calc",
-      },
-    ],
+    meta: [{ title: "Admin Items - Startopia Calc" }],
   }),
-})
-
-function getUniqueValues<T>(
-  items: T[],
-  extract: (item: T) => string | null | undefined,
-): string[] {
-  const set = new Set<string>()
-  for (const item of items) {
-    const v = extract(item)
-    if (v) set.add(v)
-  }
-  return Array.from(set).sort()
-}
-
-const columnLabel = <T,>(col: ColumnDef<T>): string => {
-  if (typeof col.header === "string") return col.header
-  if (col.id)
-    return col.id.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase())
-  return ""
-}
-
-const FilterBar = memo(function FilterBar({
-  search,
-  onSearchChange,
-  typeFilter,
-  rarityFilter,
-  chiFilter,
-  onTypeFilterChange,
-  onRarityFilterChange,
-  onChiFilterChange,
-  typeOptions,
-  rarityOptions,
-  chiOptions,
-  columnVisibility,
-  setColumnVisibility,
-  viewMode,
-  onViewModeChange,
-}: {
-  search: string
-  onSearchChange: (value: string) => void
-  typeFilter: string
-  rarityFilter: string
-  chiFilter: string
-  onTypeFilterChange: (value: string) => void
-  onRarityFilterChange: (value: string) => void
-  onChiFilterChange: (value: string) => void
-  typeOptions: string[]
-  rarityOptions: string[]
-  chiOptions: string[]
-  columnVisibility: Record<string, boolean>
-  setColumnVisibility: React.Dispatch<
-    React.SetStateAction<Record<string, boolean>>
-  >
-  viewMode: "table" | "card"
-  onViewModeChange: (mode: "table" | "card") => void
-}) {
-  const [inputValue, setInputValue] = useState(search)
-
-  const debouncedSearch = useDebouncedCallback(
-    (value: string) => onSearchChange(value),
-    300,
-  )
-
-  const handleChange = (v: string) => {
-    setInputValue(v)
-    if (!v) {
-      debouncedSearch.cancel()
-      onSearchChange("")
-    } else {
-      debouncedSearch(v)
-    }
-  }
-
-  const handleClear = () => {
-    setInputValue("")
-    debouncedSearch.cancel()
-    onSearchChange("")
-  }
-
-  useEffect(() => {
-    setInputValue(search)
-  }, [search])
-
-  const toggleableColumns = columns.filter(
-    (c): c is typeof c & { id: string } =>
-      !!c.id && !!(c.meta as Record<string, unknown> | undefined)?.toggleable,
-  )
-
-  return (
-    <div className="flex flex-wrap items-center gap-3">
-      <div className="relative flex-1 min-w-[200px] max-w-sm">
-        <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
-        <Input
-          placeholder="Search by name..."
-          className="pl-8"
-          value={inputValue}
-          onChange={(e) => handleChange(e.target.value)}
-        />
-        {inputValue && (
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute right-1 top-1 size-6"
-            onClick={handleClear}
-          >
-            <X className="size-3" />
-          </Button>
-        )}
-      </div>
-      <Select value={typeFilter} onValueChange={onTypeFilterChange}>
-        <SelectTrigger className="w-[130px] h-9">
-          <SelectValue placeholder="Type" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">All Types</SelectItem>
-          {typeOptions.map((t) => (
-            <SelectItem key={t} value={t}>
-              {t}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-      <Select value={rarityFilter} onValueChange={onRarityFilterChange}>
-        <SelectTrigger className="w-[130px] h-9">
-          <SelectValue placeholder="Rarity" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">All Rarities</SelectItem>
-          {rarityOptions.map((r) => (
-            <SelectItem key={r} value={r}>
-              {r}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-      <Select value={chiFilter} onValueChange={onChiFilterChange}>
-        <SelectTrigger className="w-[120px] h-9">
-          <SelectValue placeholder="Chi" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">All Chi</SelectItem>
-          {chiOptions.map((c) => (
-            <SelectItem key={c} value={c}>
-              {c}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="sm" className="h-9 gap-1.5">
-            <Columns3 className="size-4" />
-            <span className="hidden sm:inline">Columns</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          {toggleableColumns.map((col) => (
-            <DropdownMenuCheckboxItem
-              key={col.id}
-              checked={columnVisibility[col.id] !== false}
-              onCheckedChange={(checked) =>
-                setColumnVisibility((prev) => ({ ...prev, [col.id]: checked }))
-              }
-            >
-              {columnLabel(col)}
-            </DropdownMenuCheckboxItem>
-          ))}
-        </DropdownMenuContent>
-      </DropdownMenu>
-      <Button
-        variant="outline"
-        size="sm"
-        className="h-9 gap-1.5"
-        onClick={() =>
-          onViewModeChange(viewMode === "table" ? "card" : "table")
-        }
-      >
-        {viewMode === "table" ? (
-          <LayoutGrid className="size-4" />
-        ) : (
-          <Table2 className="size-4" />
-        )}
-        <span className="hidden sm:inline">
-          {viewMode === "table" ? "Cards" : "Table"}
-        </span>
-      </Button>
-    </div>
-  )
 })
 
 function AdminItemsContent() {
@@ -274,6 +52,7 @@ function AdminItemsContent() {
     page,
     pageSize,
   } = Route.useSearch()
+
   const { data: items } = useSuspenseQuery({
     queryFn: () => ItemsService.readItems({ skip: 0, limit: 2000 }),
     queryKey: ["admin-items"],
@@ -354,6 +133,24 @@ function AdminItemsContent() {
     [navigate],
   )
 
+  const handlePageChange = useCallback(
+    (p: number) =>
+      navigate({
+        search: (prev: SearchParams) => ({ ...prev, page: p }),
+        replace: true,
+      }),
+    [navigate],
+  )
+
+  const handlePageSizeChange = useCallback(
+    (ps: number) =>
+      navigate({
+        search: (prev: SearchParams) => ({ ...prev, pageSize: ps, page: 0 }),
+        replace: true,
+      }),
+    [navigate],
+  )
+
   if (items.data.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center text-center py-12">
@@ -425,135 +222,13 @@ function AdminItemsContent() {
                 <ItemCard key={item.uid} item={item} />
               ))}
           </div>
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 rounded-lg border p-4 bg-muted/20">
-            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-              <div className="text-sm text-muted-foreground">
-                {filtered.length > 0 ? (
-                  <>
-                    Showing{" "}
-                    {Math.min(page * pageSize + 1, filtered.length)} to{" "}
-                    {Math.min((page + 1) * pageSize, filtered.length)} of{" "}
-                    <span className="font-medium text-foreground">
-                      {filtered.length}
-                    </span>{" "}
-                    entries
-                  </>
-                ) : (
-                  <span className="font-medium text-foreground">
-                    0 entries
-                  </span>
-                )}
-              </div>
-              <div className="flex items-center gap-x-2">
-                <p className="text-sm text-muted-foreground">Rows per page</p>
-                <Select
-                  value={`${pageSize}`}
-                  onValueChange={(value) =>
-                    navigate({
-                      search: (prev: SearchParams) => ({
-                        ...prev,
-                        pageSize: Number(value),
-                        page: 0,
-                      }),
-                    })
-                  }
-                >
-                  <SelectTrigger className="h-8 w-auto min-w-[70px]">
-                    <SelectValue placeholder={pageSize} />
-                  </SelectTrigger>
-                  <SelectContent side="top">
-                    {[5, 10, 25, 50, 100, filtered.length].map((ps) => (
-                      <SelectItem key={ps} value={`${ps}`}>
-                        {ps === filtered.length ? "All" : ps}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-            <div className="flex items-center gap-x-6">
-              <div className="flex items-center gap-x-1 text-sm text-muted-foreground">
-                <span>Page</span>
-                <span className="font-medium text-foreground">
-                  {page + 1}
-                </span>
-                <span>of</span>
-                <span className="font-medium text-foreground">
-                  {Math.max(1, Math.ceil(filtered.length / pageSize))}
-                </span>
-              </div>
-              <div className="flex items-center gap-x-1">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="h-8 w-8 p-0"
-                  onClick={() =>
-                    navigate({
-                      search: (prev: SearchParams) => ({
-                        ...prev,
-                        page: 0,
-                      }),
-                    })
-                  }
-                  disabled={page === 0}
-                >
-                  <span className="sr-only">Go to first page</span>
-                  <ChevronsLeft className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="h-8 w-8 p-0"
-                  onClick={() =>
-                    navigate({
-                      search: (prev: SearchParams) => ({
-                        ...prev,
-                        page: page - 1,
-                      }),
-                    })
-                  }
-                  disabled={page === 0}
-                >
-                  <span className="sr-only">Go to previous page</span>
-                  <ChevronLeft className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="h-8 w-8 p-0"
-                  onClick={() =>
-                    navigate({
-                      search: (prev: SearchParams) => ({
-                        ...prev,
-                        page: page + 1,
-                      }),
-                    })
-                  }
-                  disabled={(page + 1) * pageSize >= filtered.length}
-                >
-                  <span className="sr-only">Go to next page</span>
-                  <ChevronRight className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="h-8 w-8 p-0"
-                  onClick={() =>
-                    navigate({
-                      search: (prev: SearchParams) => ({
-                        ...prev,
-                        page: Math.ceil(filtered.length / pageSize) - 1,
-                      }),
-                    })
-                  }
-                  disabled={(page + 1) * pageSize >= filtered.length}
-                >
-                  <span className="sr-only">Go to last page</span>
-                  <ChevronsRight className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-          </div>
+          <Pagination
+            page={page}
+            pageSize={pageSize}
+            total={filtered.length}
+            onPageChange={handlePageChange}
+            onPageSizeChange={handlePageSizeChange}
+          />
         </>
       ) : (
         <DataTable
