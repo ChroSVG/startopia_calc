@@ -14,7 +14,7 @@ interface MassItemCardProps {
   onItemSelect: (tempId: string, item: import("@/client").ItemModel) => void
   onItemClear: (tempId: string) => void
   onTreesChange: (tempId: string, trees: number) => void
-  onRemove: (tempId: string) => void
+  onRemove?: (tempId: string) => void
 }
 
 export function MassItemCard({
@@ -62,14 +62,16 @@ export function MassItemCard({
             />
           </div>
           <div className="sm:col-span-2 flex justify-end pb-0.5">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="size-8 text-muted-foreground hover:text-destructive"
-              onClick={() => onRemove(item.tempId)}
-            >
-              <Trash2 className="size-4" />
-            </Button>
+            {onRemove && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="size-8 text-muted-foreground hover:text-destructive"
+                onClick={() => onRemove(item.tempId)}
+              >
+                <Trash2 className="size-4" />
+              </Button>
+            )}
           </div>
         </div>
       </CardHeader>

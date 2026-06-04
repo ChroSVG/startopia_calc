@@ -35,3 +35,8 @@ class ItemLinkRepository(BaseRepository[ItemLink]):
         query = select(ItemLink).where(col(ItemLink.target_uid) == target_uid)
         result = await session.exec(query)
         return list(result.all())
+
+    async def get_by_source_uid(self, session: AsyncSession, source_uid: str) -> List[ItemLink]:
+        query = select(ItemLink).where(col(ItemLink.source_uid) == source_uid)
+        result = await session.exec(query)
+        return list(result.all())

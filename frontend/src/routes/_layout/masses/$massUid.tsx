@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 import { createFileRoute, useNavigate, useParams } from "@tanstack/react-router"
-import { Loader2, Plus } from "lucide-react"
+import { Loader2 } from "lucide-react"
 import { useEffect } from "react"
 
 import { MassesService } from "@/client"
@@ -9,8 +9,7 @@ import { MassItemCard } from "@/components/Masses/MassItemCard"
 import { ModeSelector } from "@/components/Masses/ModeSelector"
 import RecipeCheatsheet from "@/components/Masses/RecipeCheatsheet"
 import { TotalsCard } from "@/components/Masses/TotalsCard"
-import { Button } from "@/components/ui/button"
-import { Separator } from "@/components/ui/separator"
+
 import { useMassCalcState } from "@/hooks/useMassCalcState"
 import { useMassResults } from "@/hooks/useMassResults"
 import { useMassSave } from "@/hooks/useMassSave"
@@ -41,7 +40,8 @@ function MassCalculatorPage() {
   const {
     state,
     update,
-    addItem,
+    addItemFromIngredient,
+    removeItemBySourcePath,
     removeItem,
     resetCalc,
     handleItemSelect,
@@ -85,30 +85,19 @@ function MassCalculatorPage() {
 
       <ModeSelector value={state.mode} onChange={(v) => update({ mode: v })} />
 
-      {state.items[0]?.itemUid && (
-        <RecipeCheatsheet itemUid={state.items[0].itemUid} />
-      )}
-
       {hasItems && <TotalsCard totals={totals} />}
 
-      <Separator />
-
-      <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold">Items</h2>
-        <Button variant="outline" size="sm" onClick={addItem}>
-          <Plus className="size-4 mr-1" />
-          Add Item
-        </Button>
-      </div>
-
-      {state.items.length === 0 && (
-        <p className="text-sm text-muted-foreground italic">
-          No items yet. Add at least one item with trees to see calculations.
-        </p>
+      {state.items[0]?.itemUid && (
+        <RecipeCheatsheet
+          itemUid={state.items[0].itemUid}
+          items={state.items}
+          onAddItem={addItemFromIngredient}
+          onRemoveItem={removeItemBySourcePath}
+        />
       )}
 
       <div className="space-y-3">
-        {state.items.map((item) => (
+        {state.items.map((item, i) => (
           <MassItemCard
             key={item.tempId}
             item={item}
@@ -116,7 +105,7 @@ function MassCalculatorPage() {
             onItemSelect={handleItemSelect}
             onItemClear={handleItemClear}
             onTreesChange={handleTreesChange}
-            onRemove={removeItem}
+            onRemove={i === 0 ? undefined : removeItem}
           />
         ))}
       </div>

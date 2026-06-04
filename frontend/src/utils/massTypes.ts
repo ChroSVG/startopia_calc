@@ -14,6 +14,7 @@ export interface CalculatorItem {
   treeRarity: number
   maxBlocks: number
   jumlahPohon: number
+  sourcePath?: string
 }
 
 export interface CalcState {

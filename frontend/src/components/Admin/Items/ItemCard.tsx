@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import type { AdminItemTableData } from "./columns"
 import { ItemActionsMenu } from "./ItemActionsMenu"
+import RecipePopover from "./RecipePopover"
 
 function GrowTime({ seconds }: { seconds: number | null | undefined }) {
   if (!seconds) return null
@@ -61,16 +62,19 @@ const ItemCard = ({ item }: ItemCardProps) => {
             )}
           </div>
         </div>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button type="button" className="text-muted-foreground hover:text-foreground rounded-md p-1 -mr-1 -mt-1">
-              <EllipsisVertical className="size-4" />
-            </button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <ItemActionsMenu item={item} />
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className="flex items-center gap-0.5 shrink-0">
+          <RecipePopover item={item} />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button type="button" className="text-muted-foreground hover:text-foreground rounded-md p-1 -mr-1 -mt-1">
+                <EllipsisVertical className="size-4" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <ItemActionsMenu item={item} />
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
       <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 mt-3 text-xs">
         {item.grow_time != null && (

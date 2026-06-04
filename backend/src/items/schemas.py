@@ -78,5 +78,13 @@ class ItemsPublicModel(BaseModel):
     count: int
 
 
-class IngredientsResponse(BaseModel):
-    ingredients: List[ItemModel]
+class RecipeTreeNode(BaseModel):
+    item: ItemModel
+    ingredients: List["RecipeTreeNode"] = []
+
+class IngredientsTreeResponse(BaseModel):
+    root: RecipeTreeNode
+
+
+class PossibilitiesResponse(BaseModel):
+    possibilities: List[ItemModel]

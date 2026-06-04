@@ -167,8 +167,13 @@ export type ItemsPublicModel = {
     count: number;
 };
 
-export type IngredientsResponse = {
-    ingredients: Array<ItemModel>;
+export type RecipeTreeNode = {
+    item: ItemModel;
+    ingredients: Array<RecipeTreeNode>;
+};
+
+export type IngredientsTreeResponse = {
+    root: RecipeTreeNode;
 };
 
 export type ItemUpdateModel = {
@@ -503,7 +508,17 @@ export type ReadItemIngredientsData = {
     itemUid: string;
 };
 
-export type ReadItemIngredientsResponse = (IngredientsResponse);
+export type ReadItemIngredientsResponse = (IngredientsTreeResponse);
+
+export type PossibilitiesResponse = {
+    possibilities: Array<ItemModel>;
+};
+
+export type ReadItemPossibilitiesData = {
+    itemUid: string;
+};
+
+export type ReadItemPossibilitiesResponse = (PossibilitiesResponse);
 
 export type CreateItemLinkData = {
     requestBody: ItemLinkCreateModel;

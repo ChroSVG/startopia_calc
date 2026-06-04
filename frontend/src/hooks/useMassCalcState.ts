@@ -57,6 +57,43 @@ export function useMassCalcState(loadedMass: MassModel | undefined) {
     [],
   )
 
+  const addItemFromIngredient = useCallback(
+    (path: string, item: ItemModel) => {
+      const maxBlocks = Math.max(
+        1,
+        Math.min(4, Math.floor((item.max_drop ?? 4) / 4)),
+      )
+      setState((prev) => ({
+        ...prev,
+        items: [
+          ...prev.items,
+          {
+            ...blankItem(),
+            itemUid: item.uid,
+            itemName: item.name,
+            treeRarity: parseInt(item.rarity ?? "1", 10),
+            maxBlocks,
+            jumlahPohon: 1,
+            sourcePath: path,
+          },
+        ],
+      }))
+    },
+    [],
+  )
+
+  const removeItemBySourcePath = useCallback(
+    (path: string) =>
+      setState((prev) => {
+        const idx = prev.items.findIndex((i) => i.sourcePath === path)
+        if (idx === -1) return prev
+        const items = [...prev.items]
+        items.splice(idx, 1)
+        return { ...prev, items }
+      }),
+    [],
+  )
+
   const resetCalc = useCallback(() => {
     resetTempIdCounter()
     setState((prev) => ({
@@ -102,6 +139,8 @@ export function useMassCalcState(loadedMass: MassModel | undefined) {
     state,
     update,
     addItem,
+    addItemFromIngredient,
+    removeItemBySourcePath,
     removeItem,
     resetCalc,
     handleItemSelect,

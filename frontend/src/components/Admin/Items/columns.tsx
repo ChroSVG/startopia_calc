@@ -9,6 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { ItemActionsMenu } from "./ItemActionsMenu"
+import RecipePopover from "./RecipePopover"
 
 export type AdminItemTableData = Item & {}
 
@@ -124,7 +125,7 @@ export const columns: ColumnDef<AdminItemTableData>[] = [
   {
     id: "mechanics",
     header: "Mechanics",
-    meta: { toggleable: true, defaultHidden: true },
+    meta: { toggleable: true },
     cell: ({ row }) => {
       const hand = row.original.hits_with_hand
       const pick = row.original.hits_with_pickaxe
@@ -216,6 +217,11 @@ export const columns: ColumnDef<AdminItemTableData>[] = [
         <span className="text-muted-foreground text-xs">—</span>
       ),
     meta: { toggleable: true, filterable: true },
+  },
+  {
+    id: "recipe",
+    header: () => <span className="sr-only">Recipe</span>,
+    cell: ({ row }) => <RecipePopover item={row.original} />,
   },
   {
     id: "actions",

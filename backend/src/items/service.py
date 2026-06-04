@@ -43,18 +43,74 @@ class ItemService:
             "item.delete", f"Deleted item: {name}", "Item", str(item_uid))
         return item
 
-    async def get_ingredients(self, item_uid: str, session: AsyncSession) -> list:
+    async def _build_ingredient_tree(
+        self, item_uid: str, session: AsyncSession, path: set[str]
+    ) -> dict | None:
+        uid_str = str(item_uid)
+        if uid_str in path:
+            return None
+
+        item = await self.repository.get_by_uid(session, item_uid)
+        if not item:
+            return None
+
+        child_path = path | {uid_str}
+        links = await self.link_repository.get_by_target_uid(session, item_uid)
+        children: list[dict] = []
+        for link in links:
+            child = await self._build_ingredient_tree(
+                link.source_uid, session, child_path
+            )
+            if child:
+                children.append(child)
+
+        children.sort(
+            key=lambda c: int(c["item"].rarity or "0") if c["item"].rarity else 0,
+            reverse=True,
+        )
+
+        return {
+            "item": item,
+            "ingredients": children,
+        }
+
+    async def get_ingredients_tree(self, item_uid: str, session: AsyncSession) -> dict:
+        item = await self.repository.get_by_uid(session, item_uid)
+        root_path: set[str] = set()
+        children: list[dict] = []
+        links = await self.link_repository.get_by_target_uid(session, item_uid)
+        for link in links:
+            child = await self._build_ingredient_tree(
+                link.source_uid, session, root_path
+            )
+            if child:
+                children.append(child)
+
+        children.sort(
+            key=lambda c: int(c["item"].rarity or "0") if c["item"].rarity else 0,
+            reverse=True,
+        )
+
+        return {
+            "root": {
+                "item": item,
+                "ingredients": children,
+            }
+        }
+
+
+    async def get_possibilities(self, item_uid: str, session: AsyncSession) -> list:
         visited_uids: set[str] = set()
         queue: list[str] = [item_uid]
 
         while queue:
             current_uid = queue.pop(0)
-            links = await self.link_repository.get_by_target_uid(session, current_uid)
+            links = await self.link_repository.get_by_source_uid(session, current_uid)
             for link in links:
-                source_uid_str = str(link.source_uid)
-                if source_uid_str not in visited_uids and source_uid_str != item_uid:
-                    visited_uids.add(source_uid_str)
-                    queue.append(source_uid_str)
+                target_uid_str = str(link.target_uid)
+                if target_uid_str not in visited_uids and target_uid_str != item_uid:
+                    visited_uids.add(target_uid_str)
+                    queue.append(target_uid_str)
 
         if not visited_uids:
             return []
