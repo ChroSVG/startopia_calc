@@ -93,9 +93,11 @@ export const Route = createFileRoute("/_layout/masses/$massUid")({
 function ItemSearch({
   onSelect,
   onClear,
+  selectedName,
 }: {
   onSelect: (item: ItemModel) => void
   onClear: () => void
+  selectedName?: string
 }) {
   const [search, setSearch] = useState("")
   const [debouncedSearch] = useDebounce(search, 400)
@@ -113,6 +115,28 @@ function ItemSearch({
 
   const items = itemsData?.data ?? []
 
+  if (selectedName) {
+    return (
+      <div className="relative">
+        <div className="relative">
+          <Input
+            value={selectedName}
+            readOnly
+            className="pl-7 h-8 text-sm"
+          />
+          <Search className="absolute left-2 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground pointer-events-none" />
+          <button
+            type="button"
+            className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+            onClick={onClear}
+          >
+            <X className="size-3" />
+          </button>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="relative">
       <div className="relative">
@@ -128,18 +152,6 @@ function ItemSearch({
           onBlur={() => setTimeout(() => setOpen(false), 200)}
           className="pl-7 h-8 text-sm"
         />
-        {search && (
-          <button
-            type="button"
-            className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-            onClick={() => {
-              setSearch("")
-              onClear()
-            }}
-          >
-            <X className="size-3" />
-          </button>
-        )}
       </div>
       {open && search && (
         <div className="absolute top-full left-0 right-0 z-20 mt-1 bg-popover border rounded-md shadow-md max-h-48 overflow-y-auto">
@@ -450,6 +462,7 @@ function MassCalculatorPage() {
                   <div className="sm:col-span-5 space-y-1.5">
                     <Label className="text-xs text-muted-foreground">Item</Label>
                     <ItemSearch
+                      selectedName={item.itemName || undefined}
                       onSelect={(i) => handleItemSelect(item.tempId, i)}
                       onClear={() =>
                         updateItem(item.tempId, {
@@ -460,9 +473,6 @@ function MassCalculatorPage() {
                         })
                       }
                     />
-                    {item.itemName && (
-                      <p className="text-xs font-medium truncate mt-0.5">{item.itemName}</p>
-                    )}
                   </div>
                   <div className="sm:col-span-2 space-y-1.5">
                     <Label className="text-xs text-muted-foreground">Max Blocks</Label>

@@ -1,11 +1,12 @@
 import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query"
 import { createFileRoute, Link } from "@tanstack/react-router"
-import { Calculator, Plus, Trash2 } from "lucide-react"
+import { Calculator, Trash2 } from "lucide-react"
 import { Suspense } from "react"
 
 import { MassesService } from "@/client"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import AddMassDialog from "@/components/Masses/AddMassDialog"
 import useCustomToast from "@/hooks/useCustomToast"
 import { handleError } from "@/utils"
 
@@ -48,12 +49,7 @@ function MassesListContent() {
         <p className="text-muted-foreground mt-1 mb-6">
           Create a new mass to start calculating tree yields.
         </p>
-        <Link to="/masses/$massUid" params={{ massUid: "new" }}>
-          <Button>
-            <Plus className="mr-2 size-4" />
-            New Mass
-          </Button>
-        </Link>
+        <AddMassDialog />
       </div>
     )
   }
@@ -135,12 +131,7 @@ function MassesIndex() {
             Saved mass configurations. Click one to analyze, or create a new one.
           </p>
         </div>
-        <Link to="/masses/$massUid" params={{ massUid: "new" }}>
-          <Button>
-            <Plus className="mr-2" />
-            New Mass
-          </Button>
-        </Link>
+        <AddMassDialog />
       </div>
       <MassesList />
     </div>
