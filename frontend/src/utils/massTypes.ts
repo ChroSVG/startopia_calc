@@ -14,7 +14,8 @@ export interface CalculatorItem {
   treeRarity: number
   maxBlocks: number
   treeCount: number
-  price: number
+  priceBuy: number
+  priceSell: number
   isFuel: boolean
   isAutoBreak: boolean
   sourcePath?: string
@@ -49,7 +50,8 @@ export function blankItem(): CalculatorItem {
     treeRarity: 1,
     maxBlocks: 1,
     treeCount: 0,
-    price: 0,
+    priceBuy: 0,
+    priceSell: 0,
     isFuel: false,
     isAutoBreak: false,
   }
@@ -70,7 +72,8 @@ export function massToCalcState(mass: MassModel): CalcState {
       treeRarity: i.tree_rarity ?? 1,
       maxBlocks: i.max_blocks ?? 1,
       treeCount: i.jumlah_pohon ?? 0,
-      price: i.price ?? 0,
+      priceBuy: i.price_buy ?? 0,
+      priceSell: i.price_sell ?? 0,
       isFuel: i.is_fuel ?? false,
       isAutoBreak: i.is_auto_break ?? false,
       sourcePath: i.source_path ?? undefined,
@@ -91,7 +94,8 @@ export function calcStateToPayload(state: CalcState) {
       tree_rarity: i.treeRarity,
       max_blocks: i.maxBlocks,
       jumlah_pohon: i.treeCount,
-      price: i.price || undefined,
+      price_buy: i.priceBuy || undefined,
+      price_sell: i.priceSell || undefined,
       is_fuel: i.isFuel,
       is_auto_break: i.isAutoBreak,
       source_path: i.sourcePath || undefined,

@@ -1181,9 +1181,14 @@ export const MassItemInputSchema = {
             title: 'Jumlah Pohon',
             default: 0
         },
-        price: {
+        price_buy: {
             type: 'integer',
-            title: 'Price',
+            title: 'Price Buy',
+            default: 0
+        },
+        price_sell: {
+            type: 'integer',
+            title: 'Price Sell',
             default: 0
         },
         is_fuel: {
@@ -1246,9 +1251,14 @@ export const MassItemResultSchema = {
             title: 'Jumlah Pohon',
             default: 0
         },
-        price: {
+        price_buy: {
             type: 'integer',
-            title: 'Price',
+            title: 'Price Buy',
+            default: 0
+        },
+        price_sell: {
+            type: 'integer',
+            title: 'Price Sell',
             default: 0
         },
         is_fuel: {

@@ -153,7 +153,8 @@ function MassCalculatorPage() {
             onItemSelect={handleItemSelect}
             onItemClear={handleItemClear}
             onTreesChange={handleTreesChange}
-            onPriceChange={(tid, v) => updateItem(tid, { price: v })}
+            onPriceBuyChange={(tid, v) => updateItem(tid, { priceBuy: v })}
+            onPriceSellChange={(tid, v) => updateItem(tid, { priceSell: v })}
             onFuelChange={(tid, v) => updateItem(tid, { isFuel: v })}
             onAutoBreakChange={(tid, v) => updateItem(tid, { isAutoBreak: v })}
             onRemove={i === 0 ? undefined : removeItem}

@@ -14,7 +14,8 @@ interface MassItemCardProps {
   onItemSelect: (tempId: string, item: import("@/client").ItemModel) => void
   onItemClear: (tempId: string) => void
   onTreesChange: (tempId: string, trees: number) => void
-  onPriceChange?: (tempId: string, price: number) => void
+  onPriceBuyChange?: (tempId: string, price: number) => void
+  onPriceSellChange?: (tempId: string, price: number) => void
   onFuelChange?: (tempId: string, isFuel: boolean) => void
   onAutoBreakChange?: (tempId: string, isAutoBreak: boolean) => void
   onRemove?: (tempId: string) => void
@@ -26,7 +27,8 @@ export function MassItemCard({
   onItemSelect,
   onItemClear,
   onTreesChange,
-  onPriceChange,
+  onPriceBuyChange,
+  onPriceSellChange,
   onFuelChange,
   onAutoBreakChange,
   onRemove,
@@ -67,14 +69,27 @@ export function MassItemCard({
               className="h-8"
             />
           </div>
-          <div className="sm:col-span-2 space-y-1.5">
-            <Label className="text-xs text-muted-foreground">Price</Label>
+          <div className="sm:col-span-1 space-y-1.5">
+            <Label className="text-xs text-muted-foreground">Buy</Label>
             <Input
               type="number"
               min={0}
-              value={item.price || ""}
+              value={item.priceBuy || ""}
               onChange={(e) =>
-                onPriceChange?.(item.tempId, parseInt(e.target.value, 10) || 0)
+                onPriceBuyChange?.(item.tempId, parseInt(e.target.value, 10) || 0)
+              }
+              placeholder="0"
+              className="h-8"
+            />
+          </div>
+          <div className="sm:col-span-1 space-y-1.5">
+            <Label className="text-xs text-muted-foreground">Sell</Label>
+            <Input
+              type="number"
+              min={0}
+              value={item.priceSell || ""}
+              onChange={(e) =>
+                onPriceSellChange?.(item.tempId, parseInt(e.target.value, 10) || 0)
               }
               placeholder="0"
               className="h-8"

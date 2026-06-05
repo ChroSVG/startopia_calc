@@ -9,7 +9,7 @@ export function TotalsCard({ totals }: { totals: Totals }) {
         <CardTitle className="text-sm font-semibold">Totals</CardTitle>
       </CardHeader>
       <CardContent className="px-4 pb-3 pt-0">
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 text-sm">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-9 gap-3 text-sm">
           <div>
             <span className="text-xs text-muted-foreground">Total Trees</span>
             <p className="font-bold tabular-nums text-lg">
@@ -58,9 +58,15 @@ export function TotalsCard({ totals }: { totals: Totals }) {
             </p>
           </div>
           <div>
-            <span className="text-xs text-muted-foreground">Total Price</span>
+            <span className="text-xs text-muted-foreground">Total Modal</span>
             <p className="font-bold tabular-nums text-lg">
-              {totals.totalPrice.toLocaleString()}
+              {totals.totalModal.toLocaleString()}
+            </p>
+          </div>
+          <div>
+            <span className="text-xs text-muted-foreground">Total Profit</span>
+            <p className={cn("font-bold tabular-nums text-lg", totals.totalProfit < 0 && "text-destructive", totals.totalProfit >= 0 && "text-green-600")}>
+              {totals.totalProfit >= 0 ? "+" : ""}{totals.totalProfit.toLocaleString()}
             </p>
           </div>
         </div>
