@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { cn } from "@/lib/utils"
 import type { Totals } from "@/hooks/useMassResults"
 
 export function TotalsCard({ totals }: { totals: Totals }) {
@@ -37,6 +38,17 @@ export function TotalsCard({ totals }: { totals: Totals }) {
             <span className="text-xs text-muted-foreground">Total Gems</span>
             <p className="font-bold tabular-nums text-lg">
               {totals.totalGems.toLocaleString()}
+              {totals.totalAutoBreakCost > 0 && (
+                <span className="text-muted-foreground text-xs ml-1">
+                  -{totals.totalAutoBreakCost.toLocaleString()}
+                </span>
+              )}
+            </p>
+          </div>
+          <div>
+            <span className="text-xs text-muted-foreground">Gems Net</span>
+            <p className={cn("font-bold tabular-nums text-lg", totals.totalGemsNet < 0 && "text-destructive")}>
+              {totals.totalGemsNet.toLocaleString()}
             </p>
           </div>
           <div>

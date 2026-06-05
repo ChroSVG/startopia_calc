@@ -101,6 +101,7 @@ class MassService:
         for item in items:
             result = calculate_item(item.tree_rarity, item.max_blocks, item.jumlah_pohon, mass.mode, item.is_fuel, item.is_auto_break, mass.hit_cost)
             result.pop("grow_time_readable", None)
+            result.pop("auto_break_cost", None)
             for key, value in result.items():
                 setattr(item, key, value)
             session.add(item)
@@ -144,6 +145,7 @@ class MassService:
         )
 
         result.pop("grow_time_readable", None)
+        result.pop("auto_break_cost", None)
         mass_item_data = {
             "mass_uid": mass_uid,
             "item_uid": item_data.get("item_uid"),

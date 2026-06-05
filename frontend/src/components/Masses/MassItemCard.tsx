@@ -141,6 +141,11 @@ export function MassItemCard({
               <span className="text-muted-foreground">Gems</span>
               <p className="font-medium tabular-nums">
                 {result.total_gems_didapat.toLocaleString()}
+                {result.auto_break_cost > 0 && (
+                  <span className="text-muted-foreground text-[10px] ml-1">
+                    -{result.auto_break_cost.toLocaleString()}
+                  </span>
+                )}
               </p>
             </div>
             <div>

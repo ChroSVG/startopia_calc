@@ -85,6 +85,7 @@ def calculate_item(tree_rarity: int, max_blocks: int, jumlah_pohon: int, mode: s
             "avg_gems_per_block": avg_gems_per_block(tree_rarity),
             "harvest_gems": 0,
             "total_gems_didapat": 0,
+            "auto_break_cost": 0,
             "grow_time_seconds": grow_time_seconds(tree_rarity),
             "grow_time_readable": format_duration(grow_time_seconds(tree_rarity)),
         }
@@ -115,8 +116,7 @@ def calculate_item(tree_rarity: int, max_blocks: int, jumlah_pohon: int, mode: s
 
     grow_time = grow_time_seconds(tree_rarity)
 
-    if is_auto_break:
-        total_gems_val = max(0, total_gems_val - total_smash * hit_cost)
+    auto_break_cost = total_smash * hit_cost if is_auto_break else 0
 
     return {
         "blok_yielded": blok_yielded,
@@ -129,6 +129,7 @@ def calculate_item(tree_rarity: int, max_blocks: int, jumlah_pohon: int, mode: s
         "avg_gems_per_block": round(avg_gems_val, 4),
         "harvest_gems": harvest_gems_val,
         "total_gems_didapat": total_gems_val,
+        "auto_break_cost": auto_break_cost,
         "grow_time_seconds": grow_time,
         "grow_time_readable": format_duration(grow_time),
     }

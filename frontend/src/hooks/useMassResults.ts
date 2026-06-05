@@ -9,6 +9,8 @@ export interface Totals {
   totalSmash: number
   totalSeeds: number
   totalGems: number
+  totalGemsNet: number
+  totalAutoBreakCost: number
   totalPrice: number
   maxGrowSecs: number
   growReadable: string
@@ -32,6 +34,7 @@ export function useMassResults(items: CalculatorItem[], mode: string, hitCost: n
     let totalSmash = 0
     let totalSeeds = 0
     let totalGems = 0
+    let totalAutoBreakCost = 0
     let totalPrice = 0
     let maxGrowSecs = 0
 
@@ -43,6 +46,7 @@ export function useMassResults(items: CalculatorItem[], mode: string, hitCost: n
       totalSmash += r.total_smash_efektif
       totalSeeds += r.total_seeds_return
       totalGems += r.total_gems_didapat
+      totalAutoBreakCost += r.auto_break_cost
       totalPrice += item.price * item.treeCount
       if (r.grow_time_seconds > maxGrowSecs) {
         maxGrowSecs = r.grow_time_seconds
@@ -55,6 +59,8 @@ export function useMassResults(items: CalculatorItem[], mode: string, hitCost: n
       totalSmash,
       totalSeeds,
       totalGems,
+      totalGemsNet: totalGems - totalAutoBreakCost,
+      totalAutoBreakCost,
       totalPrice,
       maxGrowSecs,
       growReadable: formatDuration(maxGrowSecs),

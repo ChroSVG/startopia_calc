@@ -82,6 +82,7 @@ export interface MassItemResult {
   avg_gems_per_block: number
   harvest_gems: number
   total_gems_didapat: number
+  auto_break_cost: number
   grow_time_seconds: number
   grow_time_readable: string
 }
@@ -109,6 +110,7 @@ export function calculateTreeYield(
       avg_gems_per_block: roundTo(avgGemsPerBlock(treeRarity), 4),
       harvest_gems: 0,
       total_gems_didapat: 0,
+      auto_break_cost: 0,
       grow_time_seconds: growTime,
       grow_time_readable: formatDuration(growTime),
     }
@@ -147,9 +149,7 @@ export function calculateTreeYield(
     totalGemsVal = Math.floor(gemBlocksVal * avgGemsVal + harvestGemsVal)
   }
 
-  const finalTotalGems = isAutoBreak
-    ? Math.max(0, totalGemsVal - totalSmash * hitCost)
-    : totalGemsVal
+  const autoBreakCost = isAutoBreak ? totalSmash * hitCost : 0
 
   return {
     blok_yielded: blocks,
@@ -161,7 +161,8 @@ export function calculateTreeYield(
     gem_blocks: gemBlocksVal,
     avg_gems_per_block: roundTo(avgGemsVal, 4),
     harvest_gems: harvestGemsVal,
-    total_gems_didapat: finalTotalGems,
+    total_gems_didapat: totalGemsVal,
+    auto_break_cost: autoBreakCost,
     grow_time_seconds: growTime,
     grow_time_readable: formatDuration(growTime),
   }
