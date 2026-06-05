@@ -11,10 +11,12 @@ function ItemSearch({
   onSelect,
   onClear,
   selectedName,
+  compact,
 }: {
   onSelect: (item: ItemModel) => void
   onClear: () => void
   selectedName?: string
+  compact?: boolean
 }) {
   const [search, setSearch] = useState("")
   const [debouncedSearch] = useDebounce(search, 400)
@@ -33,6 +35,9 @@ function ItemSearch({
 
   const items = itemsData?.data ?? []
 
+  const inputClass = compact ? "pl-7 h-7 text-xs" : "pl-7 h-8 text-sm"
+  const iconClass = compact ? "size-3" : "size-3.5"
+
   if (selectedName) {
     return (
       <div className="relative">
@@ -40,7 +45,7 @@ function ItemSearch({
           <Input
             value={selectedName}
             readOnly
-            className="pl-7 h-8 text-sm"
+            className={inputClass}
             onKeyDown={(e) => {
               if (e.key === "Backspace" || e.key === "Delete") {
                 e.preventDefault()
@@ -48,13 +53,13 @@ function ItemSearch({
               }
             }}
           />
-          <Search className="absolute left-2 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground pointer-events-none" />
+          <Search className={`absolute left-2 top-1/2 -translate-y-1/2 ${iconClass} text-muted-foreground pointer-events-none`} />
           <button
             type="button"
             className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
             onClick={onClear}
           >
-            <X className="size-3" />
+            <X className={compact ? "size-2.5" : "size-3"} />
           </button>
         </div>
       </div>
@@ -64,7 +69,7 @@ function ItemSearch({
   return (
     <div className="relative">
       <div className="relative">
-        <Search className="absolute left-2 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground pointer-events-none" />
+        <Search className={`absolute left-2 top-1/2 -translate-y-1/2 ${iconClass} text-muted-foreground pointer-events-none`} />
         <Input
           placeholder="Search item..."
           value={search}
@@ -94,7 +99,7 @@ function ItemSearch({
               setOpen(false)
             }
           }}
-          className="pl-7 h-8 text-sm"
+          className={inputClass}
         />
       </div>
       {open && search && (

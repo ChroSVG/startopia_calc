@@ -1,10 +1,8 @@
 import { Trash2 } from "lucide-react"
 import ItemSearch from "@/components/Masses/ItemSearch"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Separator } from "@/components/ui/separator"
 import type { MassItemResult } from "@/utils/massCalculator"
 import type { CalculatorItem } from "@/utils/massTypes"
 
@@ -34,149 +32,99 @@ export function MassItemCard({
   onRemove,
 }: MassItemCardProps) {
   return (
-    <Card className="relative">
-      <CardHeader className="pb-2 pt-3 px-4">
-        <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end">
-          <div className="sm:col-span-4 space-y-1.5">
-            <Label className="text-xs text-muted-foreground">Item</Label>
-            <ItemSearch
-              selectedName={item.itemName || undefined}
-              onSelect={(i) => onItemSelect(item.tempId, i)}
-              onClear={() => onItemClear(item.tempId)}
-            />
+    <Card className="p-2.5 space-y-2">
+      <div className="flex items-center gap-2">
+        <div className="flex-1 min-w-0">
+          <ItemSearch
+            compact
+            selectedName={item.itemName || undefined}
+            onSelect={(i) => onItemSelect(item.tempId, i)}
+            onClear={() => onItemClear(item.tempId)}
+          />
+        </div>
+        {onRemove && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="size-7 shrink-0 text-muted-foreground hover:text-destructive"
+            onClick={() => onRemove(item.tempId)}
+          >
+            <Trash2 className="size-3.5" />
+          </Button>
+        )}
+      </div>
+
+      <div className="grid grid-cols-3 gap-1.5">
+        <Input
+          type="number"
+          min={0}
+          value={item.treeCount || ""}
+          onChange={(e) => onTreesChange(item.tempId, parseInt(e.target.value, 10) || 0)}
+          placeholder="Trees"
+          className="h-7 text-xs"
+        />
+        <Input
+          type="number"
+          min={0}
+          value={item.priceBuy || ""}
+          onChange={(e) => onPriceBuyChange?.(item.tempId, parseInt(e.target.value, 10) || 0)}
+          placeholder="Buy"
+          className="h-7 text-xs"
+        />
+        <Input
+          type="number"
+          min={0}
+          value={item.priceSell || ""}
+          onChange={(e) => onPriceSellChange?.(item.tempId, parseInt(e.target.value, 10) || 0)}
+          placeholder="Sell"
+          className="h-7 text-xs"
+        />
+      </div>
+
+      <div className="flex items-center gap-3">
+        <label className="flex items-center gap-1 text-xs cursor-pointer select-none">
+          <input
+            type="checkbox"
+            checked={item.isFuel}
+            onChange={(e) => onFuelChange?.(item.tempId, e.target.checked)}
+            className="size-3"
+          />
+          Fuel
+        </label>
+        <label className="flex items-center gap-1 text-xs cursor-pointer select-none">
+          <input
+            type="checkbox"
+            checked={item.isAutoBreak}
+            onChange={(e) => onAutoBreakChange?.(item.tempId, e.target.checked)}
+            className="size-3"
+          />
+          Auto
+        </label>
+      </div>
+
+      {item.itemUid && result && (
+        <div className="grid grid-cols-5 gap-x-2 gap-y-0.5 text-[10px] pt-1.5 border-t text-muted-foreground">
+          <div>
+            <span>Blok </span>
+            <span className="font-medium text-foreground">{result.blok_yielded.toLocaleString()}</span>
           </div>
-          <div className="sm:col-span-2 space-y-1.5">
-            <Label className="text-xs text-muted-foreground">Max Blocks</Label>
-            <Input
-              type="number"
-              min={1}
-              max={4}
-              value={item.maxBlocks}
-              disabled
-              className="h-8"
-            />
+          <div>
+            <span>Smash </span>
+            <span className="font-medium text-foreground">{result.total_smash_efektif.toLocaleString()}</span>
           </div>
-          <div className="sm:col-span-2 space-y-1.5">
-            <Label className="text-xs text-muted-foreground">Trees</Label>
-            <Input
-              type="number"
-              min={0}
-              value={item.treeCount || ""}
-              onChange={(e) =>
-                onTreesChange(item.tempId, parseInt(e.target.value, 10) || 0)
-              }
-              placeholder="0"
-              className="h-8"
-            />
+          <div>
+            <span>Seeds </span>
+            <span className="font-medium text-foreground">{result.total_seeds_return.toLocaleString()}</span>
           </div>
-          <div className="sm:col-span-1 space-y-1.5">
-            <Label className="text-xs text-muted-foreground">Buy</Label>
-            <Input
-              type="number"
-              min={0}
-              value={item.priceBuy || ""}
-              onChange={(e) =>
-                onPriceBuyChange?.(item.tempId, parseInt(e.target.value, 10) || 0)
-              }
-              placeholder="0"
-              className="h-8"
-            />
+          <div>
+            <span>Gems </span>
+            <span className="font-medium text-foreground">{result.total_gems_didapat.toLocaleString()}</span>
           </div>
-          <div className="sm:col-span-1 space-y-1.5">
-            <Label className="text-xs text-muted-foreground">Sell</Label>
-            <Input
-              type="number"
-              min={0}
-              value={item.priceSell || ""}
-              onChange={(e) =>
-                onPriceSellChange?.(item.tempId, parseInt(e.target.value, 10) || 0)
-              }
-              placeholder="0"
-              className="h-8"
-            />
-          </div>
-          <div className="sm:col-span-2 flex items-center gap-2 pb-1">
-            <label className="flex items-center gap-1 text-xs cursor-pointer">
-              <input
-                type="checkbox"
-                checked={item.isFuel}
-                onChange={(e) => onFuelChange?.(item.tempId, e.target.checked)}
-                className="size-3.5"
-              />
-              Fuel
-            </label>
-            <label className="flex items-center gap-1 text-xs cursor-pointer">
-              <input
-                type="checkbox"
-                checked={item.isAutoBreak}
-                onChange={(e) => onAutoBreakChange?.(item.tempId, e.target.checked)}
-                className="size-3.5"
-              />
-              Auto
-            </label>
-            {onRemove && (
-              <Button
-                variant="ghost"
-                size="icon"
-                className="size-8 text-muted-foreground hover:text-destructive ml-auto"
-                onClick={() => onRemove(item.tempId)}
-              >
-                <Trash2 className="size-4" />
-              </Button>
-            )}
+          <div>
+            <span>Grow </span>
+            <span className="font-medium text-foreground">{result.grow_time_readable}</span>
           </div>
         </div>
-      </CardHeader>
-      {item.itemUid && result && (
-        <CardContent className="px-4 pb-3 pt-0">
-          <Separator className="mb-2" />
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 text-xs">
-            <div>
-              <span className="text-muted-foreground">Blok</span>
-              <p className="font-medium tabular-nums">
-                {result.blok_yielded.toLocaleString()}
-              </p>
-            </div>
-            <div>
-              <span className="text-muted-foreground">Smash</span>
-              <p className="font-medium tabular-nums">
-                {result.total_smash_efektif.toLocaleString()}
-              </p>
-            </div>
-            <div>
-              <span className="text-muted-foreground">Seeds</span>
-              <p className="font-medium tabular-nums">
-                {result.total_seeds_return.toLocaleString()}{" "}
-                <span className="text-muted-foreground">
-                  ({result.seed_return_rate}%)
-                </span>
-              </p>
-            </div>
-            <div>
-              <span className="text-muted-foreground">Gems</span>
-              <p className="font-medium tabular-nums">
-                {result.total_gems_didapat.toLocaleString()}
-                {result.auto_break_cost > 0 && (
-                  <span className="text-muted-foreground text-[10px] ml-1">
-                    -{result.auto_break_cost.toLocaleString()}
-                  </span>
-                )}
-              </p>
-            </div>
-            <div>
-              <span className="text-muted-foreground">Grow</span>
-              <p className="font-medium tabular-nums">
-                {result.grow_time_readable}
-              </p>
-            </div>
-            <div>
-              <span className="text-muted-foreground">Gems/Block</span>
-              <p className="font-medium tabular-nums">
-                {result.avg_gems_per_block}
-              </p>
-            </div>
-          </div>
-        </CardContent>
       )}
     </Card>
   )
