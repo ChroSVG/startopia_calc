@@ -1,9 +1,10 @@
 import { useQuery } from "@tanstack/react-query"
 import { createFileRoute, useNavigate, useParams } from "@tanstack/react-router"
-import { Loader2 } from "lucide-react"
+import { LayoutGrid, List, Loader2 } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useDebouncedCallback } from "use-debounce"
 
+import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent } from "@/components/ui/card"
@@ -71,6 +72,8 @@ function MassCalculatorPage() {
   useEffect(() => {
     setTargetInput(state.targetSeeds > 0 ? String(state.targetSeeds) : "")
   }, [state.items[0]?.itemUid])
+
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
 
   if (massUid === "new") return null
 
@@ -144,7 +147,31 @@ function MassCalculatorPage() {
         />
       )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+      <div className="flex items-center justify-between">
+        <h2 className="text-sm font-semibold">Items</h2>
+        <div className="flex items-center gap-2 border rounded-lg p-1 bg-background">
+          <Button
+            variant={viewMode === "list" ? "secondary" : "ghost"}
+            size="icon"
+            className="size-7"
+            onClick={() => setViewMode("list")}
+          >
+            <List className="size-4" />
+            <span className="sr-only">List View</span>
+          </Button>
+          <Button
+            variant={viewMode === "grid" ? "secondary" : "ghost"}
+            size="icon"
+            className="size-7"
+            onClick={() => setViewMode("grid")}
+          >
+            <LayoutGrid className="size-4" />
+            <span className="sr-only">Grid View</span>
+          </Button>
+        </div>
+      </div>
+
+      <div className={viewMode === "grid" ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3" : "space-y-3"}>
         {state.items.map((item, i) => (
           <MassItemCard
             key={item.tempId}

@@ -103,7 +103,7 @@ export function MassItemCard({
       </div>
 
       {item.itemUid && result && (
-        <div className="grid grid-cols-5 gap-x-2 gap-y-0.5 text-[10px] pt-1.5 border-t text-muted-foreground">
+        <div className="grid grid-cols-4 gap-x-2 gap-y-0.5 text-[10px] pt-1.5 border-t text-muted-foreground">
           <div>
             <span>Blok </span>
             <span className="font-medium text-foreground">{result.blok_yielded.toLocaleString()}</span>
@@ -119,10 +119,6 @@ export function MassItemCard({
           <div>
             <span>Gems </span>
             <span className="font-medium text-foreground">{result.total_gems_didapat.toLocaleString()}</span>
-          </div>
-          <div>
-            <span>Grow </span>
-            <span className="font-medium text-foreground">{result.grow_time_readable}</span>
           </div>
         </div>
       )}

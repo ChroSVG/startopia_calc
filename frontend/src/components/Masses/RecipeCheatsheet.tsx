@@ -244,8 +244,6 @@ function RecipeCheatsheet({
   onRemoveItem?: (path: string) => void
   onApplyTrees?: (path: string, treeCount: number) => void
 }) {
-  const [expanded, setExpanded] = useState(false)
-
   const clickedPaths = useMemo(
     () => {
       const paths = new Set(items.filter((i) => i.sourcePath).map((i) => i.sourcePath!))
@@ -294,29 +292,17 @@ function RecipeCheatsheet({
 
   return (
     <Card>
-      <CardHeader
-        className="py-3 px-4 cursor-pointer select-none"
-        onClick={() => setExpanded((v) => !v)}
-      >
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            {expanded ? (
-              <ChevronDown className="size-4 text-muted-foreground" />
-            ) : (
-              <ChevronRight className="size-4 text-muted-foreground" />
-            )}
-            <CardTitle className="text-sm font-semibold">Ingredients</CardTitle>
-            {!isLoading && root && (
-              <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
-                {totalClicked > 0 ? `${totalClicked}/${totalDisplay}` : totalDisplay}
-              </Badge>
-            )}
-          </div>
-
+      <CardHeader className="py-3 px-4">
+        <div className="flex items-center gap-2">
+          <CardTitle className="text-sm font-semibold">Ingredients</CardTitle>
+          {!isLoading && root && (
+            <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
+              {totalClicked > 0 ? `${totalClicked}/${totalDisplay}` : totalDisplay}
+            </Badge>
+          )}
         </div>
       </CardHeader>
-      {expanded && (
-        <CardContent className="px-2 pb-3 pt-0">
+      <CardContent className="px-2 pb-3 pt-0">
           {isLoading ? (
             <div className="flex items-center justify-center py-4">
               <Loader2 className="size-4 animate-spin text-muted-foreground" />
@@ -341,7 +327,6 @@ function RecipeCheatsheet({
             </div>
           )}
         </CardContent>
-      )}
     </Card>
   )
 }
