@@ -123,34 +123,36 @@ export function MassItemCard({
                 className="h-7 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
               />
             </div>
-            <div className="sm:col-span-2 flex items-center gap-2 pb-1">
-              <label className="flex items-center gap-1 text-xs cursor-pointer select-none">
-                <input
-                  type="checkbox"
-                  checked={item.isFuel}
-                  onChange={(e) =>
-                    onFuelChange?.(item.tempId, e.target.checked)
-                  }
-                  className="size-3.5"
-                />
-                Fuel
-              </label>
-              <label className="flex items-center gap-1 text-xs cursor-pointer select-none">
-                <input
-                  type="checkbox"
-                  checked={item.isAutoBreak}
-                  onChange={(e) =>
-                    onAutoBreakChange?.(item.tempId, e.target.checked)
-                  }
-                  className="size-3.5"
-                />
-                Auto
-              </label>
+            <div className="sm:col-span-2 flex items-center justify-between pb-1">
+              <div className="flex items-center gap-1.5">
+                <label className="flex items-center gap-1 text-xs cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={item.isFuel}
+                    onChange={(e) =>
+                      onFuelChange?.(item.tempId, e.target.checked)
+                    }
+                    className="size-3.5"
+                  />
+                  Fuel
+                </label>
+                <label className="flex items-center gap-1 text-xs cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={item.isAutoBreak}
+                    onChange={(e) =>
+                      onAutoBreakChange?.(item.tempId, e.target.checked)
+                    }
+                    className="size-3.5"
+                  />
+                  Auto
+                </label>
+              </div>
               {onRemove && (
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="size-7 shrink-0 text-muted-foreground hover:text-destructive ml-auto"
+                  className="size-7 shrink-0 text-muted-foreground hover:text-destructive"
                   onClick={() => onRemove(item.tempId)}
                 >
                   <Trash2 className="size-3.5" />
@@ -297,8 +299,8 @@ export function MassItemCard({
         </div>
       </div>
 
-      <div className="flex items-center gap-2">
-        <label className="flex items-center gap-1 text-[10px] cursor-pointer select-none">
+      <div className="flex items-center gap-1">
+        <label className="flex items-center gap-0.5 text-[10px] cursor-pointer select-none">
           <input
             type="checkbox"
             checked={item.isFuel}
@@ -307,7 +309,7 @@ export function MassItemCard({
           />
           Fuel
         </label>
-        <label className="flex items-center gap-1 text-[10px] cursor-pointer select-none">
+        <label className="flex items-center gap-0.5 text-[10px] cursor-pointer select-none">
           <input
             type="checkbox"
             checked={item.isAutoBreak}
