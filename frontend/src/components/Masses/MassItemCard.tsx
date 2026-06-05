@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
+import { cn } from "@/lib/utils"
 import type { MassItemResult } from "@/utils/massCalculator"
 import type { CalculatorItem } from "@/utils/massTypes"
 
@@ -20,6 +21,22 @@ interface MassItemCardProps {
   onAutoBreakChange?: (tempId: string, isAutoBreak: boolean) => void
   onRemove?: (tempId: string) => void
   variant?: "grid" | "list"
+}
+
+function MaxBlockIndicator({ value }: { value: number }) {
+  return (
+    <div className="flex items-center gap-0.5" title={`Max Blocks: ${value}`}>
+      {[1, 2, 3, 4].map((i) => (
+        <div
+          key={i}
+          className={cn(
+            "size-2.5 rounded-[2px] transition-colors",
+            i <= value ? "bg-primary" : "bg-muted",
+          )}
+        />
+      ))}
+    </div>
+  )
 }
 
 export function MassItemCard({
@@ -38,29 +55,33 @@ export function MassItemCard({
   if (variant === "list") {
     return (
       <Card>
-        <CardHeader className="pb-2 pt-3 px-4">
-          <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end">
-            <div className="sm:col-span-4 space-y-1.5">
+        <CardHeader className="pb-2 pt-2.5 px-3">
+          <div className="grid grid-cols-1 sm:grid-cols-12 gap-2 items-end">
+            <div className="sm:col-span-4 space-y-1">
               <Label className="text-xs text-muted-foreground">Item</Label>
-              <ItemSearch
-                compact
-                selectedName={item.itemName || undefined}
-                onSelect={(i) => onItemSelect(item.tempId, i)}
-                onClear={() => onItemClear(item.tempId)}
-              />
+              <div className="flex items-center gap-2">
+                <div className="flex-1 min-w-0">
+                  <ItemSearch
+                    compact
+                    selectedName={item.itemName || undefined}
+                    onSelect={(i) => onItemSelect(item.tempId, i)}
+                    onClear={() => onItemClear(item.tempId)}
+                  />
+                </div>
+                <MaxBlockIndicator value={item.maxBlocks} />
+                {onRemove && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="size-7 shrink-0 text-muted-foreground hover:text-destructive"
+                    onClick={() => onRemove(item.tempId)}
+                  >
+                    <Trash2 className="size-3.5" />
+                  </Button>
+                )}
+              </div>
             </div>
-            <div className="sm:col-span-2 space-y-1.5">
-              <Label className="text-xs text-muted-foreground">Max Blocks</Label>
-              <Input
-                type="number"
-                min={1}
-                max={4}
-                value={item.maxBlocks}
-                disabled
-                className="h-8"
-              />
-            </div>
-            <div className="sm:col-span-1 space-y-1.5">
+            <div className="sm:col-span-2 space-y-1">
               <Label className="text-xs text-muted-foreground">Trees</Label>
               <Input
                 type="number"
@@ -70,10 +91,10 @@ export function MassItemCard({
                   onTreesChange(item.tempId, parseInt(e.target.value, 10) || 0)
                 }
                 placeholder="0"
-                className="h-8"
+                className="h-7"
               />
             </div>
-            <div className="sm:col-span-1 space-y-1.5">
+            <div className="sm:col-span-2 space-y-1">
               <Label className="text-xs text-muted-foreground">Buy</Label>
               <Input
                 type="number"
@@ -83,10 +104,10 @@ export function MassItemCard({
                   onPriceBuyChange?.(item.tempId, parseInt(e.target.value, 10) || 0)
                 }
                 placeholder="0"
-                className="h-8"
+                className="h-7"
               />
             </div>
-            <div className="sm:col-span-1 space-y-1.5">
+            <div className="sm:col-span-2 space-y-1">
               <Label className="text-xs text-muted-foreground">Sell</Label>
               <Input
                 type="number"
@@ -96,7 +117,7 @@ export function MassItemCard({
                   onPriceSellChange?.(item.tempId, parseInt(e.target.value, 10) || 0)
                 }
                 placeholder="0"
-                className="h-8"
+                className="h-7"
               />
             </div>
             <div className="sm:col-span-2 flex items-center gap-2 pb-1">
@@ -118,21 +139,11 @@ export function MassItemCard({
                 />
                 Auto
               </label>
-              {onRemove && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="size-8 text-muted-foreground hover:text-destructive ml-auto"
-                  onClick={() => onRemove(item.tempId)}
-                >
-                  <Trash2 className="size-4" />
-                </Button>
-              )}
             </div>
           </div>
         </CardHeader>
         {item.itemUid && result && (
-          <CardContent className="px-4 pb-3 pt-0">
+          <CardContent className="px-3 pb-2.5 pt-0">
             <Separator className="mb-2" />
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 text-xs">
               <div>
@@ -197,6 +208,7 @@ export function MassItemCard({
             onClear={() => onItemClear(item.tempId)}
           />
         </div>
+        <MaxBlockIndicator value={item.maxBlocks} />
         {onRemove && (
           <Button
             variant="ghost"
@@ -210,30 +222,39 @@ export function MassItemCard({
       </div>
 
       <div className="grid grid-cols-3 gap-1.5">
-        <Input
-          type="number"
-          min={0}
-          value={item.treeCount || ""}
-          onChange={(e) => onTreesChange(item.tempId, parseInt(e.target.value, 10) || 0)}
-          placeholder="Trees"
-          className="h-7 text-xs"
-        />
-        <Input
-          type="number"
-          min={0}
-          value={item.priceBuy || ""}
-          onChange={(e) => onPriceBuyChange?.(item.tempId, parseInt(e.target.value, 10) || 0)}
-          placeholder="Buy"
-          className="h-7 text-xs"
-        />
-        <Input
-          type="number"
-          min={0}
-          value={item.priceSell || ""}
-          onChange={(e) => onPriceSellChange?.(item.tempId, parseInt(e.target.value, 10) || 0)}
-          placeholder="Sell"
-          className="h-7 text-xs"
-        />
+        <div className="space-y-0.5">
+          <Label className="text-[10px] text-muted-foreground">Trees</Label>
+          <Input
+            type="number"
+            min={0}
+            value={item.treeCount || ""}
+            onChange={(e) => onTreesChange(item.tempId, parseInt(e.target.value, 10) || 0)}
+            placeholder="0"
+            className="h-7 text-xs"
+          />
+        </div>
+        <div className="space-y-0.5">
+          <Label className="text-[10px] text-muted-foreground">Buy</Label>
+          <Input
+            type="number"
+            min={0}
+            value={item.priceBuy || ""}
+            onChange={(e) => onPriceBuyChange?.(item.tempId, parseInt(e.target.value, 10) || 0)}
+            placeholder="0"
+            className="h-7 text-xs"
+          />
+        </div>
+        <div className="space-y-0.5">
+          <Label className="text-[10px] text-muted-foreground">Sell</Label>
+          <Input
+            type="number"
+            min={0}
+            value={item.priceSell || ""}
+            onChange={(e) => onPriceSellChange?.(item.tempId, parseInt(e.target.value, 10) || 0)}
+            placeholder="0"
+            className="h-7 text-xs"
+          />
+        </div>
       </div>
 
       <div className="flex items-center gap-3">
