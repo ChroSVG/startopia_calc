@@ -139,8 +139,7 @@ export function calculateTreeYield(
   let totalGemsVal: number
 
   if (mode === "apresisi" || mode === "bpresisi") {
-    const rawYield =
-      treeCount * (KOEFISIEN_YIELD[maxBlocks] / maxBlocks) * 2.5
+    const rawYield = treeCount * (KOEFISIEN_YIELD[maxBlocks] / maxBlocks) * 2.5
     const rawSmash = rawYield / (1 - RATIO_DROP_BLOCK)
     harvestGemsVal = Math.floor(treeCount * avgGemsVal)
     totalGemsVal = Math.floor((rawSmash * (2 / 3) + treeCount) * avgGemsVal)
@@ -180,7 +179,10 @@ export function findMinTreesForTarget(
   }
 
   let high = 1
-  while (calculateTreeYield(treeRarity, maxBlocks, high, mode).total_seeds_return < targetSeeds) {
+  while (
+    calculateTreeYield(treeRarity, maxBlocks, high, mode).total_seeds_return <
+    targetSeeds
+  ) {
     high *= 2
   }
 

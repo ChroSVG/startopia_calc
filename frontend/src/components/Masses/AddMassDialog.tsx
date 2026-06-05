@@ -8,6 +8,7 @@ import { z } from "zod"
 
 import type { ItemModel } from "@/client"
 import { MassesService } from "@/client"
+import ItemSearch from "@/components/Masses/ItemSearch"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -29,7 +30,6 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { LoadingButton } from "@/components/ui/loading-button"
-import ItemSearch from "@/components/Masses/ItemSearch"
 import useCustomToast from "@/hooks/useCustomToast"
 import { handleError } from "@/utils"
 
@@ -58,8 +58,17 @@ const AddMassDialog = () => {
   })
 
   const mutation = useMutation({
-    mutationFn: (data: { name: string; description?: string | null; items?: Array<{ item_uid: string; item_name: string; tree_rarity: number; max_blocks: number; jumlah_pohon: number }> }) =>
-      MassesService.createMass({ requestBody: data }),
+    mutationFn: (data: {
+      name: string
+      description?: string | null
+      items?: Array<{
+        item_uid: string
+        item_name: string
+        tree_rarity: number
+        max_blocks: number
+        jumlah_pohon: number
+      }>
+    }) => MassesService.createMass({ requestBody: data }),
     onSuccess: (data) => {
       showSuccessToast("Mass created")
       form.reset()
@@ -84,10 +93,7 @@ const AddMassDialog = () => {
               tree_rarity: parseInt(selectedItem.rarity ?? "1", 10),
               max_blocks: Math.max(
                 1,
-                Math.min(
-                  4,
-                  Math.floor((selectedItem.max_drop ?? 4) / 4),
-                ),
+                Math.min(4, Math.floor((selectedItem.max_drop ?? 4) / 4)),
               ),
               jumlah_pohon: 1,
             },

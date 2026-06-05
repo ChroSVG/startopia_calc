@@ -38,6 +38,7 @@ class MassItem(SQLModel, table=True):
     item_uid: Optional[uuid.UUID] = Field(default=None, foreign_key="items.uid")
 
     item_name: str = "Item"
+    rarity: str = ""
     tree_rarity: int = 1
     max_blocks: int = 1
     jumlah_pohon: int = 0

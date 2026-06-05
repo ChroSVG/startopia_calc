@@ -1,5 +1,6 @@
 import { Trash2 } from "lucide-react"
 import ItemSearch from "@/components/Masses/ItemSearch"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -60,6 +61,14 @@ export function MassItemCard({
             <div className="sm:col-span-4 space-y-1">
               <div className="flex items-center gap-2">
                 <Label className="text-xs text-muted-foreground">Item</Label>
+                {item.rarity && (
+                  <Badge
+                    variant="outline"
+                    className="text-[10px] px-1.5 py-0 h-4"
+                  >
+                    {item.rarity}
+                  </Badge>
+                )}
                 <MaxBlockIndicator value={item.maxBlocks} />
               </div>
               <ItemSearch
@@ -79,7 +88,7 @@ export function MassItemCard({
                   onTreesChange(item.tempId, parseInt(e.target.value, 10) || 0)
                 }
                 placeholder="0"
-                className="h-7"
+                className="h-7 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
               />
             </div>
             <div className="sm:col-span-2 space-y-1">
@@ -89,10 +98,13 @@ export function MassItemCard({
                 min={0}
                 value={item.priceBuy || ""}
                 onChange={(e) =>
-                  onPriceBuyChange?.(item.tempId, parseInt(e.target.value, 10) || 0)
+                  onPriceBuyChange?.(
+                    item.tempId,
+                    parseInt(e.target.value, 10) || 0,
+                  )
                 }
                 placeholder="0"
-                className="h-7"
+                className="h-7 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
               />
             </div>
             <div className="sm:col-span-2 space-y-1">
@@ -102,10 +114,13 @@ export function MassItemCard({
                 min={0}
                 value={item.priceSell || ""}
                 onChange={(e) =>
-                  onPriceSellChange?.(item.tempId, parseInt(e.target.value, 10) || 0)
+                  onPriceSellChange?.(
+                    item.tempId,
+                    parseInt(e.target.value, 10) || 0,
+                  )
                 }
                 placeholder="0"
-                className="h-7"
+                className="h-7 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
               />
             </div>
             <div className="sm:col-span-2 flex items-center gap-2 pb-1">
@@ -113,7 +128,9 @@ export function MassItemCard({
                 <input
                   type="checkbox"
                   checked={item.isFuel}
-                  onChange={(e) => onFuelChange?.(item.tempId, e.target.checked)}
+                  onChange={(e) =>
+                    onFuelChange?.(item.tempId, e.target.checked)
+                  }
                   className="size-3.5"
                 />
                 Fuel
@@ -122,7 +139,9 @@ export function MassItemCard({
                 <input
                   type="checkbox"
                   checked={item.isAutoBreak}
-                  onChange={(e) => onAutoBreakChange?.(item.tempId, e.target.checked)}
+                  onChange={(e) =>
+                    onAutoBreakChange?.(item.tempId, e.target.checked)
+                  }
                   className="size-3.5"
                 />
                 Auto
@@ -197,6 +216,15 @@ export function MassItemCard({
 
   return (
     <Card className="p-2 space-y-1.5">
+      <div className="flex items-center gap-2 text-[10px]">
+        <Label className="leading-none text-muted-foreground">Item</Label>
+        {item.rarity && (
+          <Badge variant="outline" className="text-[9px] px-1 py-0 h-3.5">
+            {item.rarity}
+          </Badge>
+        )}
+        <MaxBlockIndicator value={item.maxBlocks} />
+      </div>
       <div className="flex items-center gap-2">
         <div className="flex-1 min-w-0">
           <ItemSearch
@@ -206,7 +234,6 @@ export function MassItemCard({
             onClear={() => onItemClear(item.tempId)}
           />
         </div>
-        <MaxBlockIndicator value={item.maxBlocks} />
         {onRemove && (
           <Button
             variant="ghost"
@@ -221,36 +248,51 @@ export function MassItemCard({
 
       <div className="grid grid-cols-3 gap-1">
         <div className="space-y-0.5">
-          <Label className="text-[10px] leading-none text-muted-foreground">Trees</Label>
+          <Label className="text-[10px] leading-none text-muted-foreground">
+            Trees
+          </Label>
           <Input
             type="number"
             min={0}
             value={item.treeCount || ""}
-            onChange={(e) => onTreesChange(item.tempId, parseInt(e.target.value, 10) || 0)}
+            onChange={(e) =>
+              onTreesChange(item.tempId, parseInt(e.target.value, 10) || 0)
+            }
             placeholder="0"
-            className="h-6 text-xs"
+            className="h-6 text-xs [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           />
         </div>
         <div className="space-y-0.5">
-          <Label className="text-[10px] leading-none text-muted-foreground">Buy</Label>
+          <Label className="text-[10px] leading-none text-muted-foreground">
+            Buy
+          </Label>
           <Input
             type="number"
             min={0}
             value={item.priceBuy || ""}
-            onChange={(e) => onPriceBuyChange?.(item.tempId, parseInt(e.target.value, 10) || 0)}
+            onChange={(e) =>
+              onPriceBuyChange?.(item.tempId, parseInt(e.target.value, 10) || 0)
+            }
             placeholder="0"
-            className="h-6 text-xs"
+            className="h-6 text-xs [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           />
         </div>
         <div className="space-y-0.5">
-          <Label className="text-[10px] leading-none text-muted-foreground">Sell</Label>
+          <Label className="text-[10px] leading-none text-muted-foreground">
+            Sell
+          </Label>
           <Input
             type="number"
             min={0}
             value={item.priceSell || ""}
-            onChange={(e) => onPriceSellChange?.(item.tempId, parseInt(e.target.value, 10) || 0)}
+            onChange={(e) =>
+              onPriceSellChange?.(
+                item.tempId,
+                parseInt(e.target.value, 10) || 0,
+              )
+            }
             placeholder="0"
-            className="h-6 text-xs"
+            className="h-6 text-xs [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           />
         </div>
       </div>
@@ -277,22 +319,30 @@ export function MassItemCard({
       </div>
 
       {item.itemUid && result && (
-        <div className="grid grid-cols-4 gap-x-1.5 text-[9px] pt-1 border-t text-muted-foreground">
+        <div className="grid grid-cols-4 text-[9px] pt-1 border-t text-muted-foreground">
           <div>
-            <span>Blok </span>
-            <span className="font-medium text-foreground">{result.blok_yielded.toLocaleString()}</span>
+            <div>Blok</div>
+            <div className="font-medium text-foreground tabular-nums">
+              {result.blok_yielded.toLocaleString()}
+            </div>
           </div>
           <div>
-            <span>Smash </span>
-            <span className="font-medium text-foreground">{result.total_smash_efektif.toLocaleString()}</span>
+            <div>Smash</div>
+            <div className="font-medium text-foreground tabular-nums">
+              {result.total_smash_efektif.toLocaleString()}
+            </div>
           </div>
           <div>
-            <span>Seeds </span>
-            <span className="font-medium text-foreground">{result.total_seeds_return.toLocaleString()}</span>
+            <div>Seeds</div>
+            <div className="font-medium text-foreground tabular-nums">
+              {result.total_seeds_return.toLocaleString()}
+            </div>
           </div>
           <div>
-            <span>Gems </span>
-            <span className="font-medium text-foreground">{result.total_gems_didapat.toLocaleString()}</span>
+            <div>Gems</div>
+            <div className="font-medium text-foreground tabular-nums">
+              {result.total_gems_didapat.toLocaleString()}
+            </div>
           </div>
         </div>
       )}

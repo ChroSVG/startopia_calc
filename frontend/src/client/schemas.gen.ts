@@ -1166,6 +1166,11 @@ export const MassItemInputSchema = {
             title: 'Item Name',
             default: 'Item'
         },
+        rarity: {
+            type: 'string',
+            title: 'Rarity',
+            default: ''
+        },
         tree_rarity: {
             type: 'integer',
             title: 'Tree Rarity',
@@ -1235,6 +1240,11 @@ export const MassItemResultSchema = {
             type: 'string',
             title: 'Item Name',
             default: 'Item'
+        },
+        rarity: {
+            type: 'string',
+            title: 'Rarity',
+            default: ''
         },
         tree_rarity: {
             type: 'integer',

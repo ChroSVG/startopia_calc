@@ -17,13 +17,25 @@ export interface Totals {
   growReadable: string
 }
 
-export function useMassResults(items: CalculatorItem[], mode: string, hitCost: number = 1) {
+export function useMassResults(
+  items: CalculatorItem[],
+  mode: string,
+  hitCost: number = 1,
+) {
   const resultsCache = useMemo(() => {
     const map = new Map<string, MassItemResult>()
     for (const item of items) {
       map.set(
         item.tempId,
-        calculateTreeYield(item.treeRarity, item.maxBlocks, item.treeCount, mode, item.isFuel, item.isAutoBreak, hitCost),
+        calculateTreeYield(
+          item.treeRarity,
+          item.maxBlocks,
+          item.treeCount,
+          mode,
+          item.isFuel,
+          item.isAutoBreak,
+          hitCost,
+        ),
       )
     }
     return map

@@ -54,7 +54,6 @@ export function MassCalcHeader({
         >
           {uid ? "Update" : "Save"}
         </LoadingButton>
-
       </div>
     </div>
   )

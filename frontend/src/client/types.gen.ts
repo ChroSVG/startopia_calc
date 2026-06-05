@@ -206,6 +206,7 @@ export type MassesPublic = {
 export type MassItemInput = {
     item_uid?: (string | null);
     item_name?: string;
+    rarity?: string;
     tree_rarity?: number;
     max_blocks?: number;
     jumlah_pohon?: number;
@@ -219,6 +220,7 @@ export type MassItemInput = {
 export type MassItemResult = {
     item_uid?: (string | null);
     item_name?: string;
+    rarity?: string;
     tree_rarity?: number;
     max_blocks?: number;
     jumlah_pohon?: number;

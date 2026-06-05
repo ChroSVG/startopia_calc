@@ -59,30 +59,28 @@ export function useMassCalcState(loadedMass: MassModel | undefined) {
     [],
   )
 
-  const addItemFromIngredient = useCallback(
-    (path: string, item: ItemModel) => {
-      const maxBlocks = Math.max(
-        1,
-        Math.min(4, Math.floor((item.max_drop ?? 4) / 4)),
-      )
-      setState((prev) => ({
-        ...prev,
-        items: [
-          ...prev.items,
-          {
-            ...blankItem(),
-            itemUid: item.uid,
-            itemName: item.name,
-            treeRarity: parseInt(item.rarity ?? "1", 10),
-            maxBlocks,
-            treeCount: 1,
-            sourcePath: path,
-          },
-        ],
-      }))
-    },
-    [],
-  )
+  const addItemFromIngredient = useCallback((path: string, item: ItemModel) => {
+    const maxBlocks = Math.max(
+      1,
+      Math.min(4, Math.floor((item.max_drop ?? 4) / 4)),
+    )
+    setState((prev) => ({
+      ...prev,
+      items: [
+        ...prev.items,
+        {
+          ...blankItem(),
+          itemUid: item.uid,
+          itemName: item.name,
+          rarity: item.rarity ?? "",
+          treeRarity: parseInt(item.rarity ?? "1", 10),
+          maxBlocks,
+          treeCount: 1,
+          sourcePath: path,
+        },
+      ],
+    }))
+  }, [])
 
   const removeItemBySourcePath = useCallback(
     (path: string) =>
@@ -105,6 +103,7 @@ export function useMassCalcState(loadedMass: MassModel | undefined) {
       updateItem(tempId, {
         itemUid: item.uid,
         itemName: item.name,
+        rarity: item.rarity ?? "",
         treeRarity: parseInt(item.rarity ?? "1", 10),
         maxBlocks,
       })
@@ -117,6 +116,7 @@ export function useMassCalcState(loadedMass: MassModel | undefined) {
       updateItem(tempId, {
         itemUid: null,
         itemName: "",
+        rarity: "",
         treeRarity: 1,
         maxBlocks: 1,
       }),
@@ -124,8 +124,7 @@ export function useMassCalcState(loadedMass: MassModel | undefined) {
   )
 
   const handleTreesChange = useCallback(
-    (tempId: string, trees: number) =>
-      updateItem(tempId, { treeCount: trees }),
+    (tempId: string, trees: number) => updateItem(tempId, { treeCount: trees }),
     [updateItem],
   )
 

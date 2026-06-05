@@ -53,7 +53,9 @@ function ItemSearch({
               }
             }}
           />
-          <Search className={`absolute left-2 top-1/2 -translate-y-1/2 ${iconClass} text-muted-foreground pointer-events-none`} />
+          <Search
+            className={`absolute left-2 top-1/2 -translate-y-1/2 ${iconClass} text-muted-foreground pointer-events-none`}
+          />
           <button
             type="button"
             className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
@@ -69,7 +71,9 @@ function ItemSearch({
   return (
     <div className="relative">
       <div className="relative">
-        <Search className={`absolute left-2 top-1/2 -translate-y-1/2 ${iconClass} text-muted-foreground pointer-events-none`} />
+        <Search
+          className={`absolute left-2 top-1/2 -translate-y-1/2 ${iconClass} text-muted-foreground pointer-events-none`}
+        />
         <Input
           placeholder="Search item..."
           value={search}
@@ -86,11 +90,17 @@ function ItemSearch({
           onKeyDown={(e) => {
             if (e.key === "ArrowDown") {
               e.preventDefault()
-              setHighlightedIndex((prev) => Math.min(prev + 1, items.length - 1))
+              setHighlightedIndex((prev) =>
+                Math.min(prev + 1, items.length - 1),
+              )
             } else if (e.key === "ArrowUp") {
               e.preventDefault()
               setHighlightedIndex((prev) => Math.max(prev - 1, 0))
-            } else if (e.key === "Enter" && highlightedIndex >= 0 && items[highlightedIndex]) {
+            } else if (
+              e.key === "Enter" &&
+              highlightedIndex >= 0 &&
+              items[highlightedIndex]
+            ) {
               e.preventDefault()
               onSelect(items[highlightedIndex])
               setSearch("")
@@ -119,9 +129,7 @@ function ItemSearch({
                 type="button"
                 className={cn(
                   "w-full text-left px-3 py-2 text-sm flex items-center gap-2 transition-colors",
-                  index === highlightedIndex
-                    ? "bg-accent"
-                    : "hover:bg-accent",
+                  index === highlightedIndex ? "bg-accent" : "hover:bg-accent",
                 )}
                 onMouseDown={() => {
                   onSelect(item)

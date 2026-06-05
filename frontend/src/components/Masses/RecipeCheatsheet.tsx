@@ -8,7 +8,7 @@ import {
   Plus,
 } from "lucide-react"
 import { useEffect, useMemo, useState } from "react"
-import { type ItemModel, type RecipeTreeNode, ItemsService } from "@/client"
+import { type ItemModel, ItemsService, type RecipeTreeNode } from "@/client"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
@@ -38,7 +38,13 @@ function buildRequirements(
 ): void {
   if (!node.item.rarity) {
     for (let i = 0; i < node.ingredients.length; i++) {
-      buildRequirements(node.ingredients[i], `${path}/${i}`, targetSeeds, mode, map)
+      buildRequirements(
+        node.ingredients[i],
+        `${path}/${i}`,
+        targetSeeds,
+        mode,
+        map,
+      )
     }
     return
   }
@@ -54,7 +60,13 @@ function buildRequirements(
 
     const requiredCrafts = r.treeCount
     for (let i = 0; i < node.ingredients.length; i++) {
-      buildIngredientReqs(node.ingredients[i], `${path}/${i}`, requiredCrafts, mode, map)
+      buildIngredientReqs(
+        node.ingredients[i],
+        `${path}/${i}`,
+        requiredCrafts,
+        mode,
+        map,
+      )
     }
   }
 }
@@ -68,7 +80,13 @@ function buildIngredientReqs(
 ): void {
   if (!node.item.rarity) {
     for (let i = 0; i < node.ingredients.length; i++) {
-      buildIngredientReqs(node.ingredients[i], `${path}/${i}`, requiredCrafts, mode, map)
+      buildIngredientReqs(
+        node.ingredients[i],
+        `${path}/${i}`,
+        requiredCrafts,
+        mode,
+        map,
+      )
     }
     return
   }
@@ -82,7 +100,13 @@ function buildIngredientReqs(
   map.set(path, { treeCount: r.treeCount, seeds: r.seeds })
 
   for (let i = 0; i < node.ingredients.length; i++) {
-    buildIngredientReqs(node.ingredients[i], `${path}/${i}`, requiredCrafts, mode, map)
+    buildIngredientReqs(
+      node.ingredients[i],
+      `${path}/${i}`,
+      requiredCrafts,
+      mode,
+      map,
+    )
   }
 }
 
@@ -164,32 +188,37 @@ function TreeRow({
             "flex items-center gap-1.5 flex-1 min-w-0 text-left",
             readOnly && "cursor-default",
           )}
-          onClick={readOnly ? undefined : () => {
-            if (isClicked) {
-              onRemoveItem?.(path)
-            } else {
-              onAddItem?.(path, node.item)
-              const req = requirementsMap.get(path)
-              if (req) {
-                onApplyTrees?.(path, req.treeCount)
-              }
-            }
-          }}
+          onClick={
+            readOnly
+              ? undefined
+              : () => {
+                  if (isClicked) {
+                    onRemoveItem?.(path)
+                  } else {
+                    onAddItem?.(path, node.item)
+                    const req = requirementsMap.get(path)
+                    if (req) {
+                      onApplyTrees?.(path, req.treeCount)
+                    }
+                  }
+                }
+          }
         >
-          <ChevronsUpDown className={cn(
-            "size-3 shrink-0",
-            isClicked ? "text-primary" : "text-muted-foreground/50",
-          )} />
-          <span className={cn(
-            "text-sm truncate flex-1",
-            isClicked && "text-primary font-medium",
-          )}>
+          <ChevronsUpDown
+            className={cn(
+              "size-3 shrink-0",
+              isClicked ? "text-primary" : "text-muted-foreground/50",
+            )}
+          />
+          <span
+            className={cn(
+              "text-sm truncate flex-1",
+              isClicked && "text-primary font-medium",
+            )}
+          >
             {node.item.name}
           </span>
-          <Badge
-            variant="outline"
-            className="text-[10px] px-1.5 py-0 shrink-0"
-          >
+          <Badge variant="outline" className="text-[10px] px-1.5 py-0 shrink-0">
             {node.item.rarity}
           </Badge>
           {isClicked ? (
@@ -201,7 +230,8 @@ function TreeRow({
 
         {requirement && (
           <span className="text-xs text-muted-foreground whitespace-nowrap shrink-0">
-            {requirement.treeCount} trees → {requirement.seeds.toLocaleString()} seeds
+            {requirement.treeCount} trees → {requirement.seeds.toLocaleString()}{" "}
+            seeds
           </span>
         )}
       </div>
@@ -244,14 +274,13 @@ function RecipeCheatsheet({
   onRemoveItem?: (path: string) => void
   onApplyTrees?: (path: string, treeCount: number) => void
 }) {
-  const clickedPaths = useMemo(
-    () => {
-      const paths = new Set(items.filter((i) => i.sourcePath).map((i) => i.sourcePath!))
-      paths.add("root")
-      return paths
-    },
-    [items],
-  )
+  const clickedPaths = useMemo(() => {
+    const paths = new Set(
+      items.filter((i) => i.sourcePath).map((i) => i.sourcePath!),
+    )
+    paths.add("root")
+    return paths
+  }, [items])
 
   const { data, isLoading } = useQuery({
     queryKey: ["item-ingredients", itemUid],
@@ -297,36 +326,38 @@ function RecipeCheatsheet({
           <CardTitle className="text-sm font-semibold">Ingredients</CardTitle>
           {!isLoading && root && (
             <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
-              {totalClicked > 0 ? `${totalClicked}/${totalDisplay}` : totalDisplay}
+              {totalClicked > 0
+                ? `${totalClicked}/${totalDisplay}`
+                : totalDisplay}
             </Badge>
           )}
         </div>
       </CardHeader>
       <CardContent className="px-2 pb-3 pt-0">
-          {isLoading ? (
-            <div className="flex items-center justify-center py-4">
-              <Loader2 className="size-4 animate-spin text-muted-foreground" />
-            </div>
-          ) : !root || totalDisplay === 0 ? (
-            <p className="text-sm text-muted-foreground italic py-2 px-2">
-              No ingredients found.
-            </p>
-          ) : (
-            <div className="space-y-0.5">
-              <TreeRow
-                node={root}
-                depth={0}
-                path="root"
-                clickedPaths={clickedPaths}
-                requirementsMap={requirements}
-                readOnly
-                onAddItem={onAddItem}
-                onRemoveItem={onRemoveItem}
-                onApplyTrees={onApplyTrees}
-              />
-            </div>
-          )}
-        </CardContent>
+        {isLoading ? (
+          <div className="flex items-center justify-center py-4">
+            <Loader2 className="size-4 animate-spin text-muted-foreground" />
+          </div>
+        ) : !root || totalDisplay === 0 ? (
+          <p className="text-sm text-muted-foreground italic py-2 px-2">
+            No ingredients found.
+          </p>
+        ) : (
+          <div className="space-y-0.5">
+            <TreeRow
+              node={root}
+              depth={0}
+              path="root"
+              clickedPaths={clickedPaths}
+              requirementsMap={requirements}
+              readOnly
+              onAddItem={onAddItem}
+              onRemoveItem={onRemoveItem}
+              onApplyTrees={onApplyTrees}
+            />
+          </div>
+        )}
+      </CardContent>
     </Card>
   )
 }

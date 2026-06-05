@@ -11,6 +11,7 @@ export interface CalculatorItem {
   tempId: string
   itemUid: string | null
   itemName: string
+  rarity: string
   treeRarity: number
   maxBlocks: number
   treeCount: number
@@ -47,6 +48,7 @@ export function blankItem(): CalculatorItem {
     tempId: nextTempId(),
     itemUid: null,
     itemName: "",
+    rarity: "",
     treeRarity: 1,
     maxBlocks: 1,
     treeCount: 0,
@@ -69,6 +71,7 @@ export function massToCalcState(mass: MassModel): CalcState {
       tempId: nextTempId(),
       itemUid: i.item_uid ?? null,
       itemName: i.item_name ?? "",
+      rarity: i.rarity ?? "",
       treeRarity: i.tree_rarity ?? 1,
       maxBlocks: i.max_blocks ?? 1,
       treeCount: i.jumlah_pohon ?? 0,
@@ -91,6 +94,7 @@ export function calcStateToPayload(state: CalcState) {
     items: state.items.map((i) => ({
       item_uid: i.itemUid || undefined,
       item_name: i.itemName || "Item",
+      rarity: i.rarity || undefined,
       tree_rarity: i.treeRarity,
       max_blocks: i.maxBlocks,
       jumlah_pohon: i.treeCount,

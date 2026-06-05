@@ -66,7 +66,10 @@ const ItemCard = ({ item }: ItemCardProps) => {
           <RecipePopover item={item} />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button type="button" className="text-muted-foreground hover:text-foreground rounded-md p-1 -mr-1 -mt-1">
+              <button
+                type="button"
+                className="text-muted-foreground hover:text-foreground rounded-md p-1 -mr-1 -mt-1"
+              >
                 <EllipsisVertical className="size-4" />
               </button>
             </DropdownMenuTrigger>

@@ -10,6 +10,7 @@ from .calculator import format_duration
 class MassItemInput(BaseModel):
     item_uid: Optional[uuid.UUID] = None
     item_name: str = "Item"
+    rarity: str = ""
     tree_rarity: int = 1
     max_blocks: int = 1
     jumlah_pohon: int = 0

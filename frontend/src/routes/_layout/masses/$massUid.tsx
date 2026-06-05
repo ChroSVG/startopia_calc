@@ -3,17 +3,16 @@ import { createFileRoute, useNavigate, useParams } from "@tanstack/react-router"
 import { LayoutGrid, List, Loader2 } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useDebouncedCallback } from "use-debounce"
-
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent } from "@/components/ui/card"
 import { MassesService } from "@/client"
 import { MassCalcHeader } from "@/components/Masses/MassCalcHeader"
 import { MassItemCard } from "@/components/Masses/MassItemCard"
 import { ModeSelector } from "@/components/Masses/ModeSelector"
 import RecipeCheatsheet from "@/components/Masses/RecipeCheatsheet"
 import { TotalsCard } from "@/components/Masses/TotalsCard"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 
 import { useMassCalcState } from "@/hooks/useMassCalcState"
 import { useMassResults } from "@/hooks/useMassResults"
@@ -55,7 +54,11 @@ function MassCalculatorPage() {
     setItemTreeCount,
   } = useMassCalcState(loadedMass)
 
-  const { resultsCache, totals } = useMassResults(state.items, state.mode, state.hitCost)
+  const { resultsCache, totals } = useMassResults(
+    state.items,
+    state.mode,
+    state.hitCost,
+  )
 
   const { saveMutation } = useMassSave(state, (uid) => {
     window.location.href = `/masses/${uid}`
@@ -64,14 +67,16 @@ function MassCalculatorPage() {
   const hasItems = state.items.some((i) => i.itemUid && i.treeCount > 0)
   const isValid = hasItems
 
-  const [targetInput, setTargetInput] = useState(state.targetSeeds > 0 ? String(state.targetSeeds) : "")
+  const [targetInput, setTargetInput] = useState(
+    state.targetSeeds > 0 ? String(state.targetSeeds) : "",
+  )
   const debouncedTargetSeeds = useDebouncedCallback(
     (v: number) => update({ targetSeeds: v }),
     400,
   )
   useEffect(() => {
     setTargetInput(state.targetSeeds > 0 ? String(state.targetSeeds) : "")
-  }, [state.items[0]?.itemUid])
+  }, [state.targetSeeds])
 
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
 
@@ -102,31 +107,44 @@ function MassCalculatorPage() {
           <div className="flex flex-wrap items-end gap-4">
             <div className="space-y-1">
               <Label className="text-xs text-muted-foreground">Mode</Label>
-              <ModeSelector value={state.mode} onChange={(v) => update({ mode: v })} />
+              <ModeSelector
+                value={state.mode}
+                onChange={(v) => update({ mode: v })}
+              />
             </div>
             <div className="space-y-1">
-              <Label className="text-xs text-muted-foreground">Hit Cost (gems/smash)</Label>
+              <Label className="text-xs text-muted-foreground">
+                Hit Cost (gems/smash)
+              </Label>
               <Input
                 type="number"
                 min={1}
                 value={state.hitCost || ""}
-                onChange={(e) => update({ hitCost: Math.max(1, parseInt(e.target.value, 10) || 1) })}
+                onChange={(e) =>
+                  update({
+                    hitCost: Math.max(1, parseInt(e.target.value, 10) || 1),
+                  })
+                }
                 placeholder="1"
-                className="h-7 w-20 text-xs"
+                className="h-7 w-20 text-xs [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
               />
             </div>
             <div className="space-y-1">
-              <Label className="text-xs text-muted-foreground">Target seeds</Label>
+              <Label className="text-xs text-muted-foreground">
+                Target seeds
+              </Label>
               <Input
                 type="number"
                 min={0}
                 value={targetInput}
                 onChange={(e) => {
                   setTargetInput(e.target.value)
-                  debouncedTargetSeeds(Math.max(0, parseInt(e.target.value, 10) || 0))
+                  debouncedTargetSeeds(
+                    Math.max(0, parseInt(e.target.value, 10) || 0),
+                  )
                 }}
                 placeholder="0"
-                className="h-7 w-24 text-xs"
+                className="h-7 w-24 text-xs [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
               />
             </div>
           </div>
@@ -171,7 +189,13 @@ function MassCalculatorPage() {
         </div>
       </div>
 
-      <div className={viewMode === "grid" ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3" : "space-y-3"}>
+      <div
+        className={
+          viewMode === "grid"
+            ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3"
+            : "space-y-3"
+        }
+      >
         {state.items.map((item, i) => (
           <MassItemCard
             key={item.tempId}

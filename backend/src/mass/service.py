@@ -131,6 +131,7 @@ class MassService:
                     detail=f"Item with uid {item_data['item_uid']} not found",
                 )
             item_data["item_name"] = item.name
+            item_data["rarity"] = item.rarity or ""
             item_data["tree_rarity"] = int(item.rarity or 1)
             item_data["max_blocks"] = (item.max_drop or 4) // 4
 
@@ -150,6 +151,7 @@ class MassService:
             "mass_uid": mass_uid,
             "item_uid": item_data.get("item_uid"),
             "item_name": item_data.get("item_name", "Item"),
+            "rarity": item_data.get("rarity", ""),
             "tree_rarity": item_data.get("tree_rarity", 1),
             "max_blocks": item_data.get("max_blocks", 1),
             "jumlah_pohon": item_data.get("jumlah_pohon", 0),

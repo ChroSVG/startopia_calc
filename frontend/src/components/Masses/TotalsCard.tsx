@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { cn } from "@/lib/utils"
 import type { Totals } from "@/hooks/useMassResults"
+import { cn } from "@/lib/utils"
 
 export function TotalsCard({ totals }: { totals: Totals }) {
   return (
@@ -47,7 +47,12 @@ export function TotalsCard({ totals }: { totals: Totals }) {
           </div>
           <div>
             <span className="text-xs text-muted-foreground">Gems Net</span>
-            <p className={cn("font-bold tabular-nums text-lg", totals.totalGemsNet < 0 && "text-destructive")}>
+            <p
+              className={cn(
+                "font-bold tabular-nums text-lg",
+                totals.totalGemsNet < 0 && "text-destructive",
+              )}
+            >
               {totals.totalGemsNet.toLocaleString()}
             </p>
           </div>
@@ -65,8 +70,15 @@ export function TotalsCard({ totals }: { totals: Totals }) {
           </div>
           <div>
             <span className="text-xs text-muted-foreground">Total Profit</span>
-            <p className={cn("font-bold tabular-nums text-lg", totals.totalProfit < 0 && "text-destructive", totals.totalProfit >= 0 && "text-green-600")}>
-              {totals.totalProfit >= 0 ? "+" : ""}{totals.totalProfit.toLocaleString()}
+            <p
+              className={cn(
+                "font-bold tabular-nums text-lg",
+                totals.totalProfit < 0 && "text-destructive",
+                totals.totalProfit >= 0 && "text-green-600",
+              )}
+            >
+              {totals.totalProfit >= 0 ? "+" : ""}
+              {totals.totalProfit.toLocaleString()}
             </p>
           </div>
         </div>
