@@ -43,7 +43,6 @@ function MassCalculatorPage() {
     addItemFromIngredient,
     removeItemBySourcePath,
     removeItem,
-    resetCalc,
     handleItemSelect,
     handleItemClear,
     handleTreesChange,
@@ -57,7 +56,6 @@ function MassCalculatorPage() {
   })
 
   const hasItems = state.items.some((i) => i.itemUid && i.treeCount > 0)
-  const isDirty = state.items.length > 0
   const isValid = hasItems
 
   if (massUid === "new") return null
@@ -76,12 +74,10 @@ function MassCalculatorPage() {
         name={state.name}
         description={state.description}
         mode={state.mode}
-        isDirty={isDirty}
         isValid={isValid}
         isPending={saveMutation.isPending}
         uid={state.uid}
         onSave={() => saveMutation.mutate()}
-        onReset={resetCalc}
       />
 
       <ModeSelector value={state.mode} onChange={(v) => update({ mode: v })} />

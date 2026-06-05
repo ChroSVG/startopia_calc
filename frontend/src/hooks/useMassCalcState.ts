@@ -95,14 +95,6 @@ export function useMassCalcState(loadedMass: MassModel | undefined) {
     [],
   )
 
-  const resetCalc = useCallback(() => {
-    resetTempIdCounter()
-    setState((prev) => ({
-      ...prev,
-      items: [blankItem()],
-    }))
-  }, [])
-
   const handleItemSelect = useCallback(
     (tempId: string, item: ItemModel) => {
       const maxBlocks = Math.max(
@@ -158,7 +150,6 @@ export function useMassCalcState(loadedMass: MassModel | undefined) {
     addItemFromIngredient,
     removeItemBySourcePath,
     removeItem,
-    resetCalc,
     handleItemSelect,
     handleItemClear,
     handleTreesChange,

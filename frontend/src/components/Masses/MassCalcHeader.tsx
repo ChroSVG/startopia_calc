@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router"
-import { ArrowLeft, RotateCcw } from "lucide-react"
+import { ArrowLeft } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -10,24 +10,20 @@ interface MassCalcHeaderProps {
   name: string
   description: string
   mode: string
-  isDirty: boolean
   isValid: boolean
   isPending: boolean
   uid: string | null
   onSave: () => void
-  onReset: () => void
 }
 
 export function MassCalcHeader({
   name,
   description,
   mode,
-  isDirty,
   isValid,
   isPending,
   uid,
   onSave,
-  onReset,
 }: MassCalcHeaderProps) {
   return (
     <div className="flex items-center justify-between flex-wrap gap-3">
@@ -58,15 +54,7 @@ export function MassCalcHeader({
         >
           {uid ? "Update" : "Save"}
         </LoadingButton>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={onReset}
-          disabled={!isDirty}
-        >
-          <RotateCcw className="size-3.5 mr-1" />
-          Reset
-        </Button>
+
       </div>
     </div>
   )
