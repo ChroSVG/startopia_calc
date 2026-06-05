@@ -15,6 +15,7 @@ export function useMassCalcState(loadedMass: MassModel | undefined) {
     mode: "a",
     targetSeeds: 0,
     hitCost: 1,
+    gemsPerWl: 100,
     items: [blankItem()],
   }))
 

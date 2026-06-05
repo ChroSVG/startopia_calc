@@ -195,6 +195,7 @@ export type MassCreate = {
     mode?: string;
     target_seeds?: number;
     hit_cost?: number;
+    gems_per_wl?: number;
     items?: Array<MassItemInput>;
 };
 
@@ -251,6 +252,7 @@ export type MassModel = {
     mode: string;
     target_seeds?: number;
     hit_cost?: number;
+    gems_per_wl?: number;
     user_uid: string;
     created_at: string;
     update_at: string;
@@ -263,6 +265,7 @@ export type MassUpdate = {
     mode?: (string | null);
     target_seeds?: (number | null);
     hit_cost?: (number | null);
+    gems_per_wl?: (number | null);
     items?: (Array<MassItemInput> | null);
 };
 

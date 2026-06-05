@@ -2,6 +2,7 @@ import { useMemo } from "react"
 import type { MassItemResult } from "@/utils/massCalculator"
 import { calculateTreeYield, formatDuration } from "@/utils/massCalculator"
 import type { CalculatorItem } from "@/utils/massTypes"
+import { parsePrice } from "@/utils/massTypes"
 
 export interface Totals {
   totalTrees: number
@@ -13,6 +14,8 @@ export interface Totals {
   totalAutoBreakCost: number
   totalModal: number
   totalProfit: number
+  totalGemsWl: number
+  totalGemsNetWl: number
   maxGrowSecs: number
   growReadable: string
 }
@@ -21,6 +24,7 @@ export function useMassResults(
   items: CalculatorItem[],
   mode: string,
   hitCost: number = 1,
+  gemsPerWl: number = 100,
 ) {
   const resultsCache = useMemo(() => {
     const map = new Map<string, MassItemResult>()
@@ -61,27 +65,34 @@ export function useMassResults(
       totalSeeds += r.total_seeds_return
       totalGems += r.total_gems_didapat
       totalAutoBreakCost += r.auto_break_cost
-      totalModal += item.priceBuy * item.treeCount
-      totalProfit += (item.priceSell - item.priceBuy) * item.treeCount
+      const buy = parsePrice(item.priceBuy)
+      const sell = parsePrice(item.priceSell)
+      totalModal += buy * item.treeCount
+      totalProfit += (sell - buy) * item.treeCount
       if (r.grow_time_seconds > maxGrowSecs) {
         maxGrowSecs = r.grow_time_seconds
       }
     }
 
+    const gemsNet = totalGems - totalAutoBreakCost
+    const gemsNetWl = gemsPerWl > 0 ? gemsNet / gemsPerWl : 0
+    totalProfit += gemsNetWl
     return {
       totalTrees,
       totalBlocks,
       totalSmash,
       totalSeeds,
       totalGems,
-      totalGemsNet: totalGems - totalAutoBreakCost,
+      totalGemsNet: gemsNet,
       totalAutoBreakCost,
       totalModal,
       totalProfit,
+      totalGemsWl: gemsPerWl > 0 ? totalGems / gemsPerWl : 0,
+      totalGemsNetWl: gemsNetWl,
       maxGrowSecs,
       growReadable: formatDuration(maxGrowSecs),
     }
-  }, [items, resultsCache])
+  }, [items, resultsCache, gemsPerWl])
 
   return { resultsCache, totals }
 }

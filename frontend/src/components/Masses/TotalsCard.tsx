@@ -44,6 +44,9 @@ export function TotalsCard({ totals }: { totals: Totals }) {
                 </span>
               )}
             </p>
+            <p className="text-[10px] text-muted-foreground tabular-nums">
+              {totals.totalGemsWl.toFixed(2)} WL
+            </p>
           </div>
           <div>
             <span className="text-xs text-muted-foreground">Gems Net</span>
@@ -55,6 +58,9 @@ export function TotalsCard({ totals }: { totals: Totals }) {
             >
               {totals.totalGemsNet.toLocaleString()}
             </p>
+            <p className="text-[10px] text-muted-foreground tabular-nums">
+              {totals.totalGemsNetWl.toFixed(2)} WL
+            </p>
           </div>
           <div>
             <span className="text-xs text-muted-foreground">Max Grow</span>
@@ -63,13 +69,13 @@ export function TotalsCard({ totals }: { totals: Totals }) {
             </p>
           </div>
           <div>
-            <span className="text-xs text-muted-foreground">Total Modal</span>
+            <span className="text-xs text-muted-foreground">Modal (WL)</span>
             <p className="font-bold tabular-nums text-lg">
-              {totals.totalModal.toLocaleString()}
+              {totals.totalModal.toFixed(2)}
             </p>
           </div>
           <div>
-            <span className="text-xs text-muted-foreground">Total Profit</span>
+            <span className="text-xs text-muted-foreground">Profit (WL)</span>
             <p
               className={cn(
                 "font-bold tabular-nums text-lg",
@@ -78,7 +84,7 @@ export function TotalsCard({ totals }: { totals: Totals }) {
               )}
             >
               {totals.totalProfit >= 0 ? "+" : ""}
-              {totals.totalProfit.toLocaleString()}
+              {totals.totalProfit.toFixed(2)}
             </p>
           </div>
         </div>

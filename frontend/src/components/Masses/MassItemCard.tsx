@@ -16,8 +16,8 @@ interface MassItemCardProps {
   onItemSelect: (tempId: string, item: import("@/client").ItemModel) => void
   onItemClear: (tempId: string) => void
   onTreesChange: (tempId: string, trees: number) => void
-  onPriceBuyChange?: (tempId: string, price: number) => void
-  onPriceSellChange?: (tempId: string, price: number) => void
+  onPriceBuyChange?: (tempId: string, price: string) => void
+  onPriceSellChange?: (tempId: string, price: string) => void
   onFuelChange?: (tempId: string, isFuel: boolean) => void
   onAutoBreakChange?: (tempId: string, isAutoBreak: boolean) => void
   onRemove?: (tempId: string) => void
@@ -94,33 +94,25 @@ export function MassItemCard({
             <div className="sm:col-span-2 space-y-1">
               <Label className="text-xs text-muted-foreground">Buy</Label>
               <Input
-                type="number"
-                min={0}
-                value={item.priceBuy || ""}
+                type="text"
+                value={item.priceBuy}
                 onChange={(e) =>
-                  onPriceBuyChange?.(
-                    item.tempId,
-                    parseInt(e.target.value, 10) || 0,
-                  )
+                  onPriceBuyChange?.(item.tempId, e.target.value)
                 }
                 placeholder="0"
-                className="h-7 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                className="h-7"
               />
             </div>
             <div className="sm:col-span-2 space-y-1">
               <Label className="text-xs text-muted-foreground">Sell</Label>
               <Input
-                type="number"
-                min={0}
-                value={item.priceSell || ""}
+                type="text"
+                value={item.priceSell}
                 onChange={(e) =>
-                  onPriceSellChange?.(
-                    item.tempId,
-                    parseInt(e.target.value, 10) || 0,
-                  )
+                  onPriceSellChange?.(item.tempId, e.target.value)
                 }
                 placeholder="0"
-                className="h-7 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                className="h-7"
               />
             </div>
             <div className="sm:col-span-2 flex items-center gap-2 pb-1">
@@ -267,14 +259,11 @@ export function MassItemCard({
             Buy
           </Label>
           <Input
-            type="number"
-            min={0}
-            value={item.priceBuy || ""}
-            onChange={(e) =>
-              onPriceBuyChange?.(item.tempId, parseInt(e.target.value, 10) || 0)
-            }
+            type="text"
+            value={item.priceBuy}
+            onChange={(e) => onPriceBuyChange?.(item.tempId, e.target.value)}
             placeholder="0"
-            className="h-6 text-xs [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+            className="h-6 text-xs"
           />
         </div>
         <div className="space-y-0.5">
@@ -282,17 +271,11 @@ export function MassItemCard({
             Sell
           </Label>
           <Input
-            type="number"
-            min={0}
-            value={item.priceSell || ""}
-            onChange={(e) =>
-              onPriceSellChange?.(
-                item.tempId,
-                parseInt(e.target.value, 10) || 0,
-              )
-            }
+            type="text"
+            value={item.priceSell}
+            onChange={(e) => onPriceSellChange?.(item.tempId, e.target.value)}
             placeholder="0"
-            className="h-6 text-xs [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+            className="h-6 text-xs"
           />
         </div>
       </div>

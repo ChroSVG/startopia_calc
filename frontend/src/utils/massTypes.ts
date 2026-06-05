@@ -15,8 +15,8 @@ export interface CalculatorItem {
   treeRarity: number
   maxBlocks: number
   treeCount: number
-  priceBuy: number
-  priceSell: number
+  priceBuy: string
+  priceSell: string
   isFuel: boolean
   isAutoBreak: boolean
   sourcePath?: string
@@ -29,6 +29,7 @@ export interface CalcState {
   mode: string
   targetSeeds: number
   hitCost: number
+  gemsPerWl: number
   items: CalculatorItem[]
 }
 
@@ -52,8 +53,8 @@ export function blankItem(): CalculatorItem {
     treeRarity: 1,
     maxBlocks: 1,
     treeCount: 0,
-    priceBuy: 0,
-    priceSell: 0,
+    priceBuy: "",
+    priceSell: "",
     isFuel: false,
     isAutoBreak: false,
   }
@@ -67,6 +68,7 @@ export function massToCalcState(mass: MassModel): CalcState {
     mode: mass.mode,
     targetSeeds: mass.target_seeds ?? 0,
     hitCost: mass.hit_cost ?? 1,
+    gemsPerWl: mass.gems_per_wl ?? 100,
     items: (mass.items ?? []).map((i) => ({
       tempId: nextTempId(),
       itemUid: i.item_uid ?? null,
@@ -75,13 +77,26 @@ export function massToCalcState(mass: MassModel): CalcState {
       treeRarity: i.tree_rarity ?? 1,
       maxBlocks: i.max_blocks ?? 1,
       treeCount: i.jumlah_pohon ?? 0,
-      priceBuy: i.price_buy ?? 0,
-      priceSell: i.price_sell ?? 0,
+      priceBuy: i.price_buy ? String(i.price_buy) : "",
+      priceSell: i.price_sell ? String(i.price_sell) : "",
       isFuel: i.is_fuel ?? false,
       isAutoBreak: i.is_auto_break ?? false,
       sourcePath: i.source_path ?? undefined,
     })),
   }
+}
+
+export function parsePrice(input: string): number {
+  if (!input) return 0
+  const match = input.match(/^(\d+)\s*\/\s*(\d+)$/)
+  if (match) {
+    const seeds = parseInt(match[1], 10)
+    const wl = parseInt(match[2], 10)
+    if (seeds > 0) return wl / seeds
+    return 0
+  }
+  const num = parseFloat(input)
+  return Number.isNaN(num) ? 0 : num
 }
 
 export function calcStateToPayload(state: CalcState) {
@@ -91,6 +106,7 @@ export function calcStateToPayload(state: CalcState) {
     mode: state.mode,
     target_seeds: state.targetSeeds ?? undefined,
     hit_cost: state.hitCost ?? undefined,
+    gems_per_wl: state.gemsPerWl ?? undefined,
     items: state.items.map((i) => ({
       item_uid: i.itemUid || undefined,
       item_name: i.itemName || "Item",
@@ -98,8 +114,8 @@ export function calcStateToPayload(state: CalcState) {
       tree_rarity: i.treeRarity,
       max_blocks: i.maxBlocks,
       jumlah_pohon: i.treeCount,
-      price_buy: i.priceBuy || undefined,
-      price_sell: i.priceSell || undefined,
+      price_buy: parsePrice(i.priceBuy) || undefined,
+      price_sell: parsePrice(i.priceSell) || undefined,
       is_fuel: i.isFuel,
       is_auto_break: i.isAutoBreak,
       source_path: i.sourcePath || undefined,

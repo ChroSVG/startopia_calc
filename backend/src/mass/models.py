@@ -17,6 +17,7 @@ class Mass(SQLModel, table=True):
     mode: str = Field(default="a")
     target_seeds: int = 0
     hit_cost: int = 1
+    gems_per_wl: int = 100
     user_uid: uuid.UUID = Field(foreign_key="users.uid")
     created_at: datetime = Field(default_factory=datetime.now)
     update_at: datetime = Field(default_factory=datetime.now, sa_column_kwargs={"onupdate": datetime.now})
@@ -42,8 +43,8 @@ class MassItem(SQLModel, table=True):
     tree_rarity: int = 1
     max_blocks: int = 1
     jumlah_pohon: int = 0
-    price_buy: int = 0
-    price_sell: int = 0
+    price_buy: float = 0.0
+    price_sell: float = 0.0
     is_fuel: bool = False
     is_auto_break: bool = False
     source_path: Optional[str] = None

@@ -58,6 +58,7 @@ function MassCalculatorPage() {
     state.items,
     state.mode,
     state.hitCost,
+    state.gemsPerWl,
   )
 
   const { saveMutation } = useMassSave(state, (uid) => {
@@ -145,6 +146,21 @@ function MassCalculatorPage() {
                 }}
                 placeholder="0"
                 className="h-7 w-24 text-xs [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+              />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-xs text-muted-foreground">Gems/WL</Label>
+              <Input
+                type="number"
+                min={0}
+                value={state.gemsPerWl ?? ""}
+                onChange={(e) =>
+                  update({
+                    gemsPerWl: Math.max(0, parseInt(e.target.value, 10) || 0),
+                  })
+                }
+                placeholder="100"
+                className="h-7 w-20 text-xs [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
               />
             </div>
           </div>

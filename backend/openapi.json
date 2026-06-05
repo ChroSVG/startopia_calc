@@ -3582,6 +3582,11 @@
                         "title": "Hit Cost",
                         "default": 1
                     },
+                    "gems_per_wl": {
+                        "type": "integer",
+                        "title": "Gems Per Wl",
+                        "default": 100
+                    },
                     "items": {
                         "items": {
                             "$ref": "#/components/schemas/MassItemInput"
@@ -3637,12 +3642,12 @@
                         "default": 0
                     },
                     "price_buy": {
-                        "type": "integer",
+                        "type": "number",
                         "title": "Price Buy",
                         "default": 0
                     },
                     "price_sell": {
-                        "type": "integer",
+                        "type": "number",
                         "title": "Price Sell",
                         "default": 0
                     },
@@ -3711,12 +3716,12 @@
                         "default": 0
                     },
                     "price_buy": {
-                        "type": "integer",
+                        "type": "number",
                         "title": "Price Buy",
                         "default": 0
                     },
                     "price_sell": {
-                        "type": "integer",
+                        "type": "number",
                         "title": "Price Sell",
                         "default": 0
                     },
@@ -3849,6 +3854,11 @@
                         "title": "Hit Cost",
                         "default": 1
                     },
+                    "gems_per_wl": {
+                        "type": "integer",
+                        "title": "Gems Per Wl",
+                        "default": 100
+                    },
                     "user_uid": {
                         "type": "string",
                         "format": "uuid",
@@ -3940,6 +3950,17 @@
                             }
                         ],
                         "title": "Hit Cost"
+                    },
+                    "gems_per_wl": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Gems Per Wl"
                     },
                     "items": {
                         "anyOf": [

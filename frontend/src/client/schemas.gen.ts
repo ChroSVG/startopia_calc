@@ -1133,6 +1133,11 @@ export const MassCreateSchema = {
             title: 'Hit Cost',
             default: 1
         },
+        gems_per_wl: {
+            type: 'integer',
+            title: 'Gems Per Wl',
+            default: 100
+        },
         items: {
             items: {
                 '$ref': '#/components/schemas/MassItemInput'
@@ -1187,12 +1192,12 @@ export const MassItemInputSchema = {
             default: 0
         },
         price_buy: {
-            type: 'integer',
+            type: 'number',
             title: 'Price Buy',
             default: 0
         },
         price_sell: {
-            type: 'integer',
+            type: 'number',
             title: 'Price Sell',
             default: 0
         },
@@ -1262,12 +1267,12 @@ export const MassItemResultSchema = {
             default: 0
         },
         price_buy: {
-            type: 'integer',
+            type: 'number',
             title: 'Price Buy',
             default: 0
         },
         price_sell: {
-            type: 'integer',
+            type: 'number',
             title: 'Price Sell',
             default: 0
         },
@@ -1388,6 +1393,11 @@ export const MassModelSchema = {
             title: 'Hit Cost',
             default: 1
         },
+        gems_per_wl: {
+            type: 'integer',
+            title: 'Gems Per Wl',
+            default: 100
+        },
         user_uid: {
             type: 'string',
             format: 'uuid',
@@ -1473,6 +1483,17 @@ export const MassUpdateSchema = {
                 }
             ],
             title: 'Hit Cost'
+        },
+        gems_per_wl: {
+            anyOf: [
+                {
+                    type: 'integer'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Gems Per Wl'
         },
         items: {
             anyOf: [
