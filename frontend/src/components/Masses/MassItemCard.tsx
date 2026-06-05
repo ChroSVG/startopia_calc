@@ -196,7 +196,7 @@ export function MassItemCard({
   }
 
   return (
-    <Card className="p-2.5 space-y-2">
+    <Card className="p-2 space-y-1.5">
       <div className="flex items-center gap-2">
         <div className="flex-1 min-w-0">
           <ItemSearch
@@ -211,73 +211,73 @@ export function MassItemCard({
           <Button
             variant="ghost"
             size="icon"
-            className="size-7 shrink-0 text-muted-foreground hover:text-destructive"
+            className="size-6 shrink-0 text-muted-foreground hover:text-destructive"
             onClick={() => onRemove(item.tempId)}
           >
-            <Trash2 className="size-3.5" />
+            <Trash2 className="size-3" />
           </Button>
         )}
       </div>
 
-      <div className="grid grid-cols-3 gap-1.5">
+      <div className="grid grid-cols-3 gap-1">
         <div className="space-y-0.5">
-          <Label className="text-[10px] text-muted-foreground">Trees</Label>
+          <Label className="text-[10px] leading-none text-muted-foreground">Trees</Label>
           <Input
             type="number"
             min={0}
             value={item.treeCount || ""}
             onChange={(e) => onTreesChange(item.tempId, parseInt(e.target.value, 10) || 0)}
             placeholder="0"
-            className="h-7 text-xs"
+            className="h-6 text-xs"
           />
         </div>
         <div className="space-y-0.5">
-          <Label className="text-[10px] text-muted-foreground">Buy</Label>
+          <Label className="text-[10px] leading-none text-muted-foreground">Buy</Label>
           <Input
             type="number"
             min={0}
             value={item.priceBuy || ""}
             onChange={(e) => onPriceBuyChange?.(item.tempId, parseInt(e.target.value, 10) || 0)}
             placeholder="0"
-            className="h-7 text-xs"
+            className="h-6 text-xs"
           />
         </div>
         <div className="space-y-0.5">
-          <Label className="text-[10px] text-muted-foreground">Sell</Label>
+          <Label className="text-[10px] leading-none text-muted-foreground">Sell</Label>
           <Input
             type="number"
             min={0}
             value={item.priceSell || ""}
             onChange={(e) => onPriceSellChange?.(item.tempId, parseInt(e.target.value, 10) || 0)}
             placeholder="0"
-            className="h-7 text-xs"
+            className="h-6 text-xs"
           />
         </div>
       </div>
 
-      <div className="flex items-center gap-3">
-        <label className="flex items-center gap-1 text-xs cursor-pointer select-none">
+      <div className="flex items-center gap-2">
+        <label className="flex items-center gap-1 text-[10px] cursor-pointer select-none">
           <input
             type="checkbox"
             checked={item.isFuel}
             onChange={(e) => onFuelChange?.(item.tempId, e.target.checked)}
-            className="size-3"
+            className="size-2.5"
           />
           Fuel
         </label>
-        <label className="flex items-center gap-1 text-xs cursor-pointer select-none">
+        <label className="flex items-center gap-1 text-[10px] cursor-pointer select-none">
           <input
             type="checkbox"
             checked={item.isAutoBreak}
             onChange={(e) => onAutoBreakChange?.(item.tempId, e.target.checked)}
-            className="size-3"
+            className="size-2.5"
           />
           Auto
         </label>
       </div>
 
       {item.itemUid && result && (
-        <div className="grid grid-cols-4 gap-x-2 text-[10px] pt-1.5 border-t text-muted-foreground">
+        <div className="grid grid-cols-4 gap-x-1.5 text-[9px] pt-1 border-t text-muted-foreground">
           <div>
             <span>Blok </span>
             <span className="font-medium text-foreground">{result.blok_yielded.toLocaleString()}</span>
