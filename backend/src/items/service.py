@@ -1,6 +1,9 @@
+import logging
 from sqlmodel.ext.asyncio.session import AsyncSession
 from src.activity_log.service import ActivityLogService
 from .repository import ItemRepository, ItemLinkRepository
+
+logger = logging.getLogger(__name__)
 
 
 class ItemService:
@@ -23,23 +26,29 @@ class ItemService:
     async def get_item(self, item_uid: str, session: AsyncSession):
         return await self.repository.get_by_uid(session, item_uid)
 
-    async def update_item(self, item_uid: str, update_data, session: AsyncSession):
-        item = await self.get_item(item_uid, session)
-        if not item:
-            return None
-        old_name = item.name
-        updated = await self.repository.update(session, item, update_data.model_dump(exclude_unset=True))
-        await self.log_service.log(session, str(updated.created_by_uid) if updated.created_by_uid else "system",
-            "item.update", f"Updated item: {old_name}", "Item", str(item_uid))
-        return updated
+    async def update_item(self, item_uid: str, update_data, session: AsyncSession, current_user_uid: str | None = None):
+        try:
+            item = await self.get_item(item_uid, session)
+            if not item:
+                return None
+            old_name = item.name
+            updated = await self.repository.update(session, item, update_data.model_dump(exclude_unset=True))
+            user_uid = str(updated.created_by_uid) if updated.created_by_uid else (current_user_uid or "00000000-0000-0000-0000-000000000000")
+            await self.log_service.log(session, user_uid,
+                "item.update", f"Updated item: {old_name}", "Item", str(item_uid))
+            return updated
+        except Exception as e:
+            logger.exception("Failed to update item %s: %s", item_uid, e)
+            raise
 
-    async def delete_item(self, item_uid: str, session: AsyncSession):
+    async def delete_item(self, item_uid: str, session: AsyncSession, current_user_uid: str | None = None):
         item = await self.get_item(item_uid, session)
         if not item:
             return None
         name = item.name
+        user_uid = str(item.created_by_uid) if item.created_by_uid else (current_user_uid or "00000000-0000-0000-0000-000000000000")
         await self.repository.delete(session, item)
-        await self.log_service.log(session, str(item.created_by_uid) if item.created_by_uid else "system",
+        await self.log_service.log(session, user_uid,
             "item.delete", f"Deleted item: {name}", "Item", str(item_uid))
         return item
 

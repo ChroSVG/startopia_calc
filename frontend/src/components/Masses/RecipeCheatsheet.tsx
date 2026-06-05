@@ -7,10 +7,9 @@ import {
   Loader2,
   Plus,
 } from "lucide-react"
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { type ItemModel, type RecipeTreeNode, ItemsService } from "@/client"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -197,26 +196,7 @@ function TreeRow({
           )}
         </button>
 
-        {requirement && !readOnly && (
-          <div className="flex items-center gap-2 shrink-0">
-            <span className="text-xs text-muted-foreground whitespace-nowrap">
-              {requirement.treeCount} trees → {requirement.seeds.toLocaleString()} seeds
-            </span>
-            <Button
-              variant="outline"
-              size="sm"
-              className="h-6 text-[10px] px-2"
-              onClick={(e) => {
-                e.stopPropagation()
-                onApplyTrees?.(path, requirement.treeCount)
-              }}
-            >
-              Apply
-            </Button>
-          </div>
-        )}
-
-        {requirement && readOnly && (
+        {requirement && (
           <span className="text-xs text-muted-foreground whitespace-nowrap shrink-0">
             {requirement.treeCount} trees → {requirement.seeds.toLocaleString()} seeds
           </span>
@@ -248,6 +228,8 @@ function RecipeCheatsheet({
   itemUid,
   items,
   mode,
+  targetSeeds,
+  onTargetSeedsChange,
   onAddItem,
   onRemoveItem,
   onApplyTrees,
@@ -255,14 +237,18 @@ function RecipeCheatsheet({
   itemUid: string | null
   items: CalculatorItem[]
   mode: string
+  targetSeeds: number
+  onTargetSeedsChange?: (value: number) => void
   onAddItem?: (path: string, item: ItemModel) => void
   onRemoveItem?: (path: string) => void
   onApplyTrees?: (path: string, treeCount: number) => void
 }) {
   const [expanded, setExpanded] = useState(false)
-  const [targetInput, setTargetInput] = useState("")
+  const [targetInput, setTargetInput] = useState(targetSeeds > 0 ? String(targetSeeds) : "")
 
-  const targetSeeds = Math.max(0, parseInt(targetInput, 10) || 0)
+  useEffect(() => {
+    setTargetInput(targetSeeds > 0 ? String(targetSeeds) : "")
+  }, [targetSeeds])
 
   const clickedPaths = useMemo(
     () => {
@@ -287,6 +273,23 @@ function RecipeCheatsheet({
     }
     return map
   }, [data, targetSeeds, mode])
+
+  useEffect(() => {
+    if (targetSeeds === 0) {
+      if (items[0] && items[0].treeCount !== 0) {
+        onApplyTrees?.("root", 0)
+      }
+    } else {
+      for (const [path, req] of requirements) {
+        const currentItem = path === "root"
+          ? items[0]
+          : items.find((i) => i.sourcePath === path)
+        if (currentItem && currentItem.treeCount !== req.treeCount) {
+          onApplyTrees?.(path, req.treeCount)
+        }
+      }
+    }
+  }, [requirements, onApplyTrees, targetSeeds, items])
 
   if (!itemUid) return null
 
@@ -331,7 +334,10 @@ function RecipeCheatsheet({
               type="number"
               min={0}
               value={targetInput}
-              onChange={(e) => setTargetInput(e.target.value)}
+              onChange={(e) => {
+                setTargetInput(e.target.value)
+                onTargetSeedsChange?.(Math.max(0, parseInt(e.target.value, 10) || 0))
+              }}
               placeholder="0"
               className="h-7 w-24 text-xs"
             />

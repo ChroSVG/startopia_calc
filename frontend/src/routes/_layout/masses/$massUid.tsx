@@ -86,13 +86,15 @@ function MassCalculatorPage() {
 
       <ModeSelector value={state.mode} onChange={(v) => update({ mode: v })} />
 
-      {hasItems && <TotalsCard totals={totals} />}
+      <TotalsCard totals={totals} />
 
       {state.items[0]?.itemUid && (
         <RecipeCheatsheet
           itemUid={state.items[0].itemUid}
           items={state.items}
           mode={state.mode}
+          targetSeeds={state.targetSeeds}
+          onTargetSeedsChange={(v) => update({ targetSeeds: v })}
           onAddItem={addItemFromIngredient}
           onRemoveItem={removeItemBySourcePath}
           onApplyTrees={setItemTreeCount}

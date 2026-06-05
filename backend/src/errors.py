@@ -1,3 +1,4 @@
+import traceback
 from typing import Any, Awaitable, Callable
 from fastapi.requests import Request
 from fastapi.responses import JSONResponse
@@ -231,7 +232,7 @@ def register_all_errors(app: FastAPI):
 
     @app.exception_handler(500)
     async def internal_server_error(request, exc):
-
+        traceback.print_exc()
         return JSONResponse(
             content={
                 "message": "Oops! Something went wrong",
@@ -243,6 +244,7 @@ def register_all_errors(app: FastAPI):
 
     @app.exception_handler(SQLAlchemyError)
     async def database__error(request, exc):
+        traceback.print_exc()
         print(str(exc))
         return JSONResponse(
             content={

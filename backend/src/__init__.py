@@ -1,3 +1,7 @@
+import logging
+
+logging.basicConfig(level=logging.ERROR)
+
 from fastapi import FastAPI
 from src.auth.routes import auth_router, login_router
 from src.users.routes import users_router

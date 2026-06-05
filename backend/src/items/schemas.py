@@ -1,10 +1,12 @@
 import uuid
 from datetime import datetime
 from typing import List, Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class ItemModel(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     uid: uuid.UUID
     name: str
     rarity: Optional[str] = None

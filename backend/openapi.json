@@ -539,6 +539,100 @@
                 }
             }
         },
+        "/api/v1/items/{item_uid}/ingredients": {
+            "get": {
+                "tags": [
+                    "items"
+                ],
+                "summary": "Get Item Ingredients",
+                "operationId": "readItemIngredients",
+                "security": [
+                    {
+                        "AccessTokenBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "item_uid",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Item Uid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/IngredientsTreeResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/items/{item_uid}/possibilities": {
+            "get": {
+                "tags": [
+                    "items"
+                ],
+                "summary": "Get Item Possibilities",
+                "operationId": "readItemPossibilities",
+                "security": [
+                    {
+                        "AccessTokenBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "item_uid",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "title": "Item Uid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PossibilitiesResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/items/links": {
             "post": {
                 "tags": [
@@ -2760,6 +2854,18 @@
                 "type": "object",
                 "title": "HTTPValidationError"
             },
+            "IngredientsTreeResponse": {
+                "properties": {
+                    "root": {
+                        "$ref": "#/components/schemas/RecipeTreeNode"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "root"
+                ],
+                "title": "IngredientsTreeResponse"
+            },
             "InventoryCreateModel": {
                 "properties": {
                     "item_uid": {
@@ -3466,6 +3572,11 @@
                         "title": "Mode",
                         "default": "a"
                     },
+                    "target_seeds": {
+                        "type": "integer",
+                        "title": "Target Seeds",
+                        "default": 0
+                    },
                     "items": {
                         "items": {
                             "$ref": "#/components/schemas/MassItemInput"
@@ -3651,6 +3762,11 @@
                         "type": "string",
                         "title": "Mode"
                     },
+                    "target_seeds": {
+                        "type": "integer",
+                        "title": "Target Seeds",
+                        "default": 0
+                    },
                     "user_uid": {
                         "type": "string",
                         "format": "uuid",
@@ -3721,6 +3837,17 @@
                         ],
                         "title": "Mode"
                     },
+                    "target_seeds": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Target Seeds"
+                    },
                     "items": {
                         "anyOf": [
                             {
@@ -3759,6 +3886,42 @@
                     "count"
                 ],
                 "title": "MassesPublic"
+            },
+            "PossibilitiesResponse": {
+                "properties": {
+                    "possibilities": {
+                        "items": {
+                            "$ref": "#/components/schemas/ItemModel"
+                        },
+                        "type": "array",
+                        "title": "Possibilities"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "possibilities"
+                ],
+                "title": "PossibilitiesResponse"
+            },
+            "RecipeTreeNode": {
+                "properties": {
+                    "item": {
+                        "$ref": "#/components/schemas/ItemModel"
+                    },
+                    "ingredients": {
+                        "items": {
+                            "$ref": "#/components/schemas/RecipeTreeNode"
+                        },
+                        "type": "array",
+                        "title": "Ingredients",
+                        "default": []
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "item"
+                ],
+                "title": "RecipeTreeNode"
             },
             "ReviewCreateModel": {
                 "properties": {

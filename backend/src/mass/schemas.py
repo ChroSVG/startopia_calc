@@ -41,6 +41,7 @@ class MassCreate(BaseModel):
     name: str
     description: Optional[str] = None
     mode: str = "a"
+    target_seeds: int = 0
     items: List[MassItemInput] = []
 
 
@@ -48,6 +49,7 @@ class MassUpdate(BaseModel):
     name: Optional[str] = None
     description: Optional[str] = None
     mode: Optional[str] = None
+    target_seeds: Optional[int] = None
     items: Optional[List[MassItemInput]] = None
 
 
@@ -56,6 +58,7 @@ class MassModel(BaseModel):
     name: str
     description: Optional[str] = None
     mode: str
+    target_seeds: int = 0
     user_uid: uuid.UUID
     created_at: datetime
     update_at: datetime

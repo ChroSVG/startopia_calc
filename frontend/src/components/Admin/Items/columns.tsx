@@ -26,9 +26,9 @@ function SeedColor({ color }: { color: string | null | undefined }) {
   const colors = color.split(" ")
   return (
     <div className="flex gap-0.5">
-      {colors.map((c) => (
+      {colors.map((c, i) => (
         <span
-          key={c}
+          key={`${c}-${i}`}
           className="inline-block size-4 rounded border"
           style={{ backgroundColor: c }}
           title={c}

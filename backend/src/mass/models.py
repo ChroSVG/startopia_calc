@@ -15,6 +15,7 @@ class Mass(SQLModel, table=True):
     name: str
     description: Optional[str] = None
     mode: str = Field(default="a")
+    target_seeds: int = 0
     user_uid: uuid.UUID = Field(foreign_key="users.uid")
     created_at: datetime = Field(default_factory=datetime.now)
     update_at: datetime = Field(default_factory=datetime.now, sa_column_kwargs={"onupdate": datetime.now})

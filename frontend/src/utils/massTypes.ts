@@ -22,6 +22,7 @@ export interface CalcState {
   name: string
   description: string
   mode: string
+  targetSeeds: number
   items: CalculatorItem[]
 }
 
@@ -53,6 +54,7 @@ export function massToCalcState(mass: MassModel): CalcState {
     name: mass.name,
     description: mass.description ?? "",
     mode: mass.mode,
+    targetSeeds: mass.target_seeds ?? 0,
     items: (mass.items ?? []).map((i) => ({
       tempId: nextTempId(),
       itemUid: i.item_uid ?? null,
@@ -69,6 +71,7 @@ export function calcStateToPayload(state: CalcState) {
     name: state.name,
     description: state.description || null,
     mode: state.mode,
+    target_seeds: state.targetSeeds || undefined,
     items: state.items.map((i) => ({
       item_uid: i.itemUid || undefined,
       item_name: i.itemName || "Item",

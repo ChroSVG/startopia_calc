@@ -13,6 +13,7 @@ export function useMassCalcState(loadedMass: MassModel | undefined) {
     name: "",
     description: "",
     mode: "a",
+    targetSeeds: 0,
     items: [blankItem()],
   }))
 
@@ -139,8 +140,12 @@ export function useMassCalcState(loadedMass: MassModel | undefined) {
     (path: string, count: number) =>
       setState((prev) => ({
         ...prev,
-        items: prev.items.map((i) =>
-          i.sourcePath === path ? { ...i, treeCount: count } : i,
+        items: prev.items.map((i, idx) =>
+          path === "root" && idx === 0
+            ? { ...i, treeCount: count }
+            : i.sourcePath === path
+              ? { ...i, treeCount: count }
+              : i,
         ),
       })),
     [],

@@ -89,6 +89,10 @@ export type HTTPValidationError = {
     detail?: Array<ValidationError>;
 };
 
+export type IngredientsTreeResponse = {
+    root: RecipeTreeNode;
+};
+
 export type InventoryCreateModel = {
     item_uid: string;
     quantity?: number;
@@ -167,15 +171,6 @@ export type ItemsPublicModel = {
     count: number;
 };
 
-export type RecipeTreeNode = {
-    item: ItemModel;
-    ingredients: Array<RecipeTreeNode>;
-};
-
-export type IngredientsTreeResponse = {
-    root: RecipeTreeNode;
-};
-
 export type ItemUpdateModel = {
     name?: (string | null);
     rarity?: (string | null);
@@ -198,6 +193,7 @@ export type MassCreate = {
     name: string;
     description?: (string | null);
     mode?: string;
+    target_seeds?: number;
     items?: Array<MassItemInput>;
 };
 
@@ -232,7 +228,7 @@ export type MassItemResult = {
     harvest_gems: number;
     total_gems_didapat: number;
     grow_time_seconds: number;
-    grow_time_readable: string;
+    grow_time_readable?: string;
 };
 
 export type MassModel = {
@@ -240,6 +236,7 @@ export type MassModel = {
     name: string;
     description?: (string | null);
     mode: string;
+    target_seeds?: number;
     user_uid: string;
     created_at: string;
     update_at: string;
@@ -250,7 +247,17 @@ export type MassUpdate = {
     name?: (string | null);
     description?: (string | null);
     mode?: (string | null);
+    target_seeds?: (number | null);
     items?: (Array<MassItemInput> | null);
+};
+
+export type PossibilitiesResponse = {
+    possibilities: Array<ItemModel>;
+};
+
+export type RecipeTreeNode = {
+    item: ItemModel;
+    ingredients?: Array<RecipeTreeNode>;
 };
 
 export type ReviewCreateModel = {
@@ -509,10 +516,6 @@ export type ReadItemIngredientsData = {
 };
 
 export type ReadItemIngredientsResponse = (IngredientsTreeResponse);
-
-export type PossibilitiesResponse = {
-    possibilities: Array<ItemModel>;
-};
 
 export type ReadItemPossibilitiesData = {
     itemUid: string;

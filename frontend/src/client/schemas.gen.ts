@@ -424,6 +424,17 @@ export const HTTPValidationErrorSchema = {
     title: 'HTTPValidationError'
 } as const;
 
+export const IngredientsTreeResponseSchema = {
+    properties: {
+        root: {
+            '$ref': '#/components/schemas/RecipeTreeNode'
+        }
+    },
+    type: 'object',
+    required: ['root'],
+    title: 'IngredientsTreeResponse'
+} as const;
+
 export const InventoryCreateModelSchema = {
     properties: {
         item_uid: {
@@ -1112,6 +1123,11 @@ export const MassCreateSchema = {
             title: 'Mode',
             default: 'a'
         },
+        target_seeds: {
+            type: 'integer',
+            title: 'Target Seeds',
+            default: 0
+        },
         items: {
             items: {
                 '$ref': '#/components/schemas/MassItemInput'
@@ -1250,11 +1266,12 @@ export const MassItemResultSchema = {
         },
         grow_time_readable: {
             type: 'string',
-            title: 'Grow Time Readable'
+            title: 'Grow Time Readable',
+            default: ''
         }
     },
     type: 'object',
-    required: ['uid', 'blok_yielded', 'total_smash_efektif', 'seeds_fallen', 'seeds_from_smash', 'total_seeds_return', 'seed_return_rate', 'gem_blocks', 'avg_gems_per_block', 'harvest_gems', 'total_gems_didapat', 'grow_time_seconds', 'grow_time_readable'],
+    required: ['uid', 'blok_yielded', 'total_smash_efektif', 'seeds_fallen', 'seeds_from_smash', 'total_seeds_return', 'seed_return_rate', 'gem_blocks', 'avg_gems_per_block', 'harvest_gems', 'total_gems_didapat', 'grow_time_seconds'],
     title: 'MassItemResult'
 } as const;
 
@@ -1283,6 +1300,11 @@ export const MassModelSchema = {
         mode: {
             type: 'string',
             title: 'Mode'
+        },
+        target_seeds: {
+            type: 'integer',
+            title: 'Target Seeds',
+            default: 0
         },
         user_uid: {
             type: 'string',
@@ -1348,6 +1370,17 @@ export const MassUpdateSchema = {
             ],
             title: 'Mode'
         },
+        target_seeds: {
+            anyOf: [
+                {
+                    type: 'integer'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Target Seeds'
+        },
         items: {
             anyOf: [
                 {
@@ -1384,6 +1417,40 @@ export const MassesPublicSchema = {
     type: 'object',
     required: ['data', 'count'],
     title: 'MassesPublic'
+} as const;
+
+export const PossibilitiesResponseSchema = {
+    properties: {
+        possibilities: {
+            items: {
+                '$ref': '#/components/schemas/ItemModel'
+            },
+            type: 'array',
+            title: 'Possibilities'
+        }
+    },
+    type: 'object',
+    required: ['possibilities'],
+    title: 'PossibilitiesResponse'
+} as const;
+
+export const RecipeTreeNodeSchema = {
+    properties: {
+        item: {
+            '$ref': '#/components/schemas/ItemModel'
+        },
+        ingredients: {
+            items: {
+                '$ref': '#/components/schemas/RecipeTreeNode'
+            },
+            type: 'array',
+            title: 'Ingredients',
+            default: []
+        }
+    },
+    type: 'object',
+    required: ['item'],
+    title: 'RecipeTreeNode'
 } as const;
 
 export const ReviewCreateModelSchema = {

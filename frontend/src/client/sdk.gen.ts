@@ -510,7 +510,7 @@ export class ItemsService {
     }
     
     /**
-     * Get Item Ingredients Tree
+     * Get Item Ingredients
      * @param data The data for the request.
      * @param data.itemUid
      * @returns IngredientsTreeResponse Successful Response
@@ -606,38 +606,6 @@ export class LoginService {
             errors: {
                 422: 'Validation Error'
             }
-        });
-    }
-
-    /**
-     * Recover Password
-     * @param data The data for the request.
-     * @param data.email
-     * @returns unknown Successful Response
-     * @throws ApiError
-     */
-    public static recoverPassword(data: { email: string }): CancelablePromise<unknown> {
-        return __request(OpenAPI, {
-            method: 'POST',
-            url: '/api/v1/auth/recover-password',
-            body: { email: data.email },
-            mediaType: 'application/json',
-        });
-    }
-
-    /**
-     * Reset Password
-     * @param data The data for the request.
-     * @param data.requestBody
-     * @returns unknown Successful Response
-     * @throws ApiError
-     */
-    public static resetPassword(data: { requestBody: { new_password: string; token: string } }): CancelablePromise<unknown> {
-        return __request(OpenAPI, {
-            method: 'POST',
-            url: '/api/v1/auth/reset-password',
-            body: data.requestBody,
-            mediaType: 'application/json',
         });
     }
 }

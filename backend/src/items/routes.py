@@ -61,7 +61,7 @@ async def update_item(
     item_service: ItemService = Depends(get_item_service),
     current_user: User = Depends(get_current_superuser),
 ):
-    updated_item = await item_service.update_item(item_uid, update_data, session)
+    updated_item = await item_service.update_item(item_uid, update_data, session, current_user_uid=str(current_user.uid))
     if not updated_item:
         raise HTTPException(status_code=404, detail="Item not found")
     return updated_item
@@ -72,9 +72,9 @@ async def delete_item(
     item_uid: str,
     session: AsyncSession = Depends(get_session),
     item_service: ItemService = Depends(get_item_service),
-    _: User = Depends(get_current_superuser),
+    current_user: User = Depends(get_current_superuser),
 ):
-    deleted = await item_service.delete_item(item_uid, session)
+    deleted = await item_service.delete_item(item_uid, session, current_user_uid=str(current_user.uid))
     if not deleted:
         raise HTTPException(status_code=404, detail="Item not found")
     return None
