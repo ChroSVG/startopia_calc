@@ -13,7 +13,7 @@ export interface CalculatorItem {
   itemName: string
   treeRarity: number
   maxBlocks: number
-  jumlahPohon: number
+  treeCount: number
   sourcePath?: string
 }
 
@@ -43,7 +43,7 @@ export function blankItem(): CalculatorItem {
     itemName: "",
     treeRarity: 1,
     maxBlocks: 1,
-    jumlahPohon: 0,
+    treeCount: 0,
   }
 }
 
@@ -59,7 +59,7 @@ export function massToCalcState(mass: MassModel): CalcState {
       itemName: i.item_name ?? "",
       treeRarity: i.tree_rarity ?? 1,
       maxBlocks: i.max_blocks ?? 1,
-      jumlahPohon: i.jumlah_pohon ?? 0,
+      treeCount: i.jumlah_pohon ?? 0,
     })),
   }
 }
@@ -74,7 +74,7 @@ export function calcStateToPayload(state: CalcState) {
       item_name: i.itemName || "Item",
       tree_rarity: i.treeRarity,
       max_blocks: i.maxBlocks,
-      jumlah_pohon: i.jumlahPohon,
+      jumlah_pohon: i.treeCount,
     })),
   }
 }

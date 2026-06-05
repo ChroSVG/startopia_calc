@@ -47,6 +47,7 @@ function MassCalculatorPage() {
     handleItemSelect,
     handleItemClear,
     handleTreesChange,
+    setItemTreeCount,
   } = useMassCalcState(loadedMass)
 
   const { resultsCache, totals } = useMassResults(state.items, state.mode)
@@ -55,7 +56,7 @@ function MassCalculatorPage() {
     window.location.href = `/masses/${uid}`
   })
 
-  const hasItems = state.items.some((i) => i.itemUid && i.jumlahPohon > 0)
+  const hasItems = state.items.some((i) => i.itemUid && i.treeCount > 0)
   const isDirty = state.items.length > 0
   const isValid = hasItems
 
@@ -91,8 +92,10 @@ function MassCalculatorPage() {
         <RecipeCheatsheet
           itemUid={state.items[0].itemUid}
           items={state.items}
+          mode={state.mode}
           onAddItem={addItemFromIngredient}
           onRemoveItem={removeItemBySourcePath}
+          onApplyTrees={setItemTreeCount}
         />
       )}
 

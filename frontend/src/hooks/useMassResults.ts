@@ -1,6 +1,6 @@
 import { useMemo } from "react"
 import type { MassItemResult } from "@/utils/massCalculator"
-import { calculateItem, formatDuration } from "@/utils/massCalculator"
+import { calculateTreeYield, formatDuration } from "@/utils/massCalculator"
 import type { CalculatorItem } from "@/utils/massTypes"
 
 export interface Totals {
@@ -19,7 +19,7 @@ export function useMassResults(items: CalculatorItem[], mode: string) {
     for (const item of items) {
       map.set(
         item.tempId,
-        calculateItem(item.treeRarity, item.maxBlocks, item.jumlahPohon, mode),
+        calculateTreeYield(item.treeRarity, item.maxBlocks, item.treeCount, mode),
       )
     }
     return map
@@ -36,7 +36,7 @@ export function useMassResults(items: CalculatorItem[], mode: string) {
     for (const item of items) {
       const r = resultsCache.get(item.tempId)
       if (!r) continue
-      totalTrees += item.jumlahPohon
+      totalTrees += item.treeCount
       totalBlocks += r.blok_yielded
       totalSmash += r.total_smash_efektif
       totalSeeds += r.total_seeds_return

@@ -3,27 +3,27 @@ const RATIO_DROP_BLOCK = 1 / 12
 const GEM_BLOCK_RATIO = 2 / 3
 const BLOCK_SEED_DIVISOR = 4
 
-function blocksYielded(jumlahPohon: number, maxBlocks: number): number {
+export function blocksYielded(treeCount: number, maxBlocks: number): number {
   if (!(maxBlocks in KOEFISIEN_YIELD)) {
     throw new Error("max_blocks must be 1, 2, 3, or 4")
   }
   const koef = KOEFISIEN_YIELD[maxBlocks]
-  return Math.floor(jumlahPohon * (koef / maxBlocks) * 2.5)
+  return Math.floor(treeCount * (koef / maxBlocks) * 2.5)
 }
 
-function totalSmashedBlocks(blokYielded: number): number {
-  return Math.floor(blokYielded / (1 - RATIO_DROP_BLOCK))
+function totalSmashedBlocks(blocks: number): number {
+  return Math.floor(blocks / (1 - RATIO_DROP_BLOCK))
 }
 
-function seedsFallenA(jumlahPohon: number, treeRarity: number): number {
-  return Math.floor(jumlahPohon * (4 / (treeRarity + 12)))
+function seedsFallenA(treeCount: number, treeRarity: number): number {
+  return Math.floor(treeCount * (4 / (treeRarity + 12)))
 }
 
-function seedsFallenB(jumlahPohon: number, treeRarity: number): number {
-  return Math.floor(jumlahPohon * (8 / 3 / (treeRarity + 6)))
+function seedsFallenB(treeCount: number, treeRarity: number): number {
+  return Math.floor(treeCount * (8 / 3 / (treeRarity + 6)))
 }
 
-function seedsFromSmash(smashedBlocks: number): number {
+function seedsFromBreak(smashedBlocks: number): number {
   return Math.floor(smashedBlocks / BLOCK_SEED_DIVISOR)
 }
 
@@ -75,7 +75,7 @@ export interface MassItemResult {
   blok_yielded: number
   total_smash_efektif: number
   seeds_fallen: number
-  seeds_from_smash: number
+  seeds_from_break: number
   total_seeds_return: number
   seed_return_rate: number
   gem_blocks: number
@@ -86,20 +86,20 @@ export interface MassItemResult {
   grow_time_readable: string
 }
 
-export function calculateItem(
+export function calculateTreeYield(
   treeRarity: number,
   maxBlocks: number,
-  jumlahPohon: number,
+  treeCount: number,
   mode: string,
 ): MassItemResult {
   const growTime = growTimeSeconds(treeRarity)
 
-  if (jumlahPohon <= 0) {
+  if (treeCount <= 0) {
     return {
       blok_yielded: 0,
       total_smash_efektif: 0,
       seeds_fallen: 0,
-      seeds_from_smash: 0,
+      seeds_from_break: 0,
       total_seeds_return: 0,
       seed_return_rate: 0,
       gem_blocks: 0,
@@ -111,18 +111,18 @@ export function calculateItem(
     }
   }
 
-  const blokYielded = blocksYielded(jumlahPohon, maxBlocks)
-  const totalSmash = totalSmashedBlocks(blokYielded)
+  const blocks = blocksYielded(treeCount, maxBlocks)
+  const totalSmash = totalSmashedBlocks(blocks)
 
   const seedsFallenVal =
     mode === "b" || mode === "bpresisi"
-      ? seedsFallenB(jumlahPohon, treeRarity)
-      : seedsFallenA(jumlahPohon, treeRarity)
+      ? seedsFallenB(treeCount, treeRarity)
+      : seedsFallenA(treeCount, treeRarity)
 
-  const seedsFromSmashVal = seedsFromSmash(totalSmash)
-  const totalSeedsReturnVal = seedsFallenVal + seedsFromSmashVal
-  const seedReturnRateVal = jumlahPohon
-    ? (totalSeedsReturnVal / jumlahPohon) * 100
+  const seedsFromBreakVal = seedsFromBreak(totalSmash)
+  const totalSeedsReturnVal = seedsFallenVal + seedsFromBreakVal
+  const seedReturnRateVal = treeCount
+    ? (totalSeedsReturnVal / treeCount) * 100
     : 0
 
   const gemBlocksVal = gemGivingBlocks(totalSmash)
@@ -133,20 +133,20 @@ export function calculateItem(
 
   if (mode === "apresisi" || mode === "bpresisi") {
     const rawYield =
-      jumlahPohon * (KOEFISIEN_YIELD[maxBlocks] / maxBlocks) * 2.5
+      treeCount * (KOEFISIEN_YIELD[maxBlocks] / maxBlocks) * 2.5
     const rawSmash = rawYield / (1 - RATIO_DROP_BLOCK)
-    harvestGemsVal = Math.floor(jumlahPohon * avgGemsVal)
-    totalGemsVal = Math.floor((rawSmash * (2 / 3) + jumlahPohon) * avgGemsVal)
+    harvestGemsVal = Math.floor(treeCount * avgGemsVal)
+    totalGemsVal = Math.floor((rawSmash * (2 / 3) + treeCount) * avgGemsVal)
   } else {
-    harvestGemsVal = Math.floor(jumlahPohon * avgGemsVal)
+    harvestGemsVal = Math.floor(treeCount * avgGemsVal)
     totalGemsVal = Math.floor(gemBlocksVal * avgGemsVal + harvestGemsVal)
   }
 
   return {
-    blok_yielded: blokYielded,
+    blok_yielded: blocks,
     total_smash_efektif: totalSmash,
     seeds_fallen: seedsFallenVal,
-    seeds_from_smash: seedsFromSmashVal,
+    seeds_from_break: seedsFromBreakVal,
     total_seeds_return: totalSeedsReturnVal,
     seed_return_rate: roundTo(seedReturnRateVal, 2),
     gem_blocks: gemBlocksVal,
@@ -156,6 +156,37 @@ export function calculateItem(
     grow_time_seconds: growTime,
     grow_time_readable: formatDuration(growTime),
   }
+}
+
+export function findMinTreesForTarget(
+  treeRarity: number,
+  maxBlocks: number,
+  targetSeeds: number,
+  mode: string,
+): { treeCount: number; seeds: number; result: MassItemResult } {
+  if (targetSeeds <= 0) {
+    const r = calculateTreeYield(treeRarity, maxBlocks, 0, mode)
+    return { treeCount: 0, seeds: 0, result: r }
+  }
+
+  let high = 1
+  while (calculateTreeYield(treeRarity, maxBlocks, high, mode).total_seeds_return < targetSeeds) {
+    high *= 2
+  }
+
+  let low = 1
+  while (low < high) {
+    const mid = Math.floor((low + high) / 2)
+    const r = calculateTreeYield(treeRarity, maxBlocks, mid, mode)
+    if (r.total_seeds_return >= targetSeeds) {
+      high = mid
+    } else {
+      low = mid + 1
+    }
+  }
+
+  const r = calculateTreeYield(treeRarity, maxBlocks, low, mode)
+  return { treeCount: low, seeds: r.total_seeds_return, result: r }
 }
 
 function roundTo(value: number, decimals: number): number {

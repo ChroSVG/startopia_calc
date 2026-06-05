@@ -73,7 +73,7 @@ export function useMassCalcState(loadedMass: MassModel | undefined) {
             itemName: item.name,
             treeRarity: parseInt(item.rarity ?? "1", 10),
             maxBlocks,
-            jumlahPohon: 1,
+            treeCount: 1,
             sourcePath: path,
           },
         ],
@@ -131,8 +131,19 @@ export function useMassCalcState(loadedMass: MassModel | undefined) {
 
   const handleTreesChange = useCallback(
     (tempId: string, trees: number) =>
-      updateItem(tempId, { jumlahPohon: trees }),
+      updateItem(tempId, { treeCount: trees }),
     [updateItem],
+  )
+
+  const setItemTreeCount = useCallback(
+    (path: string, count: number) =>
+      setState((prev) => ({
+        ...prev,
+        items: prev.items.map((i) =>
+          i.sourcePath === path ? { ...i, treeCount: count } : i,
+        ),
+      })),
+    [],
   )
 
   return {
@@ -146,5 +157,6 @@ export function useMassCalcState(loadedMass: MassModel | undefined) {
     handleItemSelect,
     handleItemClear,
     handleTreesChange,
+    setItemTreeCount,
   }
 }

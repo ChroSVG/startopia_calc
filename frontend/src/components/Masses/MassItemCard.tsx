@@ -53,7 +53,7 @@ export function MassItemCard({
             <Input
               type="number"
               min={0}
-              value={item.jumlahPohon || ""}
+              value={item.treeCount || ""}
               onChange={(e) =>
                 onTreesChange(item.tempId, parseInt(e.target.value, 10) || 0)
               }
