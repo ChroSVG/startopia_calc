@@ -62,6 +62,7 @@ export function massToCalcState(mass: MassModel): CalcState {
       treeRarity: i.tree_rarity ?? 1,
       maxBlocks: i.max_blocks ?? 1,
       treeCount: i.jumlah_pohon ?? 0,
+      sourcePath: i.source_path ?? undefined,
     })),
   }
 }
@@ -71,13 +72,14 @@ export function calcStateToPayload(state: CalcState) {
     name: state.name,
     description: state.description || null,
     mode: state.mode,
-    target_seeds: state.targetSeeds || undefined,
+    target_seeds: state.targetSeeds ?? undefined,
     items: state.items.map((i) => ({
       item_uid: i.itemUid || undefined,
       item_name: i.itemName || "Item",
       tree_rarity: i.treeRarity,
       max_blocks: i.maxBlocks,
       jumlah_pohon: i.treeCount,
+      source_path: i.sourcePath || undefined,
     })),
   }
 }

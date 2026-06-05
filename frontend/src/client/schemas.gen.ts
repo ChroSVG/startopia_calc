@@ -1175,6 +1175,17 @@ export const MassItemInputSchema = {
             type: 'integer',
             title: 'Jumlah Pohon',
             default: 0
+        },
+        source_path: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Source Path'
         }
     },
     type: 'object',
@@ -1214,6 +1225,17 @@ export const MassItemResultSchema = {
             type: 'integer',
             title: 'Jumlah Pohon',
             default: 0
+        },
+        source_path: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Source Path'
         },
         uid: {
             type: 'string',

@@ -147,6 +147,7 @@ class MassService:
             "tree_rarity": item_data.get("tree_rarity", 1),
             "max_blocks": item_data.get("max_blocks", 1),
             "jumlah_pohon": item_data.get("jumlah_pohon", 0),
+            "source_path": item_data.get("source_path"),
             **result,
         }
 

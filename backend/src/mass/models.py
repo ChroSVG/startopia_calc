@@ -40,6 +40,7 @@ class MassItem(SQLModel, table=True):
     tree_rarity: int = 1
     max_blocks: int = 1
     jumlah_pohon: int = 0
+    source_path: Optional[str] = None
 
     blok_yielded: int = 0
     total_smash_efektif: int = 0

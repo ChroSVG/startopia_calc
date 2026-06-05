@@ -208,6 +208,7 @@ export type MassItemInput = {
     tree_rarity?: number;
     max_blocks?: number;
     jumlah_pohon?: number;
+    source_path?: (string | null);
 };
 
 export type MassItemResult = {
@@ -216,6 +217,7 @@ export type MassItemResult = {
     tree_rarity?: number;
     max_blocks?: number;
     jumlah_pohon?: number;
+    source_path?: (string | null);
     uid: string;
     blok_yielded: number;
     total_smash_efektif: number;

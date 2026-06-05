@@ -13,6 +13,7 @@ class MassItemInput(BaseModel):
     tree_rarity: int = 1
     max_blocks: int = 1
     jumlah_pohon: int = 0
+    source_path: Optional[str] = None
 
 
 class MassItemResult(MassItemInput):
