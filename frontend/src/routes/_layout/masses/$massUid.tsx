@@ -175,6 +175,7 @@ function MassCalculatorPage() {
         {state.items.map((item, i) => (
           <MassItemCard
             key={item.tempId}
+            variant={viewMode}
             item={item}
             result={resultsCache.get(item.tempId)}
             onItemSelect={handleItemSelect}
