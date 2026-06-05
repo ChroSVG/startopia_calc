@@ -1,10 +1,12 @@
 import { useQuery } from "@tanstack/react-query"
 import { createFileRoute, useNavigate, useParams } from "@tanstack/react-router"
 import { Loader2 } from "lucide-react"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
+import { useDebouncedCallback } from "use-debounce"
 
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Card, CardContent } from "@/components/ui/card"
 import { MassesService } from "@/client"
 import { MassCalcHeader } from "@/components/Masses/MassCalcHeader"
 import { MassItemCard } from "@/components/Masses/MassItemCard"
@@ -61,6 +63,15 @@ function MassCalculatorPage() {
   const hasItems = state.items.some((i) => i.itemUid && i.treeCount > 0)
   const isValid = hasItems
 
+  const [targetInput, setTargetInput] = useState(state.targetSeeds > 0 ? String(state.targetSeeds) : "")
+  const debouncedTargetSeeds = useDebouncedCallback(
+    (v: number) => update({ targetSeeds: v }),
+    400,
+  )
+  useEffect(() => {
+    setTargetInput(state.targetSeeds > 0 ? String(state.targetSeeds) : "")
+  }, [state.items[0]?.itemUid])
+
   if (massUid === "new") return null
 
   if (isLoadingMass) {
@@ -83,19 +94,41 @@ function MassCalculatorPage() {
         onSave={() => saveMutation.mutate()}
       />
 
-      <ModeSelector value={state.mode} onChange={(v) => update({ mode: v })} />
-
-      <div className="flex items-center gap-2">
-        <Label className="text-xs text-muted-foreground shrink-0">Hit Cost (gems/smash)</Label>
-        <Input
-          type="number"
-          min={1}
-          value={state.hitCost || ""}
-          onChange={(e) => update({ hitCost: Math.max(1, parseInt(e.target.value, 10) || 1) })}
-          placeholder="1"
-          className="h-7 w-20 text-xs"
-        />
-      </div>
+      <Card>
+        <CardContent className="px-4 py-3">
+          <div className="flex flex-wrap items-end gap-4">
+            <div className="space-y-1">
+              <Label className="text-xs text-muted-foreground">Mode</Label>
+              <ModeSelector value={state.mode} onChange={(v) => update({ mode: v })} />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-xs text-muted-foreground">Hit Cost (gems/smash)</Label>
+              <Input
+                type="number"
+                min={1}
+                value={state.hitCost || ""}
+                onChange={(e) => update({ hitCost: Math.max(1, parseInt(e.target.value, 10) || 1) })}
+                placeholder="1"
+                className="h-7 w-20 text-xs"
+              />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-xs text-muted-foreground">Target seeds</Label>
+              <Input
+                type="number"
+                min={0}
+                value={targetInput}
+                onChange={(e) => {
+                  setTargetInput(e.target.value)
+                  debouncedTargetSeeds(Math.max(0, parseInt(e.target.value, 10) || 0))
+                }}
+                placeholder="0"
+                className="h-7 w-24 text-xs"
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       <TotalsCard totals={totals} />
 
@@ -105,7 +138,6 @@ function MassCalculatorPage() {
           items={state.items}
           mode={state.mode}
           targetSeeds={state.targetSeeds}
-          onTargetSeedsChange={(v) => update({ targetSeeds: v })}
           onAddItem={addItemFromIngredient}
           onRemoveItem={removeItemBySourcePath}
           onApplyTrees={setItemTreeCount}

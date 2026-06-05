@@ -8,12 +8,10 @@ import {
   Plus,
 } from "lucide-react"
 import { useEffect, useMemo, useState } from "react"
-import { useDebouncedCallback } from "use-debounce"
 import { type ItemModel, type RecipeTreeNode, ItemsService } from "@/client"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+
 import { cn } from "@/lib/utils"
 import { findMinTreesForTarget } from "@/utils/massCalculator"
 import type { CalculatorItem } from "@/utils/massTypes"
@@ -234,7 +232,6 @@ function RecipeCheatsheet({
   items,
   mode,
   targetSeeds,
-  onTargetSeedsChange,
   onAddItem,
   onRemoveItem,
   onApplyTrees,
@@ -243,22 +240,11 @@ function RecipeCheatsheet({
   items: CalculatorItem[]
   mode: string
   targetSeeds: number
-  onTargetSeedsChange?: (value: number) => void
   onAddItem?: (path: string, item: ItemModel) => void
   onRemoveItem?: (path: string) => void
   onApplyTrees?: (path: string, treeCount: number) => void
 }) {
   const [expanded, setExpanded] = useState(false)
-  const [targetInput, setTargetInput] = useState(targetSeeds > 0 ? String(targetSeeds) : "")
-
-  const debouncedTargetSeedsChange = useDebouncedCallback(
-    (value: number) => onTargetSeedsChange?.(value),
-    400,
-  )
-
-  useEffect(() => {
-    setTargetInput(targetSeeds > 0 ? String(targetSeeds) : "")
-  }, [itemUid])
 
   const clickedPaths = useMemo(
     () => {
@@ -326,25 +312,7 @@ function RecipeCheatsheet({
               </Badge>
             )}
           </div>
-          <div
-            className="flex items-center gap-2"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <Label className="text-xs text-muted-foreground shrink-0">
-              Target seeds
-            </Label>
-            <Input
-              type="number"
-              min={0}
-              value={targetInput}
-              onChange={(e) => {
-                setTargetInput(e.target.value)
-                debouncedTargetSeedsChange(Math.max(0, parseInt(e.target.value, 10) || 0))
-              }}
-              placeholder="0"
-              className="h-7 w-24 text-xs"
-            />
-          </div>
+
         </div>
       </CardHeader>
       {expanded && (
