@@ -14,6 +14,9 @@ interface MassItemCardProps {
   onItemSelect: (tempId: string, item: import("@/client").ItemModel) => void
   onItemClear: (tempId: string) => void
   onTreesChange: (tempId: string, trees: number) => void
+  onPriceChange?: (tempId: string, price: number) => void
+  onFuelChange?: (tempId: string, isFuel: boolean) => void
+  onAutoBreakChange?: (tempId: string, isAutoBreak: boolean) => void
   onRemove?: (tempId: string) => void
 }
 
@@ -23,13 +26,16 @@ export function MassItemCard({
   onItemSelect,
   onItemClear,
   onTreesChange,
+  onPriceChange,
+  onFuelChange,
+  onAutoBreakChange,
   onRemove,
 }: MassItemCardProps) {
   return (
     <Card className="relative">
       <CardHeader className="pb-2 pt-3 px-4">
         <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end">
-          <div className="sm:col-span-5 space-y-1.5">
+          <div className="sm:col-span-4 space-y-1.5">
             <Label className="text-xs text-muted-foreground">Item</Label>
             <ItemSearch
               selectedName={item.itemName || undefined}
@@ -48,7 +54,7 @@ export function MassItemCard({
               className="h-8"
             />
           </div>
-          <div className="sm:col-span-3 space-y-1.5">
+          <div className="sm:col-span-2 space-y-1.5">
             <Label className="text-xs text-muted-foreground">Trees</Label>
             <Input
               type="number"
@@ -61,12 +67,43 @@ export function MassItemCard({
               className="h-8"
             />
           </div>
-          <div className="sm:col-span-2 flex justify-end pb-0.5">
+          <div className="sm:col-span-2 space-y-1.5">
+            <Label className="text-xs text-muted-foreground">Price</Label>
+            <Input
+              type="number"
+              min={0}
+              value={item.price || ""}
+              onChange={(e) =>
+                onPriceChange?.(item.tempId, parseInt(e.target.value, 10) || 0)
+              }
+              placeholder="0"
+              className="h-8"
+            />
+          </div>
+          <div className="sm:col-span-2 flex items-center gap-2 pb-1">
+            <label className="flex items-center gap-1 text-xs cursor-pointer">
+              <input
+                type="checkbox"
+                checked={item.isFuel}
+                onChange={(e) => onFuelChange?.(item.tempId, e.target.checked)}
+                className="size-3.5"
+              />
+              Fuel
+            </label>
+            <label className="flex items-center gap-1 text-xs cursor-pointer">
+              <input
+                type="checkbox"
+                checked={item.isAutoBreak}
+                onChange={(e) => onAutoBreakChange?.(item.tempId, e.target.checked)}
+                className="size-3.5"
+              />
+              Auto
+            </label>
             {onRemove && (
               <Button
                 variant="ghost"
                 size="icon"
-                className="size-8 text-muted-foreground hover:text-destructive"
+                className="size-8 text-muted-foreground hover:text-destructive ml-auto"
                 onClick={() => onRemove(item.tempId)}
               >
                 <Trash2 className="size-4" />

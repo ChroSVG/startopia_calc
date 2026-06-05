@@ -9,21 +9,22 @@ export interface Totals {
   totalSmash: number
   totalSeeds: number
   totalGems: number
+  totalPrice: number
   maxGrowSecs: number
   growReadable: string
 }
 
-export function useMassResults(items: CalculatorItem[], mode: string) {
+export function useMassResults(items: CalculatorItem[], mode: string, hitCost: number = 1) {
   const resultsCache = useMemo(() => {
     const map = new Map<string, MassItemResult>()
     for (const item of items) {
       map.set(
         item.tempId,
-        calculateTreeYield(item.treeRarity, item.maxBlocks, item.treeCount, mode),
+        calculateTreeYield(item.treeRarity, item.maxBlocks, item.treeCount, mode, item.isFuel, item.isAutoBreak, hitCost),
       )
     }
     return map
-  }, [items, mode])
+  }, [items, mode, hitCost])
 
   const totals = useMemo(() => {
     let totalTrees = 0
@@ -31,6 +32,7 @@ export function useMassResults(items: CalculatorItem[], mode: string) {
     let totalSmash = 0
     let totalSeeds = 0
     let totalGems = 0
+    let totalPrice = 0
     let maxGrowSecs = 0
 
     for (const item of items) {
@@ -41,6 +43,7 @@ export function useMassResults(items: CalculatorItem[], mode: string) {
       totalSmash += r.total_smash_efektif
       totalSeeds += r.total_seeds_return
       totalGems += r.total_gems_didapat
+      totalPrice += item.price * item.treeCount
       if (r.grow_time_seconds > maxGrowSecs) {
         maxGrowSecs = r.grow_time_seconds
       }
@@ -52,6 +55,7 @@ export function useMassResults(items: CalculatorItem[], mode: string) {
       totalSmash,
       totalSeeds,
       totalGems,
+      totalPrice,
       maxGrowSecs,
       growReadable: formatDuration(maxGrowSecs),
     }

@@ -3,6 +3,8 @@ import { createFileRoute, useNavigate, useParams } from "@tanstack/react-router"
 import { Loader2 } from "lucide-react"
 import { useEffect } from "react"
 
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { MassesService } from "@/client"
 import { MassCalcHeader } from "@/components/Masses/MassCalcHeader"
 import { MassItemCard } from "@/components/Masses/MassItemCard"
@@ -40,6 +42,7 @@ function MassCalculatorPage() {
   const {
     state,
     update,
+    updateItem,
     addItemFromIngredient,
     removeItemBySourcePath,
     removeItem,
@@ -49,7 +52,7 @@ function MassCalculatorPage() {
     setItemTreeCount,
   } = useMassCalcState(loadedMass)
 
-  const { resultsCache, totals } = useMassResults(state.items, state.mode)
+  const { resultsCache, totals } = useMassResults(state.items, state.mode, state.hitCost)
 
   const { saveMutation } = useMassSave(state, (uid) => {
     window.location.href = `/masses/${uid}`
@@ -82,6 +85,18 @@ function MassCalculatorPage() {
 
       <ModeSelector value={state.mode} onChange={(v) => update({ mode: v })} />
 
+      <div className="flex items-center gap-2">
+        <Label className="text-xs text-muted-foreground shrink-0">Hit Cost (gems/smash)</Label>
+        <Input
+          type="number"
+          min={1}
+          value={state.hitCost || ""}
+          onChange={(e) => update({ hitCost: Math.max(1, parseInt(e.target.value, 10) || 1) })}
+          placeholder="1"
+          className="h-7 w-20 text-xs"
+        />
+      </div>
+
       <TotalsCard totals={totals} />
 
       {state.items[0]?.itemUid && (
@@ -106,6 +121,9 @@ function MassCalculatorPage() {
             onItemSelect={handleItemSelect}
             onItemClear={handleItemClear}
             onTreesChange={handleTreesChange}
+            onPriceChange={(tid, v) => updateItem(tid, { price: v })}
+            onFuelChange={(tid, v) => updateItem(tid, { isFuel: v })}
+            onAutoBreakChange={(tid, v) => updateItem(tid, { isAutoBreak: v })}
             onRemove={i === 0 ? undefined : removeItem}
           />
         ))}

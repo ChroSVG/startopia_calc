@@ -14,6 +14,9 @@ export interface CalculatorItem {
   treeRarity: number
   maxBlocks: number
   treeCount: number
+  price: number
+  isFuel: boolean
+  isAutoBreak: boolean
   sourcePath?: string
 }
 
@@ -23,6 +26,7 @@ export interface CalcState {
   description: string
   mode: string
   targetSeeds: number
+  hitCost: number
   items: CalculatorItem[]
 }
 
@@ -45,6 +49,9 @@ export function blankItem(): CalculatorItem {
     treeRarity: 1,
     maxBlocks: 1,
     treeCount: 0,
+    price: 0,
+    isFuel: false,
+    isAutoBreak: false,
   }
 }
 
@@ -55,6 +62,7 @@ export function massToCalcState(mass: MassModel): CalcState {
     description: mass.description ?? "",
     mode: mass.mode,
     targetSeeds: mass.target_seeds ?? 0,
+    hitCost: mass.hit_cost ?? 1,
     items: (mass.items ?? []).map((i) => ({
       tempId: nextTempId(),
       itemUid: i.item_uid ?? null,
@@ -62,6 +70,9 @@ export function massToCalcState(mass: MassModel): CalcState {
       treeRarity: i.tree_rarity ?? 1,
       maxBlocks: i.max_blocks ?? 1,
       treeCount: i.jumlah_pohon ?? 0,
+      price: i.price ?? 0,
+      isFuel: i.is_fuel ?? false,
+      isAutoBreak: i.is_auto_break ?? false,
       sourcePath: i.source_path ?? undefined,
     })),
   }
@@ -73,12 +84,16 @@ export function calcStateToPayload(state: CalcState) {
     description: state.description || null,
     mode: state.mode,
     target_seeds: state.targetSeeds ?? undefined,
+    hit_cost: state.hitCost ?? undefined,
     items: state.items.map((i) => ({
       item_uid: i.itemUid || undefined,
       item_name: i.itemName || "Item",
       tree_rarity: i.treeRarity,
       max_blocks: i.maxBlocks,
       jumlah_pohon: i.treeCount,
+      price: i.price || undefined,
+      is_fuel: i.isFuel,
+      is_auto_break: i.isAutoBreak,
       source_path: i.sourcePath || undefined,
     })),
   }

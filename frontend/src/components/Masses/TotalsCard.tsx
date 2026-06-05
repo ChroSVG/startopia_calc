@@ -45,6 +45,12 @@ export function TotalsCard({ totals }: { totals: Totals }) {
               {totals.growReadable}
             </p>
           </div>
+          <div>
+            <span className="text-xs text-muted-foreground">Total Price</span>
+            <p className="font-bold tabular-nums text-lg">
+              {totals.totalPrice.toLocaleString()}
+            </p>
+          </div>
         </div>
       </CardContent>
     </Card>

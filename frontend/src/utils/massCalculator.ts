@@ -91,6 +91,9 @@ export function calculateTreeYield(
   maxBlocks: number,
   treeCount: number,
   mode: string,
+  isFuel: boolean = false,
+  isAutoBreak: boolean = false,
+  hitCost: number = 1,
 ): MassItemResult {
   const growTime = growTimeSeconds(treeRarity)
 
@@ -111,7 +114,9 @@ export function calculateTreeYield(
     }
   }
 
-  const blocks = blocksYielded(treeCount, maxBlocks)
+  const blocks = isFuel
+    ? Math.floor(blocksYielded(treeCount, maxBlocks) * 1.1)
+    : blocksYielded(treeCount, maxBlocks)
   const totalSmash = totalSmashedBlocks(blocks)
 
   const seedsFallenVal =
@@ -142,6 +147,10 @@ export function calculateTreeYield(
     totalGemsVal = Math.floor(gemBlocksVal * avgGemsVal + harvestGemsVal)
   }
 
+  const finalTotalGems = isAutoBreak
+    ? Math.max(0, totalGemsVal - totalSmash * hitCost)
+    : totalGemsVal
+
   return {
     blok_yielded: blocks,
     total_smash_efektif: totalSmash,
@@ -152,7 +161,7 @@ export function calculateTreeYield(
     gem_blocks: gemBlocksVal,
     avg_gems_per_block: roundTo(avgGemsVal, 4),
     harvest_gems: harvestGemsVal,
-    total_gems_didapat: totalGemsVal,
+    total_gems_didapat: finalTotalGems,
     grow_time_seconds: growTime,
     grow_time_readable: formatDuration(growTime),
   }

@@ -13,6 +13,9 @@ class MassItemInput(BaseModel):
     tree_rarity: int = 1
     max_blocks: int = 1
     jumlah_pohon: int = 0
+    price: int = 0
+    is_fuel: bool = False
+    is_auto_break: bool = False
     source_path: Optional[str] = None
 
 
@@ -43,6 +46,7 @@ class MassCreate(BaseModel):
     description: Optional[str] = None
     mode: str = "a"
     target_seeds: int = 0
+    hit_cost: int = 1
     items: List[MassItemInput] = []
 
 
@@ -51,6 +55,7 @@ class MassUpdate(BaseModel):
     description: Optional[str] = None
     mode: Optional[str] = None
     target_seeds: Optional[int] = None
+    hit_cost: Optional[int] = None
     items: Optional[List[MassItemInput]] = None
 
 
@@ -60,6 +65,7 @@ class MassModel(BaseModel):
     description: Optional[str] = None
     mode: str
     target_seeds: int = 0
+    hit_cost: int = 1
     user_uid: uuid.UUID
     created_at: datetime
     update_at: datetime

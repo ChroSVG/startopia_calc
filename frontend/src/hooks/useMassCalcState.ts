@@ -14,6 +14,7 @@ export function useMassCalcState(loadedMass: MassModel | undefined) {
     description: "",
     mode: "a",
     targetSeeds: 0,
+    hitCost: 1,
     items: [blankItem()],
   }))
 
@@ -150,6 +151,7 @@ export function useMassCalcState(loadedMass: MassModel | undefined) {
     addItemFromIngredient,
     removeItemBySourcePath,
     removeItem,
+    updateItem,
     handleItemSelect,
     handleItemClear,
     handleTreesChange,

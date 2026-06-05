@@ -72,7 +72,7 @@ def format_duration(total_seconds: int) -> str:
     return " ".join(parts)
 
 
-def calculate_item(tree_rarity: int, max_blocks: int, jumlah_pohon: int, mode: str) -> dict:
+def calculate_item(tree_rarity: int, max_blocks: int, jumlah_pohon: int, mode: str, is_fuel: bool = False, is_auto_break: bool = False, hit_cost: int = 1) -> dict:
     if jumlah_pohon <= 0:
         return {
             "blok_yielded": 0,
@@ -89,7 +89,7 @@ def calculate_item(tree_rarity: int, max_blocks: int, jumlah_pohon: int, mode: s
             "grow_time_readable": format_duration(grow_time_seconds(tree_rarity)),
         }
 
-    blok_yielded = blocks_yielded(jumlah_pohon, max_blocks)
+    blok_yielded = int(blocks_yielded(jumlah_pohon, max_blocks) * 1.1) if is_fuel else blocks_yielded(jumlah_pohon, max_blocks)
     total_smash = total_smashed_blocks(blok_yielded)
 
     if mode in ("b", "bpresisi"):
@@ -114,6 +114,9 @@ def calculate_item(tree_rarity: int, max_blocks: int, jumlah_pohon: int, mode: s
         total_gems_val = int((gem_blocks_val * avg_gems_val) + harvest_gems_val)
 
     grow_time = grow_time_seconds(tree_rarity)
+
+    if is_auto_break:
+        total_gems_val = max(0, total_gems_val - total_smash * hit_cost)
 
     return {
         "blok_yielded": blok_yielded,

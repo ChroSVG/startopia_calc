@@ -37,7 +37,7 @@ class MassService:
 
         items_input = mass_data.items or []
         for item_in in items_input:
-            await self._create_and_calculate_item(mass.uid, item_in, mass.mode, session)
+            await self._create_and_calculate_item(mass.uid, item_in, mass.mode, session, mass.hit_cost)
 
         await self._refresh_mass(mass, session)
         await self.log_service.log(
@@ -63,8 +63,9 @@ class MassService:
         if update_data.items is not None:
             await self.mass_item_repo.delete_by_mass_uid(session, mass_uid)
             new_mode = update_dict.get("mode", mass.mode)
+            new_hit_cost = update_dict.get("hit_cost", mass.hit_cost)
             for item_in in update_data.items:
-                await self._create_and_calculate_item(mass.uid, item_in, new_mode, session)
+                await self._create_and_calculate_item(mass.uid, item_in, new_mode, session, new_hit_cost)
 
         await self._refresh_mass(mass, session)
         await self.log_service.log(
@@ -98,7 +99,7 @@ class MassService:
 
         items = await self.mass_item_repo.get_by_mass_uid(session, mass_uid)
         for item in items:
-            result = calculate_item(item.tree_rarity, item.max_blocks, item.jumlah_pohon, mass.mode)
+            result = calculate_item(item.tree_rarity, item.max_blocks, item.jumlah_pohon, mass.mode, item.is_fuel, item.is_auto_break, mass.hit_cost)
             result.pop("grow_time_readable", None)
             for key, value in result.items():
                 setattr(item, key, value)
@@ -114,7 +115,7 @@ class MassService:
         return mass
 
     async def _create_and_calculate_item(
-        self, mass_uid: uuid.UUID, item_in, mode: str, session: AsyncSession
+        self, mass_uid: uuid.UUID, item_in, mode: str, session: AsyncSession, hit_cost: int = 1
     ) -> MassItem:
         item_data = item_in.model_dump() if hasattr(item_in, "model_dump") else item_in
 
@@ -137,6 +138,9 @@ class MassService:
             item_data.get("max_blocks", 1),
             item_data.get("jumlah_pohon", 0),
             mode,
+            item_data.get("is_fuel", False),
+            item_data.get("is_auto_break", False),
+            hit_cost,
         )
 
         result.pop("grow_time_readable", None)
@@ -147,6 +151,9 @@ class MassService:
             "tree_rarity": item_data.get("tree_rarity", 1),
             "max_blocks": item_data.get("max_blocks", 1),
             "jumlah_pohon": item_data.get("jumlah_pohon", 0),
+            "price": item_data.get("price", 0),
+            "is_fuel": item_data.get("is_fuel", False),
+            "is_auto_break": item_data.get("is_auto_break", False),
             "source_path": item_data.get("source_path"),
             **result,
         }

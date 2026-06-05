@@ -194,6 +194,7 @@ export type MassCreate = {
     description?: (string | null);
     mode?: string;
     target_seeds?: number;
+    hit_cost?: number;
     items?: Array<MassItemInput>;
 };
 
@@ -208,6 +209,9 @@ export type MassItemInput = {
     tree_rarity?: number;
     max_blocks?: number;
     jumlah_pohon?: number;
+    price?: number;
+    is_fuel?: boolean;
+    is_auto_break?: boolean;
     source_path?: (string | null);
 };
 
@@ -217,6 +221,9 @@ export type MassItemResult = {
     tree_rarity?: number;
     max_blocks?: number;
     jumlah_pohon?: number;
+    price?: number;
+    is_fuel?: boolean;
+    is_auto_break?: boolean;
     source_path?: (string | null);
     uid: string;
     blok_yielded: number;
@@ -239,6 +246,7 @@ export type MassModel = {
     description?: (string | null);
     mode: string;
     target_seeds?: number;
+    hit_cost?: number;
     user_uid: string;
     created_at: string;
     update_at: string;
@@ -250,6 +258,7 @@ export type MassUpdate = {
     description?: (string | null);
     mode?: (string | null);
     target_seeds?: (number | null);
+    hit_cost?: (number | null);
     items?: (Array<MassItemInput> | null);
 };
 

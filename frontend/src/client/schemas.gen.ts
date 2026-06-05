@@ -1128,6 +1128,11 @@ export const MassCreateSchema = {
             title: 'Target Seeds',
             default: 0
         },
+        hit_cost: {
+            type: 'integer',
+            title: 'Hit Cost',
+            default: 1
+        },
         items: {
             items: {
                 '$ref': '#/components/schemas/MassItemInput'
@@ -1175,6 +1180,21 @@ export const MassItemInputSchema = {
             type: 'integer',
             title: 'Jumlah Pohon',
             default: 0
+        },
+        price: {
+            type: 'integer',
+            title: 'Price',
+            default: 0
+        },
+        is_fuel: {
+            type: 'boolean',
+            title: 'Is Fuel',
+            default: false
+        },
+        is_auto_break: {
+            type: 'boolean',
+            title: 'Is Auto Break',
+            default: false
         },
         source_path: {
             anyOf: [
@@ -1225,6 +1245,21 @@ export const MassItemResultSchema = {
             type: 'integer',
             title: 'Jumlah Pohon',
             default: 0
+        },
+        price: {
+            type: 'integer',
+            title: 'Price',
+            default: 0
+        },
+        is_fuel: {
+            type: 'boolean',
+            title: 'Is Fuel',
+            default: false
+        },
+        is_auto_break: {
+            type: 'boolean',
+            title: 'Is Auto Break',
+            default: false
         },
         source_path: {
             anyOf: [
@@ -1328,6 +1363,11 @@ export const MassModelSchema = {
             title: 'Target Seeds',
             default: 0
         },
+        hit_cost: {
+            type: 'integer',
+            title: 'Hit Cost',
+            default: 1
+        },
         user_uid: {
             type: 'string',
             format: 'uuid',
@@ -1402,6 +1442,17 @@ export const MassUpdateSchema = {
                 }
             ],
             title: 'Target Seeds'
+        },
+        hit_cost: {
+            anyOf: [
+                {
+                    type: 'integer'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Hit Cost'
         },
         items: {
             anyOf: [
