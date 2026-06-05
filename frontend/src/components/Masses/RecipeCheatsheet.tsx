@@ -8,6 +8,7 @@ import {
   Plus,
 } from "lucide-react"
 import { useEffect, useMemo, useState } from "react"
+import { useDebouncedCallback } from "use-debounce"
 import { type ItemModel, type RecipeTreeNode, ItemsService } from "@/client"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -170,6 +171,10 @@ function TreeRow({
               onRemoveItem?.(path)
             } else {
               onAddItem?.(path, node.item)
+              const req = requirementsMap.get(path)
+              if (req) {
+                onApplyTrees?.(path, req.treeCount)
+              }
             }
           }}
         >
@@ -246,9 +251,14 @@ function RecipeCheatsheet({
   const [expanded, setExpanded] = useState(false)
   const [targetInput, setTargetInput] = useState(targetSeeds > 0 ? String(targetSeeds) : "")
 
+  const debouncedTargetSeedsChange = useDebouncedCallback(
+    (value: number) => onTargetSeedsChange?.(value),
+    400,
+  )
+
   useEffect(() => {
     setTargetInput(targetSeeds > 0 ? String(targetSeeds) : "")
-  }, [targetSeeds])
+  }, [itemUid])
 
   const clickedPaths = useMemo(
     () => {
@@ -276,20 +286,13 @@ function RecipeCheatsheet({
 
   useEffect(() => {
     if (targetSeeds === 0) {
-      if (items[0] && items[0].treeCount !== 0) {
-        onApplyTrees?.("root", 0)
-      }
+      onApplyTrees?.("root", 0)
     } else {
       for (const [path, req] of requirements) {
-        const currentItem = path === "root"
-          ? items[0]
-          : items.find((i) => i.sourcePath === path)
-        if (currentItem && currentItem.treeCount !== req.treeCount) {
-          onApplyTrees?.(path, req.treeCount)
-        }
+        onApplyTrees?.(path, req.treeCount)
       }
     }
-  }, [requirements, onApplyTrees, targetSeeds, items])
+  }, [requirements, targetSeeds, onApplyTrees])
 
   if (!itemUid) return null
 
@@ -336,7 +339,7 @@ function RecipeCheatsheet({
               value={targetInput}
               onChange={(e) => {
                 setTargetInput(e.target.value)
-                onTargetSeedsChange?.(Math.max(0, parseInt(e.target.value, 10) || 0))
+                debouncedTargetSeedsChange(Math.max(0, parseInt(e.target.value, 10) || 0))
               }}
               placeholder="0"
               className="h-7 w-24 text-xs"
