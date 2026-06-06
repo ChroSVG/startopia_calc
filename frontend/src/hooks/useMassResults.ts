@@ -14,6 +14,8 @@ export interface Totals {
   totalAutoBreakCost: number
   totalFuelUsed: number
   totalFuelCostWl: number
+  totalOmset: number
+  totalBiaya: number
   totalModal: number
   totalProfit: number
   totalGemsWl: number
@@ -57,7 +59,7 @@ export function useMassResults(
     let totalGems = 0
     let totalAutoBreakCost = 0
     let totalModal = 0
-    let totalProfit = 0
+    let totalOmset = 0
     let totalFuelUsed = 0
     let maxGrowSecs = 0
 
@@ -76,7 +78,7 @@ export function useMassResults(
       const buy = parsePrice(item.priceBuy)
       const sell = parsePrice(item.priceSell)
       totalModal += buy * item.treeCount
-      totalProfit += (sell - buy) * item.treeCount
+      totalOmset += sell * item.treeCount
       if (r.grow_time_seconds > maxGrowSecs) {
         maxGrowSecs = r.grow_time_seconds
       }
@@ -85,7 +87,9 @@ export function useMassResults(
     const gemsNet = totalGems - totalAutoBreakCost
     const gemsNetWl = gemsPerWl > 0 ? gemsNet / gemsPerWl : 0
     const fuelCostWl = parsePrice(fuelPrice) * totalFuelUsed
-    totalProfit += gemsNetWl - fuelCostWl
+    const totalBiaya =
+      totalModal + fuelCostWl + (gemsNetWl < 0 ? Math.abs(gemsNetWl) : 0)
+    const totalProfit = totalOmset + gemsNetWl - totalModal - fuelCostWl
     return {
       totalTrees,
       totalHits,
@@ -96,6 +100,8 @@ export function useMassResults(
       totalAutoBreakCost,
       totalFuelUsed,
       totalFuelCostWl: fuelCostWl,
+      totalOmset,
+      totalBiaya,
       totalModal,
       totalProfit,
       totalGemsWl: gemsPerWl > 0 ? totalGems / gemsPerWl : 0,

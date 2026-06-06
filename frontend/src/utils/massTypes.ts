@@ -101,7 +101,7 @@ export function parsePrice(input: string): number {
     return 0
   }
   const num = parseFloat(input)
-  return isNaN(num) ? 0 : num
+  return Number.isNaN(num) ? 0 : num
 }
 
 export function calcStateToPayload(state: CalcState) {

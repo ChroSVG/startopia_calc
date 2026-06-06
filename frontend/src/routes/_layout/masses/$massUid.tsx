@@ -4,6 +4,7 @@ import { LayoutGrid, List, Loader2 } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useDebouncedCallback } from "use-debounce"
 import { MassesService } from "@/client"
+import { FinancialCard } from "@/components/Masses/FinancialCard"
 import { MassCalcHeader } from "@/components/Masses/MassCalcHeader"
 import { MassItemCard } from "@/components/Masses/MassItemCard"
 import { ModeSelector } from "@/components/Masses/ModeSelector"
@@ -150,9 +151,7 @@ function MassCalculatorPage() {
               />
             </div>
             <div className="space-y-1">
-              <Label className="text-xs text-muted-foreground">
-                Gems/WL
-              </Label>
+              <Label className="text-xs text-muted-foreground">Gems/WL</Label>
               <Input
                 type="number"
                 min={0}
@@ -183,6 +182,8 @@ function MassCalculatorPage() {
       </Card>
 
       <TotalsCard totals={totals} />
+
+      {totals.totalTrees > 0 && <FinancialCard totals={totals} />}
 
       {state.items[0]?.itemUid && (
         <RecipeCheatsheet

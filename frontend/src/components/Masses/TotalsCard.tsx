@@ -23,7 +23,9 @@ export function TotalsCard({ totals }: { totals: Totals }) {
             </p>
           </div>
           <div>
-            <span className="text-xs text-muted-foreground">Total Broken Blocks</span>
+            <span className="text-xs text-muted-foreground">
+              Total Broken Blocks
+            </span>
             <p className="font-bold tabular-nums text-lg">
               {totals.totalBlocksBroken.toLocaleString()}
             </p>
@@ -85,19 +87,7 @@ export function TotalsCard({ totals }: { totals: Totals }) {
               {totals.totalModal.toFixed(2)}
             </p>
           </div>
-          <div>
-            <span className="text-xs text-muted-foreground">Profit (WL)</span>
-            <p
-              className={cn(
-                "font-bold tabular-nums text-lg",
-                totals.totalProfit < 0 && "text-destructive",
-                totals.totalProfit >= 0 && "text-green-600",
-              )}
-            >
-              {totals.totalProfit >= 0 ? "+" : ""}
-              {totals.totalProfit.toFixed(2)}
-            </p>
-          </div>
+
         </div>
       </CardContent>
     </Card>
