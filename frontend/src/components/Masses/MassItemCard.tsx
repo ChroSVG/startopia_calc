@@ -158,13 +158,13 @@ export function MassItemCard({
               <div>
                 <span className="text-muted-foreground">Blok</span>
                 <p className="font-medium tabular-nums">
-                  {result.blok_yielded.toLocaleString()}
+                  {result.blocks_produced.toLocaleString()}
                 </p>
               </div>
               <div>
-                <span className="text-muted-foreground">Smash</span>
+                <span className="text-muted-foreground">Broken Blocks</span>
                 <p className="font-medium tabular-nums">
-                  {result.total_smash_efektif.toLocaleString()}
+                  {result.total_blocks_broken.toLocaleString()}
                 </p>
               </div>
               <div>
@@ -179,7 +179,7 @@ export function MassItemCard({
               <div>
                 <span className="text-muted-foreground">Gems</span>
                 <p className="font-medium tabular-nums">
-                  {result.total_gems_didapat.toLocaleString()}
+                  {result.total_gems.toLocaleString()}
                   {result.auto_break_cost > 0 && (
                     <span className="text-muted-foreground text-[10px] ml-1">
                       -{result.auto_break_cost.toLocaleString()}
@@ -306,13 +306,13 @@ export function MassItemCard({
           <div>
             <div>Blok</div>
             <div className="font-medium text-foreground tabular-nums">
-              {result.blok_yielded.toLocaleString()}
+              {result.blocks_produced.toLocaleString()}
             </div>
           </div>
           <div>
-            <div>Smash</div>
+            <div>Broken Blocks</div>
             <div className="font-medium text-foreground tabular-nums">
-              {result.total_smash_efektif.toLocaleString()}
+              {result.total_blocks_broken.toLocaleString()}
             </div>
           </div>
           <div>
@@ -324,7 +324,7 @@ export function MassItemCard({
           <div>
             <div>Gems</div>
             <div className="font-medium text-foreground tabular-nums">
-              {result.total_gems_didapat.toLocaleString()}
+              {result.total_gems.toLocaleString()}
             </div>
           </div>
         </div>

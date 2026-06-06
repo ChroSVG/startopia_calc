@@ -66,7 +66,7 @@ const AddMassDialog = () => {
         item_name: string
         tree_rarity: number
         max_blocks: number
-        jumlah_pohon: number
+        tree_count: number
       }>
     }) => MassesService.createMass({ requestBody: data }),
     onSuccess: (data) => {
@@ -95,7 +95,7 @@ const AddMassDialog = () => {
                 1,
                 Math.min(4, Math.floor((selectedItem.max_drop ?? 4) / 4)),
               ),
-              jumlah_pohon: 1,
+              tree_count: 1,
             },
           ]
         : undefined,

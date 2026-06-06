@@ -1191,9 +1191,9 @@ export const MassItemInputSchema = {
             title: 'Max Blocks',
             default: 1
         },
-        jumlah_pohon: {
+        tree_count: {
             type: 'integer',
-            title: 'Jumlah Pohon',
+            title: 'Tree Count',
             default: 0
         },
         price_buy: {
@@ -1226,6 +1226,11 @@ export const MassItemInputSchema = {
                 }
             ],
             title: 'Source Path'
+        },
+        hits_per_block: {
+            type: 'integer',
+            title: 'Hits Per Block',
+            default: 3
         }
     },
     type: 'object',
@@ -1266,9 +1271,9 @@ export const MassItemResultSchema = {
             title: 'Max Blocks',
             default: 1
         },
-        jumlah_pohon: {
+        tree_count: {
             type: 'integer',
-            title: 'Jumlah Pohon',
+            title: 'Tree Count',
             default: 0
         },
         price_buy: {
@@ -1302,26 +1307,31 @@ export const MassItemResultSchema = {
             ],
             title: 'Source Path'
         },
+        hits_per_block: {
+            type: 'integer',
+            title: 'Hits Per Block',
+            default: 3
+        },
         uid: {
             type: 'string',
             format: 'uuid',
             title: 'Uid'
         },
-        blok_yielded: {
+        blocks_produced: {
             type: 'integer',
-            title: 'Blok Yielded'
+            title: 'Blocks Produced'
         },
-        total_smash_efektif: {
+        total_blocks_broken: {
             type: 'integer',
-            title: 'Total Smash Efektif'
+            title: 'Total Blocks Broken'
         },
-        seeds_fallen: {
+        seeds_from_tree: {
             type: 'integer',
-            title: 'Seeds Fallen'
+            title: 'Seeds From Tree'
         },
-        seeds_from_smash: {
+        seeds_from_break: {
             type: 'integer',
-            title: 'Seeds From Smash'
+            title: 'Seeds From Break'
         },
         total_seeds_return: {
             type: 'integer',
@@ -1331,21 +1341,21 @@ export const MassItemResultSchema = {
             type: 'number',
             title: 'Seed Return Rate'
         },
-        gem_blocks: {
+        gem_producing_blocks: {
             type: 'integer',
-            title: 'Gem Blocks'
+            title: 'Gem Producing Blocks'
         },
         avg_gems_per_block: {
             type: 'number',
             title: 'Avg Gems Per Block'
         },
-        harvest_gems: {
+        gems_from_tree: {
             type: 'integer',
-            title: 'Harvest Gems'
+            title: 'Gems From Tree'
         },
-        total_gems_didapat: {
+        total_gems: {
             type: 'integer',
-            title: 'Total Gems Didapat'
+            title: 'Total Gems'
         },
         grow_time_seconds: {
             type: 'integer',
@@ -1358,7 +1368,7 @@ export const MassItemResultSchema = {
         }
     },
     type: 'object',
-    required: ['uid', 'blok_yielded', 'total_smash_efektif', 'seeds_fallen', 'seeds_from_smash', 'total_seeds_return', 'seed_return_rate', 'gem_blocks', 'avg_gems_per_block', 'harvest_gems', 'total_gems_didapat', 'grow_time_seconds'],
+    required: ['uid', 'blocks_produced', 'total_blocks_broken', 'seeds_from_tree', 'seeds_from_break', 'total_seeds_return', 'seed_return_rate', 'gem_producing_blocks', 'avg_gems_per_block', 'gems_from_tree', 'total_gems', 'grow_time_seconds'],
     title: 'MassItemResult'
 } as const;
 

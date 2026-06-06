@@ -99,7 +99,7 @@ class MassService:
 
         items = await self.mass_item_repo.get_by_mass_uid(session, mass_uid)
         for item in items:
-            result = calculate_item(item.tree_rarity, item.max_blocks, item.jumlah_pohon, mass.mode, item.is_fuel, item.is_auto_break, mass.hit_cost)
+            result = calculate_item(item.tree_rarity, item.max_blocks, item.tree_count, mass.mode, item.is_fuel, item.is_auto_break, mass.hit_cost, item.hits_per_block)
             result.pop("grow_time_readable", None)
             result.pop("auto_break_cost", None)
             for key, value in result.items():
@@ -134,15 +134,17 @@ class MassService:
             item_data["rarity"] = item.rarity or ""
             item_data["tree_rarity"] = int(item.rarity or 1)
             item_data["max_blocks"] = (item.max_drop or 4) // 4
+            item_data["hits_per_block"] = item.hits_with_hand or 3
 
         result = calculate_item(
             item_data.get("tree_rarity", 1),
             item_data.get("max_blocks", 1),
-            item_data.get("jumlah_pohon", 0),
+            item_data.get("tree_count", 0),
             mode,
             item_data.get("is_fuel", False),
             item_data.get("is_auto_break", False),
             hit_cost,
+            item_data.get("hits_per_block", 3),
         )
 
         result.pop("grow_time_readable", None)
@@ -154,12 +156,13 @@ class MassService:
             "rarity": item_data.get("rarity", ""),
             "tree_rarity": item_data.get("tree_rarity", 1),
             "max_blocks": item_data.get("max_blocks", 1),
-            "jumlah_pohon": item_data.get("jumlah_pohon", 0),
+            "tree_count": item_data.get("tree_count", 0),
             "price_buy": item_data.get("price_buy", 0),
             "price_sell": item_data.get("price_sell", 0),
             "is_fuel": item_data.get("is_fuel", False),
             "is_auto_break": item_data.get("is_auto_break", False),
             "source_path": item_data.get("source_path"),
+            "hits_per_block": item_data.get("hits_per_block", 3),
             **result,
         }
 

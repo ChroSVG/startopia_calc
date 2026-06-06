@@ -7,7 +7,7 @@ import { parsePrice } from "@/utils/massTypes"
 export interface Totals {
   totalTrees: number
   totalBlocks: number
-  totalSmash: number
+  totalBlocksBroken: number
   totalSeeds: number
   totalGems: number
   totalGemsNet: number
@@ -42,6 +42,7 @@ export function useMassResults(
           item.isFuel,
           item.isAutoBreak,
           hitCost,
+          item.hitsPerBlock,
         ),
       )
     }
@@ -51,7 +52,7 @@ export function useMassResults(
   const totals = useMemo(() => {
     let totalTrees = 0
     let totalBlocks = 0
-    let totalSmash = 0
+    let totalBlocksBroken = 0
     let totalSeeds = 0
     let totalGems = 0
     let totalAutoBreakCost = 0
@@ -67,10 +68,10 @@ export function useMassResults(
         totalFuelUsed += Math.floor(item.treeCount * 0.1)
       }
       totalTrees += item.treeCount
-      totalBlocks += r.blok_yielded
-      totalSmash += r.total_smash_efektif
+      totalBlocks += r.blocks_produced
+      totalBlocksBroken += r.total_blocks_broken
       totalSeeds += r.total_seeds_return
-      totalGems += r.total_gems_didapat
+      totalGems += r.total_gems
       totalAutoBreakCost += r.auto_break_cost
       const buy = parsePrice(item.priceBuy)
       const sell = parsePrice(item.priceSell)
@@ -88,7 +89,7 @@ export function useMassResults(
     return {
       totalTrees,
       totalBlocks,
-      totalSmash,
+      totalBlocksBroken,
       totalSeeds,
       totalGems,
       totalGemsNet: gemsNet,
@@ -102,7 +103,7 @@ export function useMassResults(
       maxGrowSecs,
       growReadable: formatDuration(maxGrowSecs),
     }
-    }, [items, resultsCache, gemsPerWl, fuelPrice])
+  }, [items, resultsCache, gemsPerWl, fuelPrice])
 
   return { resultsCache, totals }
 }

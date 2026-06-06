@@ -13,26 +13,27 @@ class MassItemInput(BaseModel):
     rarity: str = ""
     tree_rarity: int = 1
     max_blocks: int = 1
-    jumlah_pohon: int = 0
+    tree_count: int = 0
     price_buy: float = 0
     price_sell: float = 0
     is_fuel: bool = False
     is_auto_break: bool = False
     source_path: Optional[str] = None
+    hits_per_block: int = 3
 
 
 class MassItemResult(MassItemInput):
     uid: uuid.UUID
-    blok_yielded: int
-    total_smash_efektif: int
-    seeds_fallen: int
-    seeds_from_smash: int
+    blocks_produced: int
+    total_blocks_broken: int
+    seeds_from_tree: int
+    seeds_from_break: int
     total_seeds_return: int
     seed_return_rate: float
-    gem_blocks: int
+    gem_producing_blocks: int
     avg_gems_per_block: float
-    harvest_gems: int
-    total_gems_didapat: int
+    gems_from_tree: int
+    total_gems: int
     grow_time_seconds: int
     grow_time_readable: str = ""
 

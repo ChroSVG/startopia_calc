@@ -211,12 +211,13 @@ export type MassItemInput = {
     rarity?: string;
     tree_rarity?: number;
     max_blocks?: number;
-    jumlah_pohon?: number;
+    tree_count?: number;
     price_buy?: number;
     price_sell?: number;
     is_fuel?: boolean;
     is_auto_break?: boolean;
     source_path?: (string | null);
+    hits_per_block?: number;
 };
 
 export type MassItemResult = {
@@ -225,23 +226,24 @@ export type MassItemResult = {
     rarity?: string;
     tree_rarity?: number;
     max_blocks?: number;
-    jumlah_pohon?: number;
+    tree_count?: number;
     price_buy?: number;
     price_sell?: number;
     is_fuel?: boolean;
     is_auto_break?: boolean;
     source_path?: (string | null);
+    hits_per_block?: number;
     uid: string;
-    blok_yielded: number;
-    total_smash_efektif: number;
-    seeds_fallen: number;
-    seeds_from_smash: number;
+    blocks_produced: number;
+    total_blocks_broken: number;
+    seeds_from_tree: number;
+    seeds_from_break: number;
     total_seeds_return: number;
     seed_return_rate: number;
-    gem_blocks: number;
+    gem_producing_blocks: number;
     avg_gems_per_block: number;
-    harvest_gems: number;
-    total_gems_didapat: number;
+    gems_from_tree: number;
+    total_gems: number;
     grow_time_seconds: number;
     grow_time_readable?: string;
 };

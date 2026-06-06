@@ -78,6 +78,7 @@ export function useMassCalcState(loadedMass: MassModel | undefined) {
           treeRarity: parseInt(item.rarity ?? "1", 10),
           maxBlocks,
           treeCount: 1,
+          hitsPerBlock: item.hits_with_hand ?? 3,
           sourcePath: path,
         },
       ],
@@ -108,6 +109,7 @@ export function useMassCalcState(loadedMass: MassModel | undefined) {
         rarity: item.rarity ?? "",
         treeRarity: parseInt(item.rarity ?? "1", 10),
         maxBlocks,
+        hitsPerBlock: item.hits_with_hand ?? 3,
       })
     },
     [updateItem],
@@ -121,6 +123,7 @@ export function useMassCalcState(loadedMass: MassModel | undefined) {
         rarity: "",
         treeRarity: 1,
         maxBlocks: 1,
+        hitsPerBlock: 3,
       }),
     [updateItem],
   )

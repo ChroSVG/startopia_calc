@@ -116,7 +116,7 @@ function MassCalculatorPage() {
             </div>
             <div className="space-y-1">
               <Label className="text-xs text-muted-foreground">
-                Hit Cost (gems/smash)
+                Hit Cost (gems/hit)
               </Label>
               <Input
                 type="number"

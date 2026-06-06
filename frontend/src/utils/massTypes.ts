@@ -20,6 +20,7 @@ export interface CalculatorItem {
   isFuel: boolean
   isAutoBreak: boolean
   sourcePath?: string
+  hitsPerBlock: number
 }
 
 export interface CalcState {
@@ -58,6 +59,7 @@ export function blankItem(): CalculatorItem {
     priceSell: "",
     isFuel: false,
     isAutoBreak: false,
+    hitsPerBlock: 3,
   }
 }
 
@@ -78,12 +80,13 @@ export function massToCalcState(mass: MassModel): CalcState {
       rarity: i.rarity ?? "",
       treeRarity: i.tree_rarity ?? 1,
       maxBlocks: i.max_blocks ?? 1,
-      treeCount: i.jumlah_pohon ?? 0,
+      treeCount: i.tree_count ?? 0,
       priceBuy: i.price_buy ? String(i.price_buy) : "",
       priceSell: i.price_sell ? String(i.price_sell) : "",
       isFuel: i.is_fuel ?? false,
       isAutoBreak: i.is_auto_break ?? false,
       sourcePath: i.source_path ?? undefined,
+      hitsPerBlock: i.hits_per_block ?? 3,
     })),
   }
 }
@@ -98,7 +101,7 @@ export function parsePrice(input: string): number {
     return 0
   }
   const num = parseFloat(input)
-  return Number.isNaN(num) ? 0 : num
+  return isNaN(num) ? 0 : num
 }
 
 export function calcStateToPayload(state: CalcState) {
@@ -116,12 +119,13 @@ export function calcStateToPayload(state: CalcState) {
       rarity: i.rarity || undefined,
       tree_rarity: i.treeRarity,
       max_blocks: i.maxBlocks,
-      jumlah_pohon: i.treeCount,
+      tree_count: i.treeCount,
       price_buy: parsePrice(i.priceBuy) || undefined,
       price_sell: parsePrice(i.priceSell) || undefined,
       is_fuel: i.isFuel,
       is_auto_break: i.isAutoBreak,
       source_path: i.sourcePath || undefined,
+      hits_per_block: i.hitsPerBlock,
     })),
   }
 }

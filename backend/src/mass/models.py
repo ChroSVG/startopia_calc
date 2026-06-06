@@ -43,27 +43,28 @@ class MassItem(SQLModel, table=True):
     rarity: str = ""
     tree_rarity: int = 1
     max_blocks: int = 1
-    jumlah_pohon: int = 0
+    tree_count: int = 0
     price_buy: float = 0.0
     price_sell: float = 0.0
     is_fuel: bool = False
     is_auto_break: bool = False
     source_path: Optional[str] = None
+    hits_per_block: int = 3
 
-    blok_yielded: int = 0
-    total_smash_efektif: int = 0
-    seeds_fallen: int = 0
-    seeds_from_smash: int = 0
+    blocks_produced: int = 0
+    total_blocks_broken: int = 0
+    seeds_from_tree: int = 0
+    seeds_from_break: int = 0
     total_seeds_return: int = 0
     seed_return_rate: float = 0.0
-    gem_blocks: int = 0
+    gem_producing_blocks: int = 0
     avg_gems_per_block: float = 0.0
-    harvest_gems: int = 0
-    total_gems_didapat: int = 0
+    gems_from_tree: int = 0
+    total_gems: int = 0
     grow_time_seconds: int = 0
 
     mass: Optional["Mass"] = Relationship(back_populates="items")
     item: Optional["Item"] = Relationship(back_populates="mass_items")
 
     def __repr__(self):
-        return f"<MassItem {self.item_name} ({self.jumlah_pohon})>"
+        return f"<MassItem {self.item_name} ({self.tree_count})>"
