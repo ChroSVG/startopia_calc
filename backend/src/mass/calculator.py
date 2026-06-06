@@ -58,17 +58,17 @@ def format_duration(total_seconds: int) -> str:
 
     parts = []
     if years:
-        parts.append(f"{years}y")
+        parts.append(f"{years} y")
     if months:
-        parts.append(f"{months}mo")
+        parts.append(f"{months} mo")
     if days:
-        parts.append(f"{days}d")
+        parts.append(f"{days} d")
     if hours:
-        parts.append(f"{hours}h")
+        parts.append(f"{hours} h")
     if minutes:
-        parts.append(f"{minutes}m")
+        parts.append(f"{minutes} m")
     if seconds:
-        parts.append(f"{seconds}s")
+        parts.append(f"{seconds} s")
     return " ".join(parts)
 
 

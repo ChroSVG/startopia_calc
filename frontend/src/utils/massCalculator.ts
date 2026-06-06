@@ -62,12 +62,12 @@ export function formatDuration(totalSeconds: number): string {
   const seconds = remaining
 
   const parts: string[] = []
-  if (years) parts.push(`${years}y`)
-  if (months) parts.push(`${months}mo`)
-  if (days) parts.push(`${days}d`)
-  if (hours) parts.push(`${hours}h`)
-  if (minutes) parts.push(`${minutes}m`)
-  if (seconds) parts.push(`${seconds}s`)
+  if (years) parts.push(`${years} y`)
+  if (months) parts.push(`${months} mo`)
+  if (days) parts.push(`${days} d`)
+  if (hours) parts.push(`${hours} h`)
+  if (minutes) parts.push(`${minutes} m`)
+  if (seconds) parts.push(`${seconds} s`)
   return parts.join(" ")
 }
 
