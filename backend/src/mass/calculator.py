@@ -42,7 +42,7 @@ def grow_time_seconds(tree_rarity: int) -> int:
 
 def format_duration(total_seconds: int) -> str:
     if total_seconds <= 0:
-        return "0 Detik"
+        return "0s"
     DETIK_PER_TAHUN = 31557600
     DETIK_PER_BULAN = 2629800
     DETIK_PER_HARI = 86400
@@ -58,17 +58,17 @@ def format_duration(total_seconds: int) -> str:
 
     parts = []
     if years:
-        parts.append(f"{years} Tahun")
+        parts.append(f"{years}y")
     if months:
-        parts.append(f"{months} Bulan")
+        parts.append(f"{months}mo")
     if days:
-        parts.append(f"{days} Hari")
+        parts.append(f"{days}d")
     if hours:
-        parts.append(f"{hours} Jam")
+        parts.append(f"{hours}h")
     if minutes:
-        parts.append(f"{minutes} Menit")
+        parts.append(f"{minutes}m")
     if seconds:
-        parts.append(f"{seconds} Detik")
+        parts.append(f"{seconds}s")
     return " ".join(parts)
 
 

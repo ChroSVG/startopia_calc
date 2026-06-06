@@ -41,7 +41,7 @@ function growTimeSeconds(treeRarity: number): number {
 }
 
 export function formatDuration(totalSeconds: number): string {
-  if (totalSeconds <= 0) return "0 Detik"
+  if (totalSeconds <= 0) return "0s"
   const DETIK_PER_TAHUN = 31557600
   const DETIK_PER_BULAN = 2629800
   const DETIK_PER_HARI = 86400
@@ -62,12 +62,12 @@ export function formatDuration(totalSeconds: number): string {
   const seconds = remaining
 
   const parts: string[] = []
-  if (years) parts.push(`${years} Tahun`)
-  if (months) parts.push(`${months} Bulan`)
-  if (days) parts.push(`${days} Hari`)
-  if (hours) parts.push(`${hours} Jam`)
-  if (minutes) parts.push(`${minutes} Menit`)
-  if (seconds) parts.push(`${seconds} Detik`)
+  if (years) parts.push(`${years}y`)
+  if (months) parts.push(`${months}mo`)
+  if (days) parts.push(`${days}d`)
+  if (hours) parts.push(`${hours}h`)
+  if (minutes) parts.push(`${minutes}m`)
+  if (seconds) parts.push(`${seconds}s`)
   return parts.join(" ")
 }
 

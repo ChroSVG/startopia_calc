@@ -77,8 +77,12 @@ export function TotalsCard({ totals }: { totals: Totals }) {
           )}
           <div>
             <span className="text-xs text-muted-foreground">Max Grow</span>
-            <p className="font-bold tabular-nums text-lg">
-              {totals.growReadable}
+            <p className="font-bold tabular-nums text-lg leading-tight">
+              {totals.growReadable.split(" ").map((part, i) => (
+                <span key={i} className="block">
+                  {part}
+                </span>
+              ))}
             </p>
           </div>
           <div>
@@ -87,7 +91,6 @@ export function TotalsCard({ totals }: { totals: Totals }) {
               {totals.totalModal.toFixed(2)}
             </p>
           </div>
-
         </div>
       </CardContent>
     </Card>
