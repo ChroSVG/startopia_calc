@@ -1138,6 +1138,11 @@ export const MassCreateSchema = {
             title: 'Gems Per Wl',
             default: 100
         },
+        fuel_price: {
+            type: 'number',
+            title: 'Fuel Price',
+            default: 0
+        },
         items: {
             items: {
                 '$ref': '#/components/schemas/MassItemInput'
@@ -1398,6 +1403,11 @@ export const MassModelSchema = {
             title: 'Gems Per Wl',
             default: 100
         },
+        fuel_price: {
+            type: 'number',
+            title: 'Fuel Price',
+            default: 0
+        },
         user_uid: {
             type: 'string',
             format: 'uuid',
@@ -1494,6 +1504,17 @@ export const MassUpdateSchema = {
                 }
             ],
             title: 'Gems Per Wl'
+        },
+        fuel_price: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Fuel Price'
         },
         items: {
             anyOf: [

@@ -12,6 +12,8 @@ export interface Totals {
   totalGems: number
   totalGemsNet: number
   totalAutoBreakCost: number
+  totalFuelUsed: number
+  totalFuelCostWl: number
   totalModal: number
   totalProfit: number
   totalGemsWl: number
@@ -25,6 +27,7 @@ export function useMassResults(
   mode: string,
   hitCost: number = 1,
   gemsPerWl: number = 100,
+  fuelPrice: string = "",
 ) {
   const resultsCache = useMemo(() => {
     const map = new Map<string, MassItemResult>()
@@ -54,11 +57,15 @@ export function useMassResults(
     let totalAutoBreakCost = 0
     let totalModal = 0
     let totalProfit = 0
+    let totalFuelUsed = 0
     let maxGrowSecs = 0
 
     for (const item of items) {
       const r = resultsCache.get(item.tempId)
       if (!r) continue
+      if (item.isFuel) {
+        totalFuelUsed += Math.floor(item.treeCount * 0.1)
+      }
       totalTrees += item.treeCount
       totalBlocks += r.blok_yielded
       totalSmash += r.total_smash_efektif
@@ -76,7 +83,8 @@ export function useMassResults(
 
     const gemsNet = totalGems - totalAutoBreakCost
     const gemsNetWl = gemsPerWl > 0 ? gemsNet / gemsPerWl : 0
-    totalProfit += gemsNetWl
+    const fuelCostWl = parsePrice(fuelPrice) * totalFuelUsed
+    totalProfit += gemsNetWl - fuelCostWl
     return {
       totalTrees,
       totalBlocks,
@@ -85,6 +93,8 @@ export function useMassResults(
       totalGems,
       totalGemsNet: gemsNet,
       totalAutoBreakCost,
+      totalFuelUsed,
+      totalFuelCostWl: fuelCostWl,
       totalModal,
       totalProfit,
       totalGemsWl: gemsPerWl > 0 ? totalGems / gemsPerWl : 0,
@@ -92,7 +102,7 @@ export function useMassResults(
       maxGrowSecs,
       growReadable: formatDuration(maxGrowSecs),
     }
-  }, [items, resultsCache, gemsPerWl])
+    }, [items, resultsCache, gemsPerWl, fuelPrice])
 
   return { resultsCache, totals }
 }

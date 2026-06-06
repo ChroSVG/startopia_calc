@@ -30,6 +30,7 @@ export interface CalcState {
   targetSeeds: number
   hitCost: number
   gemsPerWl: number
+  fuelPrice: string
   items: CalculatorItem[]
 }
 
@@ -69,6 +70,7 @@ export function massToCalcState(mass: MassModel): CalcState {
     targetSeeds: mass.target_seeds ?? 0,
     hitCost: mass.hit_cost ?? 1,
     gemsPerWl: mass.gems_per_wl ?? 100,
+    fuelPrice: mass.fuel_price ? String(mass.fuel_price) : "",
     items: (mass.items ?? []).map((i) => ({
       tempId: nextTempId(),
       itemUid: i.item_uid ?? null,
@@ -107,6 +109,7 @@ export function calcStateToPayload(state: CalcState) {
     target_seeds: state.targetSeeds ?? undefined,
     hit_cost: state.hitCost ?? undefined,
     gems_per_wl: state.gemsPerWl ?? undefined,
+    fuel_price: parsePrice(state.fuelPrice) || undefined,
     items: state.items.map((i) => ({
       item_uid: i.itemUid || undefined,
       item_name: i.itemName || "Item",

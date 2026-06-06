@@ -18,6 +18,7 @@ class Mass(SQLModel, table=True):
     target_seeds: int = 0
     hit_cost: int = 1
     gems_per_wl: int = 100
+    fuel_price: float = 0.0
     user_uid: uuid.UUID = Field(foreign_key="users.uid")
     created_at: datetime = Field(default_factory=datetime.now)
     update_at: datetime = Field(default_factory=datetime.now, sa_column_kwargs={"onupdate": datetime.now})

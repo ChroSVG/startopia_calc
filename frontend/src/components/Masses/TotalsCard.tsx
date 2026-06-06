@@ -62,6 +62,17 @@ export function TotalsCard({ totals }: { totals: Totals }) {
               {totals.totalGemsNetWl.toFixed(2)} WL
             </p>
           </div>
+          {totals.totalFuelUsed > 0 && (
+            <div>
+              <span className="text-xs text-muted-foreground">Fuel</span>
+              <p className="font-bold tabular-nums text-lg">
+                {totals.totalFuelUsed.toLocaleString()}
+              </p>
+              <p className="text-[10px] text-destructive tabular-nums">
+                -{totals.totalFuelCostWl.toFixed(2)} WL
+              </p>
+            </div>
+          )}
           <div>
             <span className="text-xs text-muted-foreground">Max Grow</span>
             <p className="font-bold tabular-nums text-lg">

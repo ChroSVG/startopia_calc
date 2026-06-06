@@ -59,6 +59,7 @@ function MassCalculatorPage() {
     state.mode,
     state.hitCost,
     state.gemsPerWl,
+    state.fuelPrice,
   )
 
   const { saveMutation } = useMassSave(state, (uid) => {
@@ -115,19 +116,31 @@ function MassCalculatorPage() {
             </div>
             <div className="space-y-1">
               <Label className="text-xs text-muted-foreground">
-                Hit Cost (gems/smash)
+                Gems/WL
               </Label>
               <Input
                 type="number"
-                min={1}
-                value={state.hitCost || ""}
+                min={0}
+                value={state.gemsPerWl ?? ""}
                 onChange={(e) =>
                   update({
-                    hitCost: Math.max(1, parseInt(e.target.value, 10) || 1),
+                    gemsPerWl: Math.max(0, parseInt(e.target.value, 10) || 0),
                   })
                 }
-                placeholder="1"
+                placeholder="100"
                 className="h-7 w-20 text-xs [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+              />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-xs text-muted-foreground">
+                Fuel Price
+              </Label>
+              <Input
+                type="text"
+                value={state.fuelPrice}
+                onChange={(e) => update({ fuelPrice: e.target.value })}
+                placeholder="0"
+                className="h-7 w-20 text-xs"
               />
             </div>
             <div className="space-y-1">

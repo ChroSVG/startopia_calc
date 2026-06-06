@@ -50,6 +50,7 @@ class MassCreate(BaseModel):
     target_seeds: int = 0
     hit_cost: int = 1
     gems_per_wl: int = 100
+    fuel_price: float = 0
     items: List[MassItemInput] = []
 
 
@@ -60,6 +61,7 @@ class MassUpdate(BaseModel):
     target_seeds: Optional[int] = None
     hit_cost: Optional[int] = None
     gems_per_wl: Optional[int] = None
+    fuel_price: Optional[float] = None
     items: Optional[List[MassItemInput]] = None
 
 
@@ -71,6 +73,7 @@ class MassModel(BaseModel):
     target_seeds: int = 0
     hit_cost: int = 1
     gems_per_wl: int = 100
+    fuel_price: float = 0
     user_uid: uuid.UUID
     created_at: datetime
     update_at: datetime

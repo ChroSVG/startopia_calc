@@ -196,6 +196,7 @@ export type MassCreate = {
     target_seeds?: number;
     hit_cost?: number;
     gems_per_wl?: number;
+    fuel_price?: number;
     items?: Array<MassItemInput>;
 };
 
@@ -253,6 +254,7 @@ export type MassModel = {
     target_seeds?: number;
     hit_cost?: number;
     gems_per_wl?: number;
+    fuel_price?: number;
     user_uid: string;
     created_at: string;
     update_at: string;
@@ -266,6 +268,7 @@ export type MassUpdate = {
     target_seeds?: (number | null);
     hit_cost?: (number | null);
     gems_per_wl?: (number | null);
+    fuel_price?: (number | null);
     items?: (Array<MassItemInput> | null);
 };
 
