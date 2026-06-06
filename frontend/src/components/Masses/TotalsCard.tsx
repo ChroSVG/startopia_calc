@@ -17,9 +17,9 @@ export function TotalsCard({ totals }: { totals: Totals }) {
             </p>
           </div>
           <div>
-            <span className="text-xs text-muted-foreground">Total Blocks</span>
+            <span className="text-xs text-muted-foreground">Total Hits</span>
             <p className="font-bold tabular-nums text-lg">
-              {totals.totalBlocks.toLocaleString()}
+              {totals.totalHits.toLocaleString()}
             </p>
           </div>
           <div>

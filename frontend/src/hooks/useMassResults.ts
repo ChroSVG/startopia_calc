@@ -6,7 +6,7 @@ import { parsePrice } from "@/utils/massTypes"
 
 export interface Totals {
   totalTrees: number
-  totalBlocks: number
+  totalHits: number
   totalBlocksBroken: number
   totalSeeds: number
   totalGems: number
@@ -51,7 +51,7 @@ export function useMassResults(
 
   const totals = useMemo(() => {
     let totalTrees = 0
-    let totalBlocks = 0
+    let totalHits = 0
     let totalBlocksBroken = 0
     let totalSeeds = 0
     let totalGems = 0
@@ -68,7 +68,7 @@ export function useMassResults(
         totalFuelUsed += Math.floor(item.treeCount * 0.1)
       }
       totalTrees += item.treeCount
-      totalBlocks += r.blocks_produced
+      totalHits += r.total_blocks_broken * item.hitsPerBlock
       totalBlocksBroken += r.total_blocks_broken
       totalSeeds += r.total_seeds_return
       totalGems += r.total_gems
@@ -88,7 +88,7 @@ export function useMassResults(
     totalProfit += gemsNetWl - fuelCostWl
     return {
       totalTrees,
-      totalBlocks,
+      totalHits,
       totalBlocksBroken,
       totalSeeds,
       totalGems,
