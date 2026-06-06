@@ -80,8 +80,18 @@ class ItemsPublicModel(BaseModel):
     count: int
 
 
+class IngredientItemModel(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    uid: uuid.UUID
+    name: str
+    rarity: Optional[str] = None
+    max_drop: Optional[int] = None
+    hits_with_hand: Optional[int] = None
+
+
 class RecipeTreeNode(BaseModel):
-    item: ItemModel
+    item: IngredientItemModel
     ingredients: List["RecipeTreeNode"] = []
 
 class IngredientsTreeResponse(BaseModel):

@@ -89,6 +89,14 @@ export type HTTPValidationError = {
     detail?: Array<ValidationError>;
 };
 
+export type IngredientItemModel = {
+    uid: string;
+    name: string;
+    rarity?: (string | null);
+    max_drop?: (number | null);
+    hits_with_hand?: (number | null);
+};
+
 export type IngredientsTreeResponse = {
     root: RecipeTreeNode;
 };
@@ -279,7 +287,7 @@ export type PossibilitiesResponse = {
 };
 
 export type RecipeTreeNode = {
-    item: ItemModel;
+    item: IngredientItemModel;
     ingredients?: Array<RecipeTreeNode>;
 };
 

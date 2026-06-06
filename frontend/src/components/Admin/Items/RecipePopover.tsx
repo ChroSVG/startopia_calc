@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
 import { FlaskConical, Loader2 } from "lucide-react"
 import { useState } from "react"
-import type { ItemModel } from "@/client"
+import type { IngredientItemModel, ItemModel } from "@/client"
 import { ItemsService } from "@/client"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -11,7 +11,13 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 
-function ItemList({ items, label }: { items: ItemModel[]; label: string }) {
+function ItemList({
+  items,
+  label,
+}: {
+  items: Array<IngredientItemModel | ItemModel>
+  label: string
+}) {
   if (items.length === 0) {
     return (
       <p className="text-xs text-muted-foreground italic">
@@ -46,7 +52,7 @@ function RecipePopover({ item }: { item: ItemModel }) {
     queryKey: ["item-ingredients-direct", item.uid],
     queryFn: async () => {
       const res = await ItemsService.readItemIngredients({ itemUid: item.uid })
-      return res.root.ingredients
+      return (res.root.ingredients ?? [])
         .filter((c) => c.item.rarity)
         .map((c) => c.item)
     },

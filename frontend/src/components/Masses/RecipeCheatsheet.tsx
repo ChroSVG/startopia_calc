@@ -8,7 +8,11 @@ import {
   Plus,
 } from "lucide-react"
 import { useEffect, useMemo, useState } from "react"
-import { type ItemModel, ItemsService, type RecipeTreeNode } from "@/client"
+import {
+  type IngredientItemModel,
+  ItemsService,
+  type RecipeTreeNode,
+} from "@/client"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
@@ -37,9 +41,9 @@ function buildRequirements(
   map: Map<string, IngredientRequirement>,
 ): void {
   if (!node.item.rarity) {
-    for (let i = 0; i < node.ingredients.length; i++) {
+    for (let i = 0; i < (node.ingredients ?? []).length; i++) {
       buildRequirements(
-        node.ingredients[i],
+        (node.ingredients ?? [])[i],
         `${path}/${i}`,
         targetSeeds,
         mode,
@@ -59,9 +63,9 @@ function buildRequirements(
     map.set(path, { treeCount: r.treeCount, seeds: r.seeds })
 
     const requiredCrafts = r.treeCount
-    for (let i = 0; i < node.ingredients.length; i++) {
+    for (let i = 0; i < (node.ingredients ?? []).length; i++) {
       buildIngredientReqs(
-        node.ingredients[i],
+        (node.ingredients ?? [])[i],
         `${path}/${i}`,
         requiredCrafts,
         mode,
@@ -79,9 +83,9 @@ function buildIngredientReqs(
   map: Map<string, IngredientRequirement>,
 ): void {
   if (!node.item.rarity) {
-    for (let i = 0; i < node.ingredients.length; i++) {
+    for (let i = 0; i < (node.ingredients ?? []).length; i++) {
       buildIngredientReqs(
-        node.ingredients[i],
+        (node.ingredients ?? [])[i],
         `${path}/${i}`,
         requiredCrafts,
         mode,
@@ -99,9 +103,9 @@ function buildIngredientReqs(
   )
   map.set(path, { treeCount: r.treeCount, seeds: r.seeds })
 
-  for (let i = 0; i < node.ingredients.length; i++) {
+  for (let i = 0; i < (node.ingredients ?? []).length; i++) {
     buildIngredientReqs(
-      node.ingredients[i],
+      (node.ingredients ?? [])[i],
       `${path}/${i}`,
       requiredCrafts,
       mode,
@@ -127,12 +131,12 @@ function TreeRow({
   clickedPaths: Set<string>
   requirementsMap: Map<string, IngredientRequirement>
   readOnly?: boolean
-  onAddItem?: (path: string, item: ItemModel) => void
+  onAddItem?: (path: string, item: IngredientItemModel) => void
   onRemoveItem?: (path: string) => void
   onApplyTrees?: (path: string, treeCount: number) => void
 }) {
   const [localExpanded, setLocalExpanded] = useState(depth < 1)
-  const filteredChildren = node.ingredients.filter((c) => c.item.rarity)
+  const filteredChildren = (node.ingredients ?? []).filter((c) => c.item.rarity)
 
   if (!node.item.rarity) {
     return filteredChildren.map((child, i) => (
@@ -270,7 +274,7 @@ function RecipeCheatsheet({
   items: CalculatorItem[]
   mode: string
   targetSeeds: number
-  onAddItem?: (path: string, item: ItemModel) => void
+  onAddItem?: (path: string, item: IngredientItemModel) => void
   onRemoveItem?: (path: string) => void
   onApplyTrees?: (path: string, treeCount: number) => void
 }) {
@@ -370,7 +374,7 @@ function RecipeCheatsheet({
 
 function countAll(node: RecipeTreeNode): number {
   let count = 0
-  for (const child of node.ingredients) {
+  for (const child of node.ingredients ?? []) {
     if (child.item.rarity) {
       count += 1 + countAll(child)
     } else {

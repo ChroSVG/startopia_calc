@@ -424,6 +424,56 @@ export const HTTPValidationErrorSchema = {
     title: 'HTTPValidationError'
 } as const;
 
+export const IngredientItemModelSchema = {
+    properties: {
+        uid: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Uid'
+        },
+        name: {
+            type: 'string',
+            title: 'Name'
+        },
+        rarity: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Rarity'
+        },
+        max_drop: {
+            anyOf: [
+                {
+                    type: 'integer'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Max Drop'
+        },
+        hits_with_hand: {
+            anyOf: [
+                {
+                    type: 'integer'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Hits With Hand'
+        }
+    },
+    type: 'object',
+    required: ['uid', 'name'],
+    title: 'IngredientItemModel'
+} as const;
+
 export const IngredientsTreeResponseSchema = {
     properties: {
         root: {
@@ -1582,7 +1632,7 @@ export const PossibilitiesResponseSchema = {
 export const RecipeTreeNodeSchema = {
     properties: {
         item: {
-            '$ref': '#/components/schemas/ItemModel'
+            '$ref': '#/components/schemas/IngredientItemModel'
         },
         ingredients: {
             items: {

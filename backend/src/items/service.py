@@ -1,6 +1,7 @@
 import uuid
 import logging
 from collections import defaultdict
+from sqlalchemy.orm import load_only, raiseload
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 from src.activity_log.service import ActivityLogService
@@ -57,7 +58,10 @@ class ItemService:
         return item
 
     async def get_ingredients_tree(self, item_uid: str, session: AsyncSession) -> dict:
-        root_item = await self.repository.get_by_uid(session, item_uid)
+        result = await session.exec(
+            select(Item).options(load_only(Item.uid), raiseload('*')).where(Item.uid == uuid.UUID(item_uid))
+        )
+        root_item = result.first()
         if not root_item:
             return {"root": None}
 
@@ -81,29 +85,40 @@ class ItemService:
 
         uid_list = [uuid.UUID(u) for u in all_uids if u]
         result = await session.exec(
-            select(Item).where(Item.uid.in_(uid_list))
+            select(Item)
+            .options(load_only(Item.uid, Item.name, Item.rarity, Item.max_drop, Item.hits_with_hand), raiseload('*'))
+            .where(Item.uid.in_(uid_list))
         )
         items_map: dict[str, Item] = {str(i.uid): i for i in result.all()}
 
-        def build_node(uid: str, visited: set[str]) -> dict | None:
-            if uid in visited:
+        cache: dict[str, dict | None] = {}
+        visiting: set[str] = set()
+
+        def build_node(uid: str) -> dict | None:
+            if uid in cache:
+                return cache[uid]
+            if uid in visiting:
                 return None
             item = items_map.get(uid)
             if not item:
+                cache[uid] = None
                 return None
-            child_visited = visited | {uid}
+            visiting.add(uid)
             children: list[dict] = []
             for child_uid in adjacency.get(uid, []):
-                child = build_node(child_uid, child_visited)
+                child = build_node(child_uid)
                 if child:
                     children.append(child)
             children.sort(
                 key=lambda c: int(c["item"].rarity or "0") if c["item"].rarity else 0,
                 reverse=True,
             )
-            return {"item": item, "ingredients": children}
+            result = {"item": item, "ingredients": children}
+            visiting.discard(uid)
+            cache[uid] = result
+            return result
 
-        root_node = build_node(str(item_uid), set())
+        root_node = build_node(str(item_uid))
         return {"root": root_node}
 
 
@@ -132,7 +147,7 @@ class ItemService:
 
         uid_list = [uuid.UUID(u) for u in visited_uids if u]
         result = await session.exec(
-            select(Item).where(Item.uid.in_(uid_list))
+            select(Item).options(raiseload('*')).where(Item.uid.in_(uid_list))
         )
         return list(result.all())
 

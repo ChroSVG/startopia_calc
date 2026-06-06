@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react"
-import type { ItemModel, MassModel } from "@/client"
+import type { IngredientItemModel, ItemModel, MassModel } from "@/client"
 import type { CalcState, CalculatorItem } from "@/utils/massTypes"
 import {
   blankItem,
@@ -61,29 +61,32 @@ export function useMassCalcState(loadedMass: MassModel | undefined) {
     [],
   )
 
-  const addItemFromIngredient = useCallback((path: string, item: ItemModel) => {
-    const maxBlocks = Math.max(
-      1,
-      Math.min(4, Math.floor((item.max_drop ?? 4) / 4)),
-    )
-    setState((prev) => ({
-      ...prev,
-      items: [
-        ...prev.items,
-        {
-          ...blankItem(),
-          itemUid: item.uid,
-          itemName: item.name,
-          rarity: item.rarity ?? "",
-          treeRarity: parseInt(item.rarity ?? "1", 10),
-          maxBlocks,
-          treeCount: 1,
-          hitsPerBlock: item.hits_with_hand ?? 3,
-          sourcePath: path,
-        },
-      ],
-    }))
-  }, [])
+  const addItemFromIngredient = useCallback(
+    (path: string, item: IngredientItemModel) => {
+      const maxBlocks = Math.max(
+        1,
+        Math.min(4, Math.floor((item.max_drop ?? 4) / 4)),
+      )
+      setState((prev) => ({
+        ...prev,
+        items: [
+          ...prev.items,
+          {
+            ...blankItem(),
+            itemUid: item.uid,
+            itemName: item.name,
+            rarity: item.rarity ?? "",
+            treeRarity: parseInt(item.rarity ?? "1", 10),
+            maxBlocks,
+            treeCount: 1,
+            hitsPerBlock: item.hits_with_hand ?? 3,
+            sourcePath: path,
+          },
+        ],
+      }))
+    },
+    [],
+  )
 
   const removeItemBySourcePath = useCallback(
     (path: string) =>
