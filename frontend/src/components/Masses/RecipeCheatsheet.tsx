@@ -282,10 +282,12 @@ function RecipeCheatsheet({
     return paths
   }, [items])
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ["item-ingredients", itemUid],
     queryFn: () => ItemsService.readItemIngredients({ itemUid: itemUid! }),
     enabled: !!itemUid,
+    retry: 2,
+    staleTime: 30_000,
   })
 
   const requirements = useMemo(() => {
@@ -338,6 +340,10 @@ function RecipeCheatsheet({
           <div className="flex items-center justify-center py-4">
             <Loader2 className="size-4 animate-spin text-muted-foreground" />
           </div>
+        ) : isError ? (
+          <p className="text-sm text-destructive italic py-2 px-2">
+            Failed to load ingredients.
+          </p>
         ) : !root || totalDisplay === 0 ? (
           <p className="text-sm text-muted-foreground italic py-2 px-2">
             No ingredients found.

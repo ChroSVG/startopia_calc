@@ -1,6 +1,10 @@
+import uuid
 import logging
+from collections import defaultdict
+from sqlmodel import select, col
 from sqlmodel.ext.asyncio.session import AsyncSession
 from src.activity_log.service import ActivityLogService
+from src.db.models import Item, ItemLink
 from .repository import ItemRepository, ItemLinkRepository
 
 logger = logging.getLogger(__name__)
@@ -52,84 +56,85 @@ class ItemService:
             "item.delete", f"Deleted item: {name}", "Item", str(item_uid))
         return item
 
-    async def _build_ingredient_tree(
-        self, item_uid: str, session: AsyncSession, path: set[str]
-    ) -> dict | None:
-        uid_str = str(item_uid)
-        if uid_str in path:
-            return None
-
-        item = await self.repository.get_by_uid(session, item_uid)
-        if not item:
-            return None
-
-        child_path = path | {uid_str}
-        links = await self.link_repository.get_by_target_uid(session, item_uid)
-        children: list[dict] = []
-        for link in links:
-            child = await self._build_ingredient_tree(
-                link.source_uid, session, child_path
-            )
-            if child:
-                children.append(child)
-
-        children.sort(
-            key=lambda c: int(c["item"].rarity or "0") if c["item"].rarity else 0,
-            reverse=True,
-        )
-
-        return {
-            "item": item,
-            "ingredients": children,
-        }
-
     async def get_ingredients_tree(self, item_uid: str, session: AsyncSession) -> dict:
-        item = await self.repository.get_by_uid(session, item_uid)
-        root_path: set[str] = set()
-        children: list[dict] = []
-        links = await self.link_repository.get_by_target_uid(session, item_uid)
-        for link in links:
-            child = await self._build_ingredient_tree(
-                link.source_uid, session, root_path
-            )
-            if child:
-                children.append(child)
+        root_item = await self.repository.get_by_uid(session, item_uid)
+        if not root_item:
+            return {"root": None}
 
-        children.sort(
-            key=lambda c: int(c["item"].rarity or "0") if c["item"].rarity else 0,
-            reverse=True,
+        result = await session.exec(select(ItemLink))
+        all_links: list[ItemLink] = list(result.all())
+
+        adjacency: dict[str, list[str]] = defaultdict(list)
+        for link in all_links:
+            adjacency[str(link.target_uid)].append(str(link.source_uid))
+
+        all_uids: set[str] = set()
+        queue = [str(item_uid)]
+        while queue:
+            uid = queue.pop(0)
+            if uid in all_uids:
+                continue
+            all_uids.add(uid)
+            for child_uid in adjacency.get(uid, []):
+                if child_uid not in all_uids:
+                    queue.append(child_uid)
+
+        result = await session.exec(
+            select(Item).where(col(Item.uid).in_([uuid.UUID(u) for u in all_uids]))
         )
+        items_map: dict[str, Item] = {str(i.uid): i for i in result.all()}
 
-        return {
-            "root": {
-                "item": item,
-                "ingredients": children,
-            }
-        }
+        def build_node(uid: str, visited: set[str]) -> dict | None:
+            if uid in visited:
+                return None
+            item = items_map.get(uid)
+            if not item:
+                return None
+            child_visited = visited | {uid}
+            children: list[dict] = []
+            for child_uid in adjacency.get(uid, []):
+                child = build_node(child_uid, child_visited)
+                if child:
+                    children.append(child)
+            children.sort(
+                key=lambda c: int(c["item"].rarity or "0") if c["item"].rarity else 0,
+                reverse=True,
+            )
+            return {"item": item, "ingredients": children}
+
+        root_node = build_node(str(item_uid), {str(item_uid)})
+        return {"root": root_node}
 
 
     async def get_possibilities(self, item_uid: str, session: AsyncSession) -> list:
-        visited_uids: set[str] = set()
-        queue: list[str] = [item_uid]
+        result = await session.exec(select(ItemLink))
+        all_links: list[ItemLink] = list(result.all())
 
+        reverse_adjacency: dict[str, list[str]] = defaultdict(list)
+        for link in all_links:
+            reverse_adjacency[str(link.source_uid)].append(str(link.target_uid))
+
+        visited_uids: set[str] = set()
+        queue: list[str] = [str(item_uid)]
         while queue:
             current_uid = queue.pop(0)
-            links = await self.link_repository.get_by_source_uid(session, current_uid)
-            for link in links:
-                target_uid_str = str(link.target_uid)
-                if target_uid_str not in visited_uids and target_uid_str != item_uid:
-                    visited_uids.add(target_uid_str)
-                    queue.append(target_uid_str)
+            if current_uid in visited_uids:
+                continue
+            visited_uids.add(current_uid)
+            for target_uid in reverse_adjacency.get(current_uid, []):
+                if target_uid not in visited_uids and target_uid != str(item_uid):
+                    queue.append(target_uid)
 
+        visited_uids.discard(str(item_uid))
         if not visited_uids:
             return []
 
-        items = []
-        for uid in visited_uids:
-            item = await self.repository.get_by_uid(session, uid)
-            if item:
-                items.append(item)
-        return items
+        result = await session.exec(
+            select(Item).where(
+                col(Item.uid).in_([uuid.UUID(u) for u in visited_uids])
+            )
+        )
+        return list(result.all())
 
 
 class ItemLinkService:
