@@ -52,9 +52,13 @@ function RecipePopover({ item }: { item: ItemModel }) {
     queryKey: ["item-ingredients-direct", item.uid],
     queryFn: async () => {
       const res = await ItemsService.readItemIngredients({ itemUid: item.uid })
-      return (res.root.ingredients ?? [])
-        .filter((c) => c.item.rarity)
-        .map((c) => c.item)
+      const adjacency = res.adjacency ?? {}
+      const nodes = res.nodes ?? {}
+      if (!res.root_uid || !adjacency[res.root_uid]) return []
+      
+      return adjacency[res.root_uid]
+        .map((uid) => nodes[uid])
+        .filter((node) => node && node.rarity)
     },
     enabled: open,
   })

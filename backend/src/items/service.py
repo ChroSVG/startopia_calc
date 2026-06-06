@@ -58,12 +58,7 @@ class ItemService:
         return item
 
     async def get_ingredients_tree(self, item_uid: str, session: AsyncSession) -> dict:
-        result = await session.exec(
-            select(Item).options(load_only(Item.uid), raiseload('*')).where(Item.uid == uuid.UUID(item_uid))
-        )
-        root_item = result.first()
-        if not root_item:
-            return {"root": None}
+        root_uid = uuid.UUID(item_uid)
 
         result = await session.exec(select(ItemLink))
         all_links: list[ItemLink] = list(result.all())
@@ -73,7 +68,7 @@ class ItemService:
             adjacency[str(link.target_uid)].append(str(link.source_uid))
 
         all_uids: set[str] = set()
-        queue = [str(item_uid)]
+        queue = [str(root_uid)]
         while queue:
             uid = queue.pop(0)
             if uid in all_uids:
@@ -91,35 +86,46 @@ class ItemService:
         )
         items_map: dict[str, Item] = {str(i.uid): i for i in result.all()}
 
-        cache: dict[str, dict | None] = {}
+        if str(root_uid) not in items_map:
+            return {"root_uid": None, "nodes": {}, "adjacency": {}}
+
+        nodes: dict[str, dict] = {}
+        filtered_adjacency: dict[str, list[str]] = {}
         visiting: set[str] = set()
 
-        def build_node(uid: str) -> dict | None:
-            if uid in cache:
-                return cache[uid]
+        def build_dag(uid: str):
+            if uid in nodes:
+                return
             if uid in visiting:
-                return None
+                return
             item = items_map.get(uid)
             if not item:
-                cache[uid] = None
-                return None
+                return
             visiting.add(uid)
-            children: list[dict] = []
+            nodes[uid] = item
+            
+            children_uids: list[str] = []
             for child_uid in adjacency.get(uid, []):
-                child = build_node(child_uid)
-                if child:
-                    children.append(child)
-            children.sort(
-                key=lambda c: int(c["item"].rarity or "0") if c["item"].rarity else 0,
+                if child_uid in visiting:
+                    continue
+                child_item = items_map.get(child_uid)
+                if child_item:
+                    children_uids.append(child_uid)
+                    build_dag(child_uid)
+                    
+            children_uids.sort(
+                key=lambda c: int(items_map[c].rarity or "0") if items_map[c].rarity else 0,
                 reverse=True,
             )
-            result = {"item": item, "ingredients": children}
+            filtered_adjacency[uid] = children_uids
             visiting.discard(uid)
-            cache[uid] = result
-            return result
 
-        root_node = build_node(str(item_uid))
-        return {"root": root_node}
+        build_dag(str(item_uid))
+        return {
+            "root_uid": str(item_uid) if str(item_uid) in nodes else None,
+            "nodes": nodes,
+            "adjacency": filtered_adjacency,
+        }
 
 
     async def get_possibilities(self, item_uid: str, session: AsyncSession) -> list:

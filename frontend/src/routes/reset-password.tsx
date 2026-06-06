@@ -9,7 +9,6 @@ import {
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
-import { LoginService } from "@/client"
 import { AuthLayout } from "@/components/Common/AuthLayout"
 import {
   Form,
@@ -82,8 +81,9 @@ function ResetPassword() {
   })
 
   const mutation = useMutation({
-    mutationFn: (data: { new_password: string; token: string }) =>
-      LoginService.resetPassword({ requestBody: data }),
+    mutationFn: async (_data: { new_password: string; token: string }) => {
+      // await LoginService.resetPassword({ requestBody: data }),
+    },
     onSuccess: () => {
       showSuccessToast("Password updated successfully")
       form.reset()

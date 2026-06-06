@@ -90,12 +90,10 @@ class IngredientItemModel(BaseModel):
     hits_with_hand: Optional[int] = None
 
 
-class RecipeTreeNode(BaseModel):
-    item: IngredientItemModel
-    ingredients: List["RecipeTreeNode"] = []
-
 class IngredientsTreeResponse(BaseModel):
-    root: RecipeTreeNode
+    root_uid: Optional[str] = None
+    nodes: dict[str, IngredientItemModel] = {}
+    adjacency: dict[str, List[str]] = {}
 
 
 class PossibilitiesResponse(BaseModel):

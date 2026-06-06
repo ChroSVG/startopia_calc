@@ -476,12 +476,38 @@ export const IngredientItemModelSchema = {
 
 export const IngredientsTreeResponseSchema = {
     properties: {
-        root: {
-            '$ref': '#/components/schemas/RecipeTreeNode'
+        root_uid: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Root Uid'
+        },
+        nodes: {
+            additionalProperties: {
+                '$ref': '#/components/schemas/IngredientItemModel'
+            },
+            type: 'object',
+            title: 'Nodes',
+            default: {}
+        },
+        adjacency: {
+            additionalProperties: {
+                items: {
+                    type: 'string'
+                },
+                type: 'array'
+            },
+            type: 'object',
+            title: 'Adjacency',
+            default: {}
         }
     },
     type: 'object',
-    required: ['root'],
     title: 'IngredientsTreeResponse'
 } as const;
 
@@ -1627,25 +1653,6 @@ export const PossibilitiesResponseSchema = {
     type: 'object',
     required: ['possibilities'],
     title: 'PossibilitiesResponse'
-} as const;
-
-export const RecipeTreeNodeSchema = {
-    properties: {
-        item: {
-            '$ref': '#/components/schemas/IngredientItemModel'
-        },
-        ingredients: {
-            items: {
-                '$ref': '#/components/schemas/RecipeTreeNode'
-            },
-            type: 'array',
-            title: 'Ingredients',
-            default: []
-        }
-    },
-    type: 'object',
-    required: ['item'],
-    title: 'RecipeTreeNode'
 } as const;
 
 export const ReviewCreateModelSchema = {

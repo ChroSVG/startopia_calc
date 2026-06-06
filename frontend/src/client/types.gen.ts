@@ -98,7 +98,13 @@ export type IngredientItemModel = {
 };
 
 export type IngredientsTreeResponse = {
-    root: RecipeTreeNode;
+    root_uid?: (string | null);
+    nodes?: {
+        [key: string]: IngredientItemModel;
+    };
+    adjacency?: {
+        [key: string]: Array<(string)>;
+    };
 };
 
 export type InventoryCreateModel = {
@@ -284,11 +290,6 @@ export type MassUpdate = {
 
 export type PossibilitiesResponse = {
     possibilities: Array<ItemModel>;
-};
-
-export type RecipeTreeNode = {
-    item: IngredientItemModel;
-    ingredients?: Array<RecipeTreeNode>;
 };
 
 export type ReviewCreateModel = {

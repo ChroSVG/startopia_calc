@@ -11,7 +11,6 @@ import { useEffect, useMemo, useState } from "react"
 import {
   type IngredientItemModel,
   ItemsService,
-  type RecipeTreeNode,
 } from "@/client"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -33,129 +32,89 @@ function itemMaxBlocks(maxDrop: number | null | undefined): number {
   return Math.max(1, Math.min(4, Math.floor((maxDrop ?? 4) / 4)))
 }
 
-function buildRequirements(
-  node: RecipeTreeNode,
-  path: string,
-  targetSeeds: number,
-  mode: string,
-  map: Map<string, IngredientRequirement>,
-): void {
-  if (!node.item.rarity) {
-    for (let i = 0; i < (node.ingredients ?? []).length; i++) {
-      buildRequirements(
-        (node.ingredients ?? [])[i],
-        `${path}/${i}`,
-        targetSeeds,
-        mode,
-        map,
-      )
-    }
-    return
-  }
-
-  if (path === "root") {
-    const r = findMinTreesForTarget(
-      itemRarity(node.item.rarity),
-      itemMaxBlocks(node.item.max_drop),
-      targetSeeds,
-      mode,
-    )
-    map.set(path, { treeCount: r.treeCount, seeds: r.seeds })
-
-    const requiredCrafts = r.treeCount
-    for (let i = 0; i < (node.ingredients ?? []).length; i++) {
-      buildIngredientReqs(
-        (node.ingredients ?? [])[i],
-        `${path}/${i}`,
-        requiredCrafts,
-        mode,
-        map,
-      )
-    }
-  }
-}
-
-function buildIngredientReqs(
-  node: RecipeTreeNode,
-  path: string,
-  requiredCrafts: number,
-  mode: string,
-  map: Map<string, IngredientRequirement>,
-): void {
-  if (!node.item.rarity) {
-    for (let i = 0; i < (node.ingredients ?? []).length; i++) {
-      buildIngredientReqs(
-        (node.ingredients ?? [])[i],
-        `${path}/${i}`,
-        requiredCrafts,
-        mode,
-        map,
-      )
-    }
-    return
-  }
-
-  const r = findMinTreesForTarget(
-    itemRarity(node.item.rarity),
-    itemMaxBlocks(node.item.max_drop),
-    requiredCrafts,
-    mode,
-  )
-  map.set(path, { treeCount: r.treeCount, seeds: r.seeds })
-
-  for (let i = 0; i < (node.ingredients ?? []).length; i++) {
-    buildIngredientReqs(
-      (node.ingredients ?? [])[i],
-      `${path}/${i}`,
-      requiredCrafts,
-      mode,
-      map,
-    )
-  }
-}
+// Removed buildRequirements and buildIngredientReqs since we compute them on the fly
 
 function TreeRow({
-  node,
+  uid,
+  nodes,
+  adjacency,
   depth,
   path,
+  parentRequiredCrafts,
+  targetSeeds,
+  mode,
   clickedPaths,
-  requirementsMap,
   readOnly,
   onAddItem,
   onRemoveItem,
   onApplyTrees,
 }: {
-  node: RecipeTreeNode
+  uid: string
+  nodes: Record<string, IngredientItemModel>
+  adjacency: Record<string, string[]>
   depth: number
   path: string
+  parentRequiredCrafts: number
+  targetSeeds: number
+  mode: string
   clickedPaths: Set<string>
-  requirementsMap: Map<string, IngredientRequirement>
   readOnly?: boolean
   onAddItem?: (path: string, item: IngredientItemModel) => void
   onRemoveItem?: (path: string) => void
   onApplyTrees?: (path: string, treeCount: number) => void
 }) {
   const [localExpanded, setLocalExpanded] = useState(depth < 1)
-  const filteredChildren = (node.ingredients ?? []).filter((c) => c.item.rarity)
+  const item = nodes[uid]
+  const childrenUids = adjacency[uid] ?? []
+  
+  const filteredChildren = childrenUids.filter((c) => !!nodes[c])
 
-  if (!node.item.rarity) {
-    return filteredChildren.map((child, i) => (
-      <TreeRow
-        key={`${path}/${i}`}
-        node={child}
-        depth={depth}
-        path={`${path}/${i}`}
-        clickedPaths={clickedPaths}
-        requirementsMap={requirementsMap}
-        onAddItem={onAddItem}
-        onRemoveItem={onRemoveItem}
-        onApplyTrees={onApplyTrees}
-      />
-    ))
+  let requirement: IngredientRequirement | null = null
+  let nextRequiredCrafts = parentRequiredCrafts
+
+  if (item?.rarity) {
+    if (path === "root") {
+      if (targetSeeds > 0) {
+        requirement = findMinTreesForTarget(
+          itemRarity(item.rarity),
+          itemMaxBlocks(item.max_drop),
+          targetSeeds,
+          mode,
+        )
+        nextRequiredCrafts = requirement.treeCount
+      }
+    } else {
+      if (parentRequiredCrafts > 0) {
+        requirement = findMinTreesForTarget(
+          itemRarity(item.rarity),
+          itemMaxBlocks(item.max_drop),
+          parentRequiredCrafts,
+          mode,
+        )
+        nextRequiredCrafts = requirement.treeCount
+      }
+    }
   }
 
+  // Effect to automatically apply trees to the global state when requirement changes
+  useEffect(() => {
+    if (!readOnly && onApplyTrees && requirement) {
+      // Small delay to avoid dispatching during render
+      const timer = setTimeout(() => {
+        onApplyTrees(path, requirement!.treeCount)
+      }, 0)
+      return () => clearTimeout(timer)
+    } else if (!readOnly && onApplyTrees && targetSeeds === 0 && path === "root") {
+      const timer = setTimeout(() => {
+        onApplyTrees("root", 0)
+      }, 0)
+      return () => clearTimeout(timer)
+    }
+  }, [requirement?.treeCount, path, readOnly, onApplyTrees, targetSeeds])
+
+  // Render all nodes, regardless of rarity. If they don't have rarity, they won't compute requirements.
+
   const isClicked = readOnly || clickedPaths.has(path)
-  const requirement = requirementsMap.get(path)
 
   return (
     <div>
@@ -199,10 +158,9 @@ function TreeRow({
                   if (isClicked) {
                     onRemoveItem?.(path)
                   } else {
-                    onAddItem?.(path, node.item)
-                    const req = requirementsMap.get(path)
-                    if (req) {
-                      onApplyTrees?.(path, req.treeCount)
+                    onAddItem?.(path, item)
+                    if (requirement) {
+                      onApplyTrees?.(path, requirement.treeCount)
                     }
                   }
                 }
@@ -220,11 +178,13 @@ function TreeRow({
               isClicked && "text-primary font-medium",
             )}
           >
-            {node.item.name}
+            {item.name}
           </span>
-          <Badge variant="outline" className="text-[10px] px-1.5 py-0 shrink-0">
-            {node.item.rarity}
-          </Badge>
+          {item.rarity && (
+            <Badge variant="outline" className="text-[10px] px-1.5 py-0 shrink-0">
+              {item.rarity}
+            </Badge>
+          )}
           {isClicked ? (
             <Check className="size-3.5 shrink-0 text-primary" />
           ) : (
@@ -242,14 +202,18 @@ function TreeRow({
 
       {localExpanded && filteredChildren.length > 0 && (
         <div>
-          {filteredChildren.map((child, i) => (
+          {filteredChildren.map((childUid, i) => (
             <TreeRow
               key={`${path}/${i}`}
-              node={child}
+              uid={childUid}
+              nodes={nodes}
+              adjacency={adjacency}
               depth={depth + 1}
               path={`${path}/${i}`}
+              parentRequiredCrafts={nextRequiredCrafts}
+              targetSeeds={targetSeeds}
+              mode={mode}
               clickedPaths={clickedPaths}
-              requirementsMap={requirementsMap}
               onAddItem={onAddItem}
               onRemoveItem={onRemoveItem}
               onApplyTrees={onApplyTrees}
@@ -294,43 +258,31 @@ function RecipeCheatsheet({
     staleTime: 30_000,
   })
 
-  const requirements = useMemo(() => {
-    const map = new Map<string, IngredientRequirement>()
-    const root = data?.root
-    if (root && targetSeeds > 0) {
-      buildRequirements(root, "root", targetSeeds, mode, map)
-    }
-    return map
-  }, [data, targetSeeds, mode])
-
-  useEffect(() => {
-    if (targetSeeds === 0) {
-      onApplyTrees?.("root", 0)
-    } else {
-      for (const [path, req] of requirements) {
-        onApplyTrees?.(path, req.treeCount)
-      }
-    }
-  }, [requirements, targetSeeds, onApplyTrees])
+  // Requirements effect is moved into TreeRow
 
   if (!itemUid) return null
 
-  const root = data?.root ?? null
+  const rootUid = data?.root_uid ?? null
+  const nodes = data?.nodes ?? {}
+  const adjacency = data?.adjacency ?? {}
 
-  const totalDisplay = root
-    ? root.item.rarity
-      ? 1 + countAll(root)
-      : countAll(root)
-    : 0
+  const totalDisplay = useMemo(() => {
+    return Object.keys(nodes).filter((uid) => uid !== rootUid).length
+  }, [nodes, rootUid])
 
-  const totalClicked = clickedPaths.size
+  const totalClicked = useMemo(() => {
+    const calcUids = new Set(items.map((i) => i.itemUid).filter(Boolean))
+    return Object.keys(nodes).filter(
+      (uid) => uid !== rootUid && calcUids.has(uid)
+    ).length
+  }, [nodes, items, rootUid])
 
   return (
     <Card>
       <CardHeader className="py-3 px-4">
         <div className="flex items-center gap-2">
           <CardTitle className="text-sm font-semibold">Ingredients</CardTitle>
-          {!isLoading && root && (
+          {!isLoading && rootUid && (
             <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
               {totalClicked > 0
                 ? `${totalClicked}/${totalDisplay}`
@@ -348,18 +300,22 @@ function RecipeCheatsheet({
           <p className="text-sm text-destructive italic py-2 px-2">
             Failed to load ingredients.
           </p>
-        ) : !root || totalDisplay === 0 ? (
+        ) : !rootUid || totalDisplay === 0 ? (
           <p className="text-sm text-muted-foreground italic py-2 px-2">
             No ingredients found.
           </p>
         ) : (
           <div className="space-y-0.5">
             <TreeRow
-              node={root}
+              uid={rootUid}
+              nodes={nodes}
+              adjacency={adjacency}
               depth={0}
               path="root"
+              parentRequiredCrafts={0}
+              targetSeeds={targetSeeds}
+              mode={mode}
               clickedPaths={clickedPaths}
-              requirementsMap={requirements}
               readOnly
               onAddItem={onAddItem}
               onRemoveItem={onRemoveItem}
@@ -370,18 +326,6 @@ function RecipeCheatsheet({
       </CardContent>
     </Card>
   )
-}
-
-function countAll(node: RecipeTreeNode): number {
-  let count = 0
-  for (const child of node.ingredients ?? []) {
-    if (child.item.rarity) {
-      count += 1 + countAll(child)
-    } else {
-      count += countAll(child)
-    }
-  }
-  return count
 }
 
 export default RecipeCheatsheet
