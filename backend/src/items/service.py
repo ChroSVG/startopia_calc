@@ -1,7 +1,7 @@
 import uuid
 import logging
 from collections import defaultdict
-from sqlmodel import select, col
+from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 from src.activity_log.service import ActivityLogService
 from src.db.models import Item, ItemLink
@@ -79,8 +79,9 @@ class ItemService:
                 if child_uid not in all_uids:
                     queue.append(child_uid)
 
+        uid_list = [uuid.UUID(u) for u in all_uids if u]
         result = await session.exec(
-            select(Item).where(col(Item.uid).in_([uuid.UUID(u) for u in all_uids]))
+            select(Item).where(Item.uid.in_(uid_list))
         )
         items_map: dict[str, Item] = {str(i.uid): i for i in result.all()}
 
@@ -102,7 +103,7 @@ class ItemService:
             )
             return {"item": item, "ingredients": children}
 
-        root_node = build_node(str(item_uid), {str(item_uid)})
+        root_node = build_node(str(item_uid), set())
         return {"root": root_node}
 
 
@@ -129,10 +130,9 @@ class ItemService:
         if not visited_uids:
             return []
 
+        uid_list = [uuid.UUID(u) for u in visited_uids if u]
         result = await session.exec(
-            select(Item).where(
-                col(Item.uid).in_([uuid.UUID(u) for u in visited_uids])
-            )
+            select(Item).where(Item.uid.in_(uid_list))
         )
         return list(result.all())
 
